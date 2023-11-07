@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers sources\Engine">
+      <UniqueIdentifier>{5b0f020c-3d97-417b-9be2-34ba25e4357f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\GameManager">
+      <UniqueIdentifier>{3f8a3c42-ce49-4130-aaf4-f7f49582edb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\GameManager">
+      <UniqueIdentifier>{b67236bf-8ba5-4665-861d-04eac2c31ee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Actors">
+      <UniqueIdentifier>{8ca77890-669f-4df7-a8c4-f6c8c735ef2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Actors">
+      <UniqueIdentifier>{757468cc-9045-486f-a53a-d7fc59d14a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Components">
+      <UniqueIdentifier>{0ed99b40-3873-4e43-8616-34a3ef792c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Components">
+      <UniqueIdentifier>{3f75516f-9cc7-4051-a027-06f131146deb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Fichiers sources\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine.cpp">
+      <Filter>Fichiers sources\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="InputsManager.cpp">
+      <Filter>Fichiers sources\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>Fichiers sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components.cpp">
+      <Filter>Fichiers sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="GameLevel.cpp">
+      <Filter>Fichiers sources\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TableTop.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameEngine.h">
+      <Filter>Fichiers d%27en-tête\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="InputsManager.h">
+      <Filter>Fichiers d%27en-tête\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>Fichiers d%27en-tête\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components.h">
+      <Filter>Fichiers d%27en-tête\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLevel.h">
+      <Filter>Fichiers d%27en-tête\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="TableTop.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

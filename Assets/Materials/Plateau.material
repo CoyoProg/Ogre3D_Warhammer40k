@@ -1,0 +1,25 @@
+
+material Plateau.fbxDefaultMaterial
+{
+    technique
+    {
+       pass
+       {
+          texture_unit
+          {
+            texture Material_grass.png
+          }
+          texture_unit
+          {
+             texture Material_alpha_blend.png             
+             colour_op alpha_blend
+          }
+          texture_unit
+          {
+             texture Material_dirt.jpg
+             colour_op_ex blend_current_alpha src_texture src_current
+          }
+       }
+    }
+
+}
