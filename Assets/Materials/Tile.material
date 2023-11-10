@@ -23,6 +23,31 @@ material Tile_Valid
     }
 }
 
+material Tile_Obstacle
+{
+    technique
+    {
+        pass
+        {
+	    // Set blending mode for transparency
+            scene_blend alpha_blend
+
+            // Disable depth writing for transparent materials
+            depth_write off
+
+	    // Set the diffuse color
+            diffuse 1 1 1 1  // RGBA, adjust as needed
+            texture_unit
+            {
+                texture Tile_Obstacle.png
+
+		max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}
+
 material Tile_Background
 {
     technique

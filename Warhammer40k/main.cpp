@@ -4,8 +4,6 @@
 
 int main(int argc, char** argv)
 {
-    bool playing = true;
-
     try
     {
         GameEngine app;
