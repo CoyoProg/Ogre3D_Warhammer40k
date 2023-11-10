@@ -1,12 +1,10 @@
 #pragma once
 #include <OgreSceneQuery.h>
-
 #include "Components.h"
-#include "IListenerInputs.h"
 
 class Figurines;
 
-class CameraComponent : public Components, public IListenerInputs
+class CameraComponent : public Components, public InputListener
 {
 public:
 	CameraComponent(GameEngine& gameEngineP);
@@ -36,14 +34,21 @@ private:
 
 	/* References */
 	GameEngine& m_GameEngine;
-	InputsManager& m_InputsManager;
 	SceneManager& m_SceneManager;
 
 	/* Inputs Listener*/
-	void OnLBMouseDown(int mouseX, int mouseY) override;
-	void OnKeyPressed(OgreBites::Keycode keyReleasedP) override;
-	void OnKeyReleased(OgreBites::Keycode keyReleasedP) override;
+	virtual bool mouseWheelRolled(const MouseWheelEvent& evt) override;
+	virtual bool mousePressed(const MouseButtonEvent& evt) override;
+	virtual bool mouseReleased(const MouseButtonEvent& evt) override;
+	virtual bool keyPressed(const KeyboardEvent& evt) override;
+	virtual bool keyReleased(const KeyboardEvent& evt) override;
+	virtual void frameRendered(const FrameEvent& evt) override;
 
+	void OnLBMouseDown(int mouseX, int mouseY);
+
+	int m_MouseWheelY{ 0 };
+	bool m_IsLMBDown{ false };
+	bool m_IsRMBDown{ false };
 	void UpdateCameraPosition(float deltaSec);
 	void Zoom(float deltaTime);
 

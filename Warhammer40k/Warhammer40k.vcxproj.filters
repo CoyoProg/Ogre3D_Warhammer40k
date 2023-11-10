@@ -48,9 +48,6 @@
     <ClCompile Include="GameEngine.cpp">
       <Filter>Fichiers sources\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="InputsManager.cpp">
-      <Filter>Fichiers sources\GameManager</Filter>
-    </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
       <Filter>Fichiers sources\Components</Filter>
     </ClCompile>
@@ -72,12 +69,12 @@
     <ClCompile Include="TableTop.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Fichiers sources\GameManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
-      <Filter>Fichiers d%27en-tête\GameManager</Filter>
-    </ClInclude>
-    <ClInclude Include="InputsManager.h">
       <Filter>Fichiers d%27en-tête\GameManager</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
@@ -106,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="QueryFlags.h">
       <Filter>Fichiers d%27en-tête\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Fichiers d%27en-tête\GameManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

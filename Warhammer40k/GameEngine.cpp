@@ -1,5 +1,4 @@
 #include "GameEngine.h"
-#include "InputsManager.h"
 
 /* Ogre Related */
 #include "OgreRTShaderSystem.h"
@@ -23,8 +22,7 @@ void GameEngine::setup()
 {
     // do not forget to call the base first
     ApplicationContext::setup();
-    m_InputsManager = new  InputsManager(*this);
-    addInputListener(m_InputsManager);
+    addInputListener(this);
 
     // get a pointer to the already created root
     Root* root = getRoot();
@@ -52,11 +50,6 @@ void GameEngine::Update(float deltaTimeP)
     {
         actors->Update(deltaTimeP);
     }
-}
-
-void GameEngine::QuitGame()
-{
-    getRoot()->queueEndRendering();
 }
 
 Actors* GameEngine::GetActor(const SceneNode* sceneNodeP)
@@ -91,4 +84,16 @@ bool GameEngine::frameRenderingQueued(const Ogre::FrameEvent& fe)
 bool GameEngine::ProcessUnbufferedInput(const Ogre::FrameEvent& fe)
 {
 	return true;
+}
+
+bool GameEngine::keyPressed(const KeyboardEvent& evt)
+{
+    Keycode key = evt.keysym.sym;
+
+    if (key == SDLK_ESCAPE)
+    {
+        getRoot()->queueEndRendering();
+    }
+
+    return true;
 }

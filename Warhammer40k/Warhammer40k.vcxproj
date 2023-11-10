@@ -139,7 +139,7 @@
     <ClCompile Include="Figurines.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameLevel.cpp" />
-    <ClCompile Include="InputsManager.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TableTop.cpp" />
@@ -151,8 +151,8 @@
     <ClInclude Include="Figurines.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameLevel.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="IListenerInputs.h" />
-    <ClInclude Include="InputsManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="QueryFlags.h" />
     <ClInclude Include="TableTop.h" />

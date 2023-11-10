@@ -1,12 +1,11 @@
 #include "CameraComponent.h"
 #include <iostream>
-#include "InputsManager.h"
+
 #include "Figurines.h"
 #include "QueryFlags.h"
 
 CameraComponent::CameraComponent(GameEngine& gameEngineP) :
     m_GameEngine(gameEngineP),
-    m_InputsManager(*gameEngineP.GetInputsManager()),
     m_SceneManager(*gameEngineP.GetSceneManager()),
     m_RayScnQuery(0)
 {
@@ -25,7 +24,7 @@ CameraComponent::CameraComponent(GameEngine& gameEngineP) :
     m_CamNode->setPosition(0, 100, 322);
     m_CamNode->pitch(Degree(-45));
 
-    m_InputsManager.AddListener(this);
+    gameEngineP.addInputListener(this);
 }
 
 CameraComponent::~CameraComponent()
@@ -36,6 +35,113 @@ CameraComponent::~CameraComponent()
 void CameraComponent::Update(float deltaTime)
 {
     UpdateCameraPosition(deltaTime);
+}
+
+bool CameraComponent::mouseWheelRolled(const MouseWheelEvent& evt)
+{
+    m_MouseWheelY = -evt.y;
+
+    if (evt.y != 0)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
+bool CameraComponent::mousePressed(const MouseButtonEvent& evt)
+{
+    Keycode key = evt.button;
+
+    if (key == 1)
+    {
+        OnLBMouseDown(evt.x, evt.y);
+
+        m_IsLMBDown = true;
+    }
+
+    if (key == 3)
+    {
+        m_IsRMBDown = true;
+    }
+
+    return false;
+}
+
+bool CameraComponent::mouseReleased(const MouseButtonEvent& evt)
+{
+    Keycode key = evt.button;
+
+    if (key == 1)
+    {
+        m_IsLMBDown = false;
+    }
+
+    if (key == 3)
+    {
+        m_IsRMBDown = false;
+    }
+
+    return false;
+}
+
+bool CameraComponent::keyPressed(const KeyboardEvent& evt)
+{
+    Keycode key = evt.keysym.sym;
+
+    if (key == 'w')
+    {
+        m_MoveZ = -m_CameraSpeed;
+    }
+
+    if (key == 's')
+    {
+        m_MoveZ = m_CameraSpeed;
+    }
+
+    if (key == 'd')
+    {
+        m_MoveX = m_CameraSpeed;
+    }
+
+    if (key == 'a')
+    {
+        m_MoveX = -m_CameraSpeed;
+    }
+
+    return true;
+}
+
+bool CameraComponent::keyReleased(const KeyboardEvent& evt)
+{
+    Keycode key = evt.keysym.sym;
+
+    if (key == 'w')
+    {
+        m_MoveZ = 0;
+    }
+
+    if (key == 's')
+    {
+        m_MoveZ = 0;
+    }
+
+    if (key == 'd')
+    {
+        m_MoveX = 0;
+    }
+
+    if (key == 'a')
+    {
+        m_MoveX = 0;
+    }
+
+    return true;
+}
+
+void CameraComponent::frameRendered(const FrameEvent& evt)
+{
+        m_MouseWheelY = 0;
 }
 
 void CameraComponent::OnLBMouseDown(int mouseX, int mouseY)
@@ -105,52 +211,6 @@ void CameraComponent::SelectFigurine(Figurines* figurineP)
     m_IsActorSelected = true;
 }
 
-void CameraComponent::OnKeyPressed(Keycode keyReleasedP)
-{
-    if (keyReleasedP == 'w')
-    {
-        m_MoveZ = -m_CameraSpeed;
-    }
-
-    if (keyReleasedP == 's')
-    {
-        m_MoveZ = m_CameraSpeed;
-    }
-
-    if (keyReleasedP == 'd')
-    {
-        m_MoveX = m_CameraSpeed;
-    }
-
-    if (keyReleasedP == 'a')
-    {
-        m_MoveX = -m_CameraSpeed;
-    }
-}
-
-void CameraComponent::OnKeyReleased(Keycode keyReleasedP)
-{
-    if (keyReleasedP == 'w')
-    {
-        m_MoveZ = 0;
-    }
-
-    if (keyReleasedP == 's')
-    {
-        m_MoveZ = 0;
-    }
-
-    if (keyReleasedP == 'd')
-    {
-        m_MoveX = 0;
-    }
-
-    if (keyReleasedP == 'a')
-    {
-        m_MoveX = 0;
-    }
-}
-
 void CameraComponent::UpdateCameraPosition(float deltaTime)
 {
     Vector3 newTranslation = m_CamNode->getPosition() + Vector3(m_MoveX * deltaTime, 0, m_MoveZ * deltaTime);
@@ -167,8 +227,6 @@ void CameraComponent::UpdateCameraPosition(float deltaTime)
 
 void CameraComponent::Zoom(float deltaTime)
 {
-    int m_MouseWheelY = m_InputsManager.getMouseWheelY() * -1;
-
     // Calculate the camera's forward vector based on its rotation
     Quaternion cameraOrientation = m_CamNode->getOrientation();
     Vector3 cameraDirection = cameraOrientation * Ogre::Vector3::UNIT_Z * (m_MouseWheelY * deltaTime * 500);
