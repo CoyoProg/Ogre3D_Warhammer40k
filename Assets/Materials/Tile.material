@@ -1,0 +1,41 @@
+material Tile_Valid
+{
+    technique
+    {
+        pass
+        {
+	    // Set blending mode for transparency
+            scene_blend alpha_blend
+
+            // Disable depth writing for transparent materials
+            depth_write off
+
+	    // Set the diffuse color
+            diffuse 1 1 1 1  // RGBA, adjust as needed
+            texture_unit
+            {
+                texture Tile_Valid.png
+
+		max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}
+
+material Tile_Background
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture Tile_FlatColor.png
+
+		max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}

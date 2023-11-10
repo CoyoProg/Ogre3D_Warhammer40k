@@ -1,11 +1,10 @@
 #include "Player.h"
-#include "Components.h"
 #include "CameraComponent.h"
 
 Player::Player(GameEngine& gameEngineP) :
 	m_GameEngine (gameEngineP)
 {
-	CameraComponent* camera = new CameraComponent(*gameEngineP.GetSceneManager(), *gameEngineP.GetInputsManager());
+	CameraComponent* camera = new CameraComponent(gameEngineP);
 	gameEngineP.getRenderWindow()->addViewport(camera->getCamera());
 	AddComponent(camera);
 }

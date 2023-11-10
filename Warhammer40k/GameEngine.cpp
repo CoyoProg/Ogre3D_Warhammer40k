@@ -10,8 +10,6 @@
 /* My scripts */
 #include "Actors.h"
 #include "GameLevel.h"
-
-
 #include "Player.h"
 #include "TableTop.h"
 
@@ -61,15 +59,28 @@ void GameEngine::QuitGame()
     getRoot()->queueEndRendering();
 }
 
+Actors* GameEngine::GetActor(const SceneNode* sceneNodeP)
+{
+    for (auto actors : m_Actors)
+    {
+        if (actors->GetSceneNode() == sceneNodeP)
+        {
+            return actors;
+        }
+    }
+
+    return nullptr;
+}
+
 bool GameEngine::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
-    bool ret = ApplicationContext::frameRenderingQueued(fe);
-
     // Calculate the delta time (time since the last frame)
     float deltaTime = fe.timeSinceLastFrame;
 
     // Handle game logic and update here
     Update(deltaTime);
+
+    bool ret = ApplicationContext::frameRenderingQueued(fe);
 
     if (!ProcessUnbufferedInput(fe))
         return false;

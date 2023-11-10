@@ -1,57 +1,185 @@
 #include "CameraComponent.h"
-#include "InputsManager.h"
 #include <iostream>
+#include "InputsManager.h"
+#include "Figurines.h"
+#include "QueryFlags.h"
 
-CameraComponent::CameraComponent(SceneManager& sceneManagerP, const InputsManager& inputsManagerP) :
-    inputManager(inputsManagerP)
+CameraComponent::CameraComponent(GameEngine& gameEngineP) :
+    m_GameEngine(gameEngineP),
+    m_InputsManager(*gameEngineP.GetInputsManager()),
+    m_SceneManager(*gameEngineP.GetSceneManager()),
+    m_RayScnQuery(0)
 {
+    m_RayScnQuery = m_SceneManager.createRayQuery(Ogre::Ray());
+    m_RayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
+
     // ===== CAMERA ==== 
     /* Create the Camera */
-    m_Camera = sceneManagerP.createCamera("mainCamera");
+    m_Camera = m_SceneManager.createCamera("mainCamera");
     m_Camera->setNearClipDistance(5); // specific to this sample
-    m_Camera->setAutoAspectRatio(true);
+    m_Camera->setAutoAspectRatio(true); 
 
     /* Create a scene node for the camera */
-    m_CamNode = sceneManagerP.getRootSceneNode()->createChildSceneNode();
+    m_CamNode = m_SceneManager.getRootSceneNode()->createChildSceneNode();
     m_CamNode->attachObject(m_Camera);
-    m_CamNode->setPosition(0, 150, 222);
+    m_CamNode->setPosition(0, 100, 322);
     m_CamNode->pitch(Degree(-45));
+
+    m_InputsManager.AddListener(this);
+}
+
+CameraComponent::~CameraComponent()
+{
+    m_SceneManager.destroyQuery(m_RayScnQuery);
 }
 
 void CameraComponent::Update(float deltaTime)
 {
-    updateCameraPosition(deltaTime);
+    UpdateCameraPosition(deltaTime);
 }
 
-void CameraComponent::updateCameraPosition(float deltaTime)
+void CameraComponent::OnLBMouseDown(int mouseX, int mouseY)
 {
-    float speed = 50.f;
-    float moveX = 0.f;
-    float moveZ = 0.f;
+    float width = mouseX / (float)m_GameEngine.getRenderWindow()->getWidth();
+    float height = mouseY / (float)m_GameEngine.getRenderWindow()->getHeight();
 
-    for (const Keycode key : inputManager.getKeyPressed())
+    Ray mouseRay = m_Camera->getCameraToViewportRay( width, height);
+
+    m_RayScnQuery->setRay(mouseRay);
+    m_RayScnQuery->setSortByDistance(true);
+    m_RayScnQuery->setQueryMask(QueryFlags::FIGURINE_MASK);
+
+    RaySceneQueryResult& result = m_RayScnQuery->execute();
+    RaySceneQueryResult::iterator it = result.begin();
+    
+    for (; it != result.end(); it++)
     {
-        if (key == 'w')
+        /* Check if Entity is has figurine flag */
+        if (!it->movable || it->movable->getQueryFlags() != QueryFlags::FIGURINE_MASK)
         {
-            moveZ -= speed;
+            if (m_IsActorSelected)
+                UnselectFigurine();
+
+            break;
         }
 
-        if (key == 's')
+        /* Try to get entity's actor class and cast it to figurines */
+        SceneNode* sceneNodeHit = it->movable->getParentSceneNode();
+        Actors* getActor = m_GameEngine.GetActor(sceneNodeHit);
+        if (!getActor)
+            break;
+        Figurines* temporary = dynamic_cast<Figurines*>(getActor);
+        if (!temporary)
+            break;
+
+        if (!m_IsActorSelected)
         {
-            moveZ += speed;
+            SelectFigurine(temporary);
+            break; // To select only one actor at a time
         }
 
-        if (key == 'd')
+        if (temporary->GetSceneNode() != m_CurrentSelected->GetSceneNode())
         {
-            moveX += speed;
+            UnselectFigurine();
+            SelectFigurine(temporary);
+            break; // To select only one actor at a time
         }
 
-        if (key == 'a')
-        {
-            moveX -= speed;
-        }
+        UnselectFigurine();
+        break;
+    }
+}
+
+void CameraComponent::UnselectFigurine()
+{
+    // Unselect the last selected actor
+    m_CurrentSelected->OnSelected(false);
+    m_CurrentSelected = nullptr;
+    m_IsActorSelected = false;
+}
+
+void CameraComponent::SelectFigurine(Figurines* figurineP)
+{
+    m_CurrentSelected = figurineP;
+    m_CurrentSelected->OnSelected(true);
+    m_IsActorSelected = true;
+}
+
+void CameraComponent::OnKeyPressed(Keycode keyReleasedP)
+{
+    if (keyReleasedP == 'w')
+    {
+        m_MoveZ = -m_CameraSpeed;
     }
 
-    // Apply the accumulated translation
-    m_CamNode->translate(moveX * deltaTime, 0, moveZ * deltaTime);
+    if (keyReleasedP == 's')
+    {
+        m_MoveZ = m_CameraSpeed;
+    }
+
+    if (keyReleasedP == 'd')
+    {
+        m_MoveX = m_CameraSpeed;
+    }
+
+    if (keyReleasedP == 'a')
+    {
+        m_MoveX = -m_CameraSpeed;
+    }
+}
+
+void CameraComponent::OnKeyReleased(Keycode keyReleasedP)
+{
+    if (keyReleasedP == 'w')
+    {
+        m_MoveZ = 0;
+    }
+
+    if (keyReleasedP == 's')
+    {
+        m_MoveZ = 0;
+    }
+
+    if (keyReleasedP == 'd')
+    {
+        m_MoveX = 0;
+    }
+
+    if (keyReleasedP == 'a')
+    {
+        m_MoveX = 0;
+    }
+}
+
+void CameraComponent::UpdateCameraPosition(float deltaTime)
+{
+    Vector3 newTranslation = m_CamNode->getPosition() + Vector3(m_MoveX * deltaTime, 0, m_MoveZ * deltaTime);
+
+    if (abs(newTranslation.x) < m_ClampMaxX 
+        && newTranslation.z > m_ClampMinZ && newTranslation.z < m_ClampMaxZ)
+    {
+        // Apply the accumulated translation
+        m_CamNode->translate(m_MoveX * deltaTime, 0, m_MoveZ * deltaTime);
+    }
+
+    Zoom(deltaTime);
+}
+
+void CameraComponent::Zoom(float deltaTime)
+{
+    int m_MouseWheelY = m_InputsManager.getMouseWheelY() * -1;
+
+    // Calculate the camera's forward vector based on its rotation
+    Quaternion cameraOrientation = m_CamNode->getOrientation();
+    Vector3 cameraDirection = cameraOrientation * Ogre::Vector3::UNIT_Z * (m_MouseWheelY * deltaTime * 500);
+
+    Vector3 newTranslation = m_CamNode->getPosition() + cameraDirection;
+    if (newTranslation.y < m_ClampMaxY && newTranslation.y > m_ClampMinY)
+    {
+        if (abs(newTranslation.x) < m_ClampMaxX
+            && newTranslation.z > m_ClampMinZ && newTranslation.z < m_ClampMaxZ)
+        {
+            m_CamNode->translate(cameraDirection);
+        }
+    }
 }

@@ -23,3 +23,35 @@ material Plateau.fbxDefaultMaterial
     }
 
 }
+
+material Plateau.tapis
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture Tapis_TableTop.jpg
+		max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}
+
+material Plateau.bois
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture bois_tempo.jpg
+                max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}

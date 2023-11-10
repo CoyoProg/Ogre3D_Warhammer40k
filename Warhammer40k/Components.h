@@ -1,4 +1,5 @@
 #pragma once
+#include "GameEngine.h"
 
 class Components
 {

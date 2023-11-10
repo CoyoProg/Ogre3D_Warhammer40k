@@ -28,11 +28,17 @@
     <Filter Include="Fichiers sources\Actors">
       <UniqueIdentifier>{757468cc-9045-486f-a53a-d7fc59d14a8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers sources\Components">
+      <UniqueIdentifier>{3f75516f-9cc7-4051-a027-06f131146deb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Interfaces">
+      <UniqueIdentifier>{2abdeff5-4a8d-4beb-947f-c479ee2ea353}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Fichiers d%27en-tête\Components">
       <UniqueIdentifier>{0ed99b40-3873-4e43-8616-34a3ef792c41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Components">
-      <UniqueIdentifier>{3f75516f-9cc7-4051-a027-06f131146deb}</UniqueIdentifier>
+    <Filter Include="Fichiers d%27en-tête\Enums">
+      <UniqueIdentifier>{658cc095-30e2-451c-9d5d-14c330de890f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,8 +66,11 @@
     <ClCompile Include="GameLevel.cpp">
       <Filter>Fichiers sources\GameManager</Filter>
     </ClCompile>
+    <ClCompile Include="Figurines.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
     <ClCompile Include="TableTop.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,8 +95,17 @@
     <ClInclude Include="GameLevel.h">
       <Filter>Fichiers d%27en-tête\GameManager</Filter>
     </ClInclude>
+    <ClInclude Include="IListenerInputs.h">
+      <Filter>Fichiers sources\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Figurines.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
     <ClInclude Include="TableTop.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryFlags.h">
+      <Filter>Fichiers d%27en-tête\Enums</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

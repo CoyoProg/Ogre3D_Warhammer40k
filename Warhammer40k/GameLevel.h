@@ -11,7 +11,8 @@ class GameLevel
 {
 public:
 	static void LoadLevel(GameEngine& gameEngineP);
+
 private:
-	static void LoadTuto(Ogre::SceneManager& sceneManagerP);
+	static void LoadEnvironment(Ogre::SceneManager& sceneManager);
 };
 

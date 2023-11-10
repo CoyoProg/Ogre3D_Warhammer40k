@@ -136,6 +136,7 @@
     <ClCompile Include="Actors.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Components.cpp" />
+    <ClCompile Include="Figurines.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameLevel.cpp" />
     <ClCompile Include="InputsManager.cpp" />
@@ -147,10 +148,13 @@
     <ClInclude Include="Actors.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="Figurines.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameLevel.h" />
+    <ClInclude Include="IListenerInputs.h" />
     <ClInclude Include="InputsManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="QueryFlags.h" />
     <ClInclude Include="TableTop.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

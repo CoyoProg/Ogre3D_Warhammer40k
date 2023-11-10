@@ -1,0 +1,75 @@
+
+material SpaceMarine.fbxBlack
+{
+	technique
+	{
+		pass 
+		{
+			ambient 0.00392157 0.00784314 0.0196078 1
+			diffuse 0.00392157 0.00784314 0.0196078 1
+			specular 0.9 0.9 0.9 1 1.07177
+		}
+
+	}
+
+}
+
+material SpaceMarine.fbxBlue
+{
+	technique
+	{
+		pass 
+		{
+			ambient 0 0.121569 0.521569 1
+			diffuse 0 0.121569 0.521569 1
+			specular 0.9 0.9 0.9 1 4
+		}
+
+	}
+
+}
+
+material SpaceMarine.fbxGrey
+{
+	technique
+	{
+		pass 
+		{
+			ambient 0.0901961 0.101961 0.180392 1
+			diffuse 0.0901961 0.101961 0.180392 1
+			specular 0.9 0.9 0.9 1 4
+		}
+
+	}
+
+}
+
+material SpaceMarine.fbxRed
+{
+	technique
+	{
+		pass 
+		{
+			ambient 0.729412 0.00392157 0.00392157 1
+			diffuse 0.729412 0.00392157 0.00392157 1
+			specular 0.9 0.9 0.9 1 4
+		}
+
+	}
+
+}
+
+material SpaceMarine.fbxWhite
+{
+	technique
+	{
+		pass 
+		{
+			ambient 0.345098 0.384314 0.458824 1
+			diffuse 0.345098 0.384314 0.458824 1
+			specular 0.9 0.9 0.9 1 4
+		}
+
+	}
+
+}
