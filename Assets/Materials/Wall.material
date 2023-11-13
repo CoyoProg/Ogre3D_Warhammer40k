@@ -1,0 +1,13 @@
+
+material Wall.fbxDefaultMaterial
+{
+	technique
+	{
+		pass 
+		{
+			diffuse 0.8 0.8 0.8 1
+		}
+
+	}
+
+}

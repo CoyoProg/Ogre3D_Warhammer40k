@@ -21,15 +21,14 @@ public:
     void Update(float deltaTimeP);
 
     void AddActor(Actors* actorP) { m_Actors.emplace_back(actorP) ; }
-    void SetGrid(Grid* gridP) { m_grid = gridP; }
-
     Actors* GetActor(const SceneNode* sceneNodeP);
+    void SetGrid(Grid* gridP) { m_grid = gridP; }
     Grid& GetGrid() { return *m_grid; }
     SceneManager* GetSceneManager() { return m_SceneManager; }
 
 private:
-    SceneManager* m_SceneManager;
-    Grid* m_grid;
+    SceneManager* m_SceneManager{ nullptr };
+    Grid* m_grid{ nullptr };
 
     std::set<Keycode> m_KeysPressed;
     std::vector<Actors*> m_Actors;

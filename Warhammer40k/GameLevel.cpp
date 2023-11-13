@@ -26,11 +26,12 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	TableTop* tabletop = new TableTop(gameEngineP);
 	gameEngineP.AddActor(tabletop);
 
+
+	/* =========== JUST FOR DEBUG PURPOSE =========== */
 	/* Import Custom mesh */
 	Ogre::MeshPtr mMesh = MeshManager::getSingleton().load("LowPolyMarine.mesh", "AssetsGroup");
 	mMesh->buildEdgeList();
 
-	/* =========== JUST FOR DEBUG PURPOSE =========== */
 	int count = 0;
 	for (int i = 0; i < 10; i++)
 	{
@@ -45,6 +46,7 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	        figurines->SetPosition(Vector3(i * 10 + 10 / 2 +1, 0.75f, -j * 10 - 10 / 2 +1) + Vector3(-90, 0, 250));
 	    }
 	}
+	/* =========== JUST FOR DEBUG PURPOSE =========== */
 
 	LoadEnvironment(sceneManager);
 
