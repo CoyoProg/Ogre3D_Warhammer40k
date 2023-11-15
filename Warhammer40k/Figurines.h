@@ -12,9 +12,13 @@ public:
 	void SetPosition(Vector3 positionP);
 	void OnSelected(bool isSelected);
 
+	float GetMovementAction() { return m_MovementActionDistance; }
 private:
 	bool m_IsSelected{ false };
 	float uniformScale{ 0.02 };
+
+	/* Figurine Stats */
+	float m_MovementActionDistance{50};
 
 	/* On selected Animation properties */
 	float animationTime{ 0 };
