@@ -75,6 +75,9 @@
     <ClCompile Include="Obstacles.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="PathFindingComponent.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -111,6 +114,9 @@
       <Filter>Fichiers d%27en-tête\GameManager</Filter>
     </ClInclude>
     <ClInclude Include="Obstacles.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFindingComponent.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

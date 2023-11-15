@@ -52,7 +52,7 @@ void GameEngine::Update(float deltaTimeP)
     }
 }
 
-Actors* GameEngine::GetActor(const SceneNode* sceneNodeP)
+Actors* GameEngine::GetSceneActor(const SceneNode* sceneNodeP)
 {
     for (auto actors : m_Actors)
     {

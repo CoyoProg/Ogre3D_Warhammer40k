@@ -21,11 +21,12 @@ public:
     void Update(float deltaTimeP);
 
     void AddActor(Actors* actorP) { m_Actors.emplace_back(actorP) ; }
-    Actors* GetActor(const SceneNode* sceneNodeP);
+    std::vector<Actors*> GetActors() { return m_Actors; }
     void SetGrid(Grid* gridP) { m_grid = gridP; }
     Grid& GetGrid() { return *m_grid; }
-    SceneManager* GetSceneManager() { return m_SceneManager; }
 
+    SceneManager* GetSceneManager() { return m_SceneManager; }
+    Actors* GetSceneActor(const SceneNode* sceneNodeP);
 private:
     SceneManager* m_SceneManager{ nullptr };
     Grid* m_grid{ nullptr };

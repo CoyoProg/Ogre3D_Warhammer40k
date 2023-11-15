@@ -17,8 +17,6 @@ protected:
 
 	Entity* m_Entity{ nullptr };
 	SceneNode* m_Node{ nullptr };
-
-private:
 	std::vector<Components*> myComponents;
 };
 
