@@ -72,11 +72,11 @@
     <ClCompile Include="Grid.cpp">
       <Filter>Fichiers sources\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="Obstacles.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="PathFindingComponent.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacles.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -117,7 +117,7 @@
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="PathFindingComponent.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

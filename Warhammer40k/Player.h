@@ -3,6 +3,7 @@
 
 class Components;
 class Figurines;
+class PathFindingComponent;
 
 class Player : public Actors, public InputListener
 {
@@ -14,6 +15,7 @@ public:
 
 private:
 	GameEngine& m_GameEngine;
+	PathFindingComponent* pathfinding{ nullptr };
 
 	void OnLBMouseDown(int mouseX, int mouseY);
 	void OnRBMouseDown(int mouseX, int mouseY);

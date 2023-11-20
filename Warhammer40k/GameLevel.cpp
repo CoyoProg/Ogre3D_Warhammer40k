@@ -16,7 +16,11 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 {
 	SceneManager& sceneManager = *gameEngineP.GetSceneManager();
 	sceneManager.setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
-	sceneManager.setShadowFarDistance(100);
+	sceneManager.setShadowFarDistance(50);
+
+	/* Create the Grid */
+	Grid* grid = new Grid(gameEngineP);
+	gameEngineP.SetGrid(grid);
 
 	/* Player need to be initialize first for the main camera */
 	// ===== Player ==== 
@@ -43,16 +47,12 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	
 	        Figurines* figurines = new Figurines(sceneManager, entityName, nodeName);
 	        gameEngineP.AddActor(figurines);
-	        figurines->SetPosition(Vector3(i * 10 + 10 / 2 +1, 0.75f, -j * 10 - 10 / 2 +1) + Vector3(-90, 0, 250));
+	        figurines->SetPosition(Vector3(i * 10 + 10 / 2 +1, 0.f, -j * 10 - 10 / 2 +1) + Vector3(-90, 0, 250));
 	    }
 	}
 	/* =========== JUST FOR DEBUG PURPOSE =========== */
 
 	LoadEnvironment(sceneManager);
-
-	/* Create the Grid */
-	Grid* grid = new Grid(gameEngineP);
-	gameEngineP.SetGrid(grid);
 }
 
 void GameLevel::LoadEnvironment(Ogre::SceneManager& sceneManager)

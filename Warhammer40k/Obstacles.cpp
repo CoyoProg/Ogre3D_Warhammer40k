@@ -2,6 +2,7 @@
 #include "GameEngine.h"
 #include "Grid.h"
 #include <iostream>
+#include "QueryFlags.h"
 
 Obstacles::Obstacles(GameEngine& gameEngineP)
 {
@@ -12,24 +13,14 @@ Obstacles::Obstacles(GameEngine& gameEngineP)
 	m_Entity = sceneManager.createEntity("WallEntity", "Wall.mesh");
 	m_Entity->setCastShadows(false);
 	m_Node = sceneManager.getRootSceneNode()->createChildSceneNode("WallNode");
-	m_Node->setScale(10, 10, 10);
+	m_Node->setScale(10, 10, 10 / GRID_MULTIPLICATEUR);
 	m_Node->attachObject(m_Entity);
+	m_Entity->setQueryFlags(QueryFlags::OBSTACLE_MASK);
 
 	// Set position
-	m_Node->setPosition(grid.GetWorldCoords(Vector2(11, -5)));
+	m_Node->setPosition(grid.GetWorldPosition(Vector2(11 * GRID_MULTIPLICATEUR, 5 * GRID_MULTIPLICATEUR)));
 	m_Node->yaw(Degree(-90));
-	AddLineCollision(grid, m_Node->getPosition(), false, 5);
-
-	/* Import Custom mesh */
-	m_Entity = sceneManager.createEntity("WallEntity2", "Wall.mesh");
-	m_Entity->setCastShadows(false);
-	m_Node = sceneManager.getRootSceneNode()->createChildSceneNode("WallNode2");
-	m_Node->setScale(10, 10, 10);
-	m_Node->attachObject(m_Entity);
-
-	// Set position
-	m_Node->setPosition(grid.GetWorldCoords(Vector2(15, -7)));
-	AddLineCollision(grid, m_Node->getPosition(), true, 5);
+	AddLineCollision(grid, m_Node->getPosition(), false, 5 * GRID_MULTIPLICATEUR);
 }
 
 Obstacles::~Obstacles()
@@ -43,17 +34,17 @@ void Obstacles::AddLineCollision(Grid& gridP, Vector3 centerP, bool onAxisX, int
 
 	if (onAxisX)
 	{
-		for (int i = -2; i < 3; i++)
+		for (int i = -newLength; i < (newLength + 1); i++)
 		{
-			gridP.SetTileMaterial(originPosition.x + i, originPosition.y );
+			gridP.SetTileMaterial(originPosition.x + i, originPosition.y, TILE_OBSTACLE);
 		}
 	}
 
 	if (!onAxisX)
 	{
-		for (int i = -2; i < 3; i++)
+		for (int i = -newLength; i < (newLength +1); i++)
 		{
-			gridP.SetTileMaterial(originPosition.x, originPosition.y + i);
+			gridP.SetTileMaterial(originPosition.x, originPosition.y + i, TILE_OBSTACLE);
 		}
 	}
 }

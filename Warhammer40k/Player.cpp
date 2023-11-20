@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "CameraComponent.h"
+#include "PathFindingComponent.h"
 #include "Figurines.h"
+#include "Grid.h"
 
 #include <OgreSceneQuery.h>
 #include "QueryFlags.h"
@@ -13,6 +15,9 @@ Player::Player(GameEngine& gameEngineP) :
 	CameraComponent* camera = new CameraComponent(gameEngineP);
 	gameEngineP.getRenderWindow()->addViewport(camera->getCamera());
 	AddComponent(camera);
+
+    pathfinding = new PathFindingComponent(gameEngineP);
+    AddComponent(pathfinding);
 
     m_RayScnQuery = gameEngineP.GetSceneManager()->createRayQuery(Ogre::Ray());
     m_RayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
@@ -33,7 +38,7 @@ void Player::Update(float deltaTime)
     functionDelay -= deltaTime;
     if (m_CurrentSelected && functionDelay <= 0)
     {
-        functionDelay = .1f;
+        functionDelay = .2f;
         IsTargetOnSight();
     }
 }
@@ -50,7 +55,7 @@ Ray Player::MouseRayTo3D(int mouseX, int mouseY)
 
     m_RayScnQuery->setRay(mouseRay);
     m_RayScnQuery->setSortByDistance(true);
-    m_RayScnQuery->setQueryMask(QueryFlags::FIGURINE_MASK);
+    m_RayScnQuery->setQueryMask(FIGURINE_MASK | OBSTACLE_MASK);
 
     return mouseRay;
 }
@@ -65,7 +70,7 @@ void Player::OnLBMouseDown(int mouseX, int mouseY)
     for (; it != result.end(); it++)
     {
         /* Check if Entity has figurine flag */
-        if (!it->movable || it->movable->getQueryFlags() != QueryFlags::FIGURINE_MASK)
+        if (!it->movable || it->movable->getQueryFlags() != FIGURINE_MASK)
         {
             if (m_IsActorSelected)
                 UnselectFigurine();
@@ -102,17 +107,25 @@ void Player::OnLBMouseDown(int mouseX, int mouseY)
 
 void Player::OnRBMouseDown(int mouseX, int mouseY)
 {
-    if (m_CurrentSelected && m_OnSightFromSelected)
+    /* Move or attack the target if a Figurine is currently selected */
+    if (m_CurrentSelected)
     { 
+        IsTargetOnSight();
+
+        if (!m_OnSightFromSelected || !m_CurrentSelected->IsSleeping())
+            return;
+
         RaySceneQueryResult& result = m_RayScnQuery->execute();
         RaySceneQueryResult::iterator hitResult = result.begin();
 
         for (; hitResult != result.end(); hitResult++)
         {
-            /* If hitResult isnt a Figurine
-               Move the Selected Figirune to the new Position */
-            if (hitResult->movable->getQueryFlags() != QueryFlags::FIGURINE_MASK)
+            /* We check if we click on a Figurine/Obstacle 
+               And Move the Selected Figirune to the new Position if not */
+            if (hitResult->movable->getQueryFlags() != FIGURINE_MASK && hitResult->movable->getQueryFlags() != OBSTACLE_MASK)
             {
+                /* We cast a second Ray to check if there is an Obstacle
+                   Between the Figurine and the targetPosition */
                 Ray rayCast(m_CurrentSelectedPosition, m_TargetPosition - m_CurrentSelectedPosition);
                 m_RayScnQuery->setRay(rayCast);
                 m_RayScnQuery->setSortByDistance(true);
@@ -125,9 +138,20 @@ void Player::OnRBMouseDown(int mouseX, int mouseY)
                     if (secondHitResult->distance > 1)
                         break;
 
-                    if (secondHitResult->movable->getQueryFlags() != QueryFlags::FIGURINE_MASK)
+                    if (secondHitResult->movable->getQueryFlags() == OBSTACLE_MASK)
                     {
-                        std::cout << "Cant move on Obstacle!\n";
+                        bool pathFound = pathfinding->FindPath(m_CurrentSelectedPosition, m_TargetPosition, m_CurrentSelected->GetMovementAction());
+                        
+                        if (pathFound)
+                        {
+                            std::vector<Vector3> finalPath = pathfinding->GetFinalPath();
+
+                            finalPath.pop_back();
+                            finalPath.emplace_back(m_TargetPosition);
+
+                            m_CurrentSelected->MoveTo(finalPath);
+                        }
+
                         return;
                     }
                 }
@@ -162,7 +186,7 @@ void Player::IsTargetOnSight()
 
     m_TargetPosition = m_NewPosition;
     m_TargetPosition.y = 2.f;
-    m_CurrentSelectedPosition = m_CurrentSelected->GetSceneNode()->getPosition();
+    m_CurrentSelectedPosition = m_CurrentSelected->GetPosition();
     m_CurrentSelectedPosition.y = 2.f;
 
     float distanceFromSelected = (m_CurrentSelectedPosition - m_TargetPosition).length();
