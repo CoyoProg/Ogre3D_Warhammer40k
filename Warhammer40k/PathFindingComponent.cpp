@@ -4,7 +4,8 @@
 #include <map>
 
 PathFindingComponent::PathFindingComponent(GameEngine& gameEngineP)  :
-	grid(gameEngineP.GetGrid())
+	grid(gameEngineP.GetGrid()),
+	sceneManager(gameEngineP.GetSceneManager())
 {
 }
 
@@ -18,11 +19,13 @@ void PathFindingComponent::Update(float deltaTime)
 
 bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositionP, int movementActionP)
 {
+	m_StartPosition = startPositionP;
+	m_TargetPosition = targetPositionP;
 	m_ParentSet.clear();
 	m_FinalPath.clear();
 
-	Tile* startTile = grid.GetTile(startPositionP);
-	Tile* targetTile = grid.GetTile(targetPositionP);
+	Tile* startTile = grid.GetTile(m_StartPosition);
+	Tile* targetTile = grid.GetTile(m_TargetPosition);
 
 	if (targetTile->GetType() == TILE_OBSTACLE)
 		return false;
@@ -72,9 +75,9 @@ bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositi
 			if (totalCost / GRID_MULTIPLICATEUR > movementActionP)
 				return false;
 
-			RetracePath(startTile, targetTile);
+			std::cout << totalCost / 2 << std::endl;
 
-			std::cout << "PATH FOUND\n";
+			RetracePath(startTile, targetTile);
 			return true;
 		}
 
@@ -98,10 +101,47 @@ bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositi
 				m_ParentSet[neighbours] = currentTile;
 
 				if (!isOpened)
-					openSet.emplace_back(neighbours);
+					openSet.push_back(neighbours);
 			}
 		}
 	}
+}
+
+std::vector<TurnThreshold*>  PathFindingComponent::GetTurnPath()
+{
+	lookPoints = m_FinalPath;
+	finishLineIndex = lookPoints.size() - 1;
+
+	//Vector2 previousPoint = Vector2(m_FinalPath[0].x, m_FinalPath[0].z);
+	Vector2 previousNormDir{ 0,0 };
+
+	for (int i = 1; i < lookPoints.size(); i++)
+	{
+		Vector2 previousPoint = Vector2(lookPoints[i - 1].x, lookPoints[i - 1].z);
+
+		Vector2 currentPoint = Vector2(lookPoints[i].x, lookPoints[i].z);
+		Vector2 dirToCurrentPoint = (currentPoint - previousPoint);
+		dirToCurrentPoint.normalise();
+		if (dirToCurrentPoint == previousNormDir)
+		{
+			//lookPoints.erase(lookPoints.begin() + i);
+			//finishLineIndex = lookPoints.size() - 1;
+			//i--;
+			//continue;
+		}
+
+		previousNormDir = dirToCurrentPoint;
+
+		Vector2 turnBoundaryPoint = (i == finishLineIndex) ?
+			currentPoint : currentPoint - dirToCurrentPoint * turnDst;
+
+		turnBoundaries.emplace_back(new TurnThreshold(turnBoundaryPoint, previousPoint - dirToCurrentPoint * turnDst));
+		//previousPoint = turnBoundaryPoint;
+	}
+
+	DrawLines();
+
+	return turnBoundaries;
 }
 
 int PathFindingComponent::GetDistance(const Tile& tileA, const Tile& tileB)
@@ -126,4 +166,9 @@ void PathFindingComponent::RetracePath(Tile* startTile, Tile* targetTile)
 		m_FinalPath.insert(m_FinalPath.begin(), currentTilePosition);
 		currentTile = m_ParentSet[currentTile];
 	}
+	m_StartPosition.y = 0.0f;
+	m_TargetPosition.y = 0.0f;
+
+	m_FinalPath.insert(m_FinalPath.begin(), m_StartPosition);
+	m_FinalPath.back() = m_TargetPosition;
 }

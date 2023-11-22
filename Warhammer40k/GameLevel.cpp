@@ -45,7 +45,7 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	        std::string entityName = "Figurine " + std::to_string(count);
 	        std::string nodeName = "Node " + std::to_string(count);
 	
-	        Figurines* figurines = new Figurines(sceneManager, entityName, nodeName);
+	        Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName);
 	        gameEngineP.AddActor(figurines);
 	        figurines->SetPosition(Vector3(i * 10 + 10 / 2 +1, 0.f, -j * 10 - 10 / 2 +1) + Vector3(-90, 0, 250));
 	    }

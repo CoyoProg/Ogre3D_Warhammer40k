@@ -119,6 +119,7 @@ Vector3 Grid::GetWorldPosition(Vector2 gridCoords)
 {
 	Vector3 position;
 	position.x = gridCoords.x * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
+	position.y = 0;
 	position.z = -gridCoords.y * GRID_CELL_SIZE - GRID_CELL_SIZE / 2;
 
 	position += GRID_OFFSET;

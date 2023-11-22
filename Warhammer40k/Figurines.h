@@ -1,10 +1,14 @@
 #pragma once
 #include "Actors.h"
 
+#include "TurnThreshold.h"
+
+class PathFindingComponent;
+
 class Figurines : public Actors
 {
 public:
-	Figurines(SceneManager& sceneManagerP, std::string entityNameP, std::string nodeNameP);
+	Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP);
 	~Figurines();
 
 	void Update(float deltaTime) override;
@@ -15,8 +19,8 @@ public:
 	bool IsSleeping() { return !m_IsMoving; }
 
 	void OnSelected(bool isSelected);
-	void MoveTo(std::vector<Vector3> positionsP) { m_NextPositions = positionsP; m_IsMoving = true; }
 
+	void MoveTo(Vector3 targetPositionP);
 	float GetMovementAction() { return m_MovementActionDistance; }
 private:
 	bool m_IsSelected{ false };
@@ -35,8 +39,11 @@ private:
 	float flattenFactor{ 0.0005f };
 
 	/* On Movement */
-	std::vector<Vector3> m_NextPositions;
-	int m_IndexPosition{ 0 };
+	PathFindingComponent* pathfinding{ nullptr };
+	std::vector<TurnThreshold*> m_Path;
+	int m_IndexPosition{ 1 };
 	bool m_IsMoving{ false };
+
+	void LookAt(const Ogre::Vector3& targetPosition);
 };
 

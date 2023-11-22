@@ -145,6 +145,7 @@
     <ClCompile Include="PathFindingComponent.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TableTop.cpp" />
+    <ClCompile Include="TurnThreshold.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="QueryFlags.h" />
     <ClInclude Include="TableTop.h" />
+    <ClInclude Include="TurnThreshold.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

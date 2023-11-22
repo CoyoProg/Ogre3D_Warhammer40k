@@ -40,6 +40,12 @@
     <Filter Include="Fichiers d%27en-tête\Enums">
       <UniqueIdentifier>{658cc095-30e2-451c-9d5d-14c330de890f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Grid">
+      <UniqueIdentifier>{1ffba837-2184-4ef4-bc02-370bab2e0b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Grid">
+      <UniqueIdentifier>{b95f1369-8120-46cb-a60b-39ff82057f8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,14 +75,17 @@
     <ClCompile Include="TableTop.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Fichiers sources\GameManager</Filter>
-    </ClCompile>
     <ClCompile Include="PathFindingComponent.cpp">
       <Filter>Fichiers sources\Components</Filter>
     </ClCompile>
     <ClCompile Include="Obstacles.cpp">
       <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Fichiers sources\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="TurnThreshold.cpp">
+      <Filter>Fichiers sources\Grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,14 +119,17 @@
     <ClInclude Include="QueryFlags.h">
       <Filter>Fichiers d%27en-tête\Enums</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Fichiers d%27en-tête\GameManager</Filter>
-    </ClInclude>
     <ClInclude Include="Obstacles.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="PathFindingComponent.h">
       <Filter>Fichiers d%27en-tête\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Fichiers d%27en-tête\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnThreshold.h">
+      <Filter>Fichiers d%27en-tête\Grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

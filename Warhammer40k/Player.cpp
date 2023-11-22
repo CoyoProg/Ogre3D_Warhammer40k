@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "CameraComponent.h"
-#include "PathFindingComponent.h"
+
 #include "Figurines.h"
 #include "Grid.h"
 
@@ -15,9 +15,6 @@ Player::Player(GameEngine& gameEngineP) :
 	CameraComponent* camera = new CameraComponent(gameEngineP);
 	gameEngineP.getRenderWindow()->addViewport(camera->getCamera());
 	AddComponent(camera);
-
-    pathfinding = new PathFindingComponent(gameEngineP);
-    AddComponent(pathfinding);
 
     m_RayScnQuery = gameEngineP.GetSceneManager()->createRayQuery(Ogre::Ray());
     m_RayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
@@ -140,17 +137,7 @@ void Player::OnRBMouseDown(int mouseX, int mouseY)
 
                     if (secondHitResult->movable->getQueryFlags() == OBSTACLE_MASK)
                     {
-                        bool pathFound = pathfinding->FindPath(m_CurrentSelectedPosition, m_TargetPosition, m_CurrentSelected->GetMovementAction());
-                        
-                        if (pathFound)
-                        {
-                            std::vector<Vector3> finalPath = pathfinding->GetFinalPath();
-
-                            finalPath.pop_back();
-                            finalPath.emplace_back(m_TargetPosition);
-
-                            m_CurrentSelected->MoveTo(finalPath);
-                        }
+                        m_CurrentSelected->MoveTo(m_TargetPosition);
 
                         return;
                     }
