@@ -5,7 +5,8 @@
 
 PathFindingComponent::PathFindingComponent(GameEngine& gameEngineP)  :
 	grid(gameEngineP.GetGrid()),
-	sceneManager(gameEngineP.GetSceneManager())
+	sceneManager(gameEngineP.GetSceneManager()),
+	finishLineIndex(0)
 {
 }
 
@@ -109,10 +110,12 @@ bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositi
 
 std::vector<TurnThreshold*>  PathFindingComponent::GetTurnPath()
 {
+	lookPoints.clear();
+	turnBoundaries.clear();
+
 	lookPoints = m_FinalPath;
 	finishLineIndex = lookPoints.size() - 1;
 
-	//Vector2 previousPoint = Vector2(m_FinalPath[0].x, m_FinalPath[0].z);
 	Vector2 previousNormDir{ 0,0 };
 
 	for (int i = 1; i < lookPoints.size(); i++)
@@ -136,10 +139,9 @@ std::vector<TurnThreshold*>  PathFindingComponent::GetTurnPath()
 			currentPoint : currentPoint - dirToCurrentPoint * turnDst;
 
 		turnBoundaries.emplace_back(new TurnThreshold(turnBoundaryPoint, previousPoint - dirToCurrentPoint * turnDst));
-		//previousPoint = turnBoundaryPoint;
 	}
 
-	DrawLines();
+	//DrawLines();
 
 	return turnBoundaries;
 }

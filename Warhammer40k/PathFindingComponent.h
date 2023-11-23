@@ -2,11 +2,8 @@
 #include "Components.h"
 #include "TurnThreshold.h"
 
-
 class Grid;
 class Tile;
-
-//class TurnThreshold;
 
 class PathFindingComponent : public Components
 {
@@ -19,7 +16,6 @@ public:
 	bool FindPath(Vector3 startPositionP, Vector3 targetPositionP, int movementActionP);
 	std::vector<TurnThreshold*> GetTurnPath();
 
-	/* New Path system */
 	std::vector<Vector3> lookPoints;
 	std::vector<TurnThreshold*> turnBoundaries;
 	int finishLineIndex;

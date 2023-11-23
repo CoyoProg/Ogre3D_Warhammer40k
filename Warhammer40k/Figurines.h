@@ -1,6 +1,5 @@
 #pragma once
 #include "Actors.h"
-
 #include "TurnThreshold.h"
 
 class PathFindingComponent;
@@ -43,7 +42,8 @@ private:
 	std::vector<TurnThreshold*> m_Path;
 	int m_IndexPosition{ 1 };
 	bool m_IsMoving{ false };
+	int turnSpeed{ 4 };
 
-	void LookAt(const Ogre::Vector3& targetPosition);
+	void LookAt(const Ogre::Vector3& targetPosition, float deltaTime, int turnSpeed);
 };
 
