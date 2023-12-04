@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP)
+Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP, int owner)
 {
     m_Entity = gameEngineP.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
     m_Entity->setCastShadows(true);
@@ -16,11 +16,11 @@ Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::stri
     m_Node = gameEngineP.GetSceneManager()->getRootSceneNode()->createChildSceneNode(nodeNameP);
     m_Node->attachObject(m_Entity);
     m_Node->setScale(m_UniformScale, m_UniformScale, m_UniformScale);
-    m_Node->setOrientation(Ogre::Quaternion::IDENTITY);
-    m_Node->yaw(Ogre::Degree(90));
 
     pathfinding = new PathFindingComponent(gameEngineP);
     AddComponent(pathfinding);
+
+    ownerID = owner;
 }
 
 Figurines::~Figurines()
@@ -51,7 +51,6 @@ void Figurines::UpdatePositions(float deltaTime)
 {
     if (m_IndexPosition >= pathfinding->lookPoints.size())
      {
-         m_Path.clear();
          m_IndexPosition = 1;
          m_IsMoving = false;
          return;
@@ -80,6 +79,13 @@ void Figurines::SetPosition(Vector3 positionP)
     m_Node->setPosition(positionP);
 }
 
+void Figurines::SetYawRotation(Degree rotationP)
+{
+    Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
+    orientation.FromAngleAxis(rotationP, Ogre::Vector3::UNIT_Y);
+    m_Node->setOrientation(orientation);
+}
+
 void Figurines::OnSelected(bool isSelected)
 {
     m_IsSelected = isSelected;
@@ -92,6 +98,7 @@ void Figurines::OnSelected(bool isSelected)
 
 void Figurines::MoveTo(Vector3 targetPositionP)
 {
+    m_Path.clear();
     bool pathFound = pathfinding->FindPath(GetPosition(), targetPositionP, m_MovementActionDistance);
 
     if (pathFound)
@@ -99,15 +106,18 @@ void Figurines::MoveTo(Vector3 targetPositionP)
         m_Path = pathfinding->GetTurnPath();
 
         /* Orient the figurine to the first point on the path */
-        Vector3 targetPos = pathfinding->lookPoints[0];
-        Quaternion currentRotation = m_Node->getOrientation();
-        Vector3 direction = (targetPos - GetPosition()).normalisedCopy();
+        Vector3 targetPos = pathfinding->lookPoints[1];
+        targetPos.y = 0;
+        Vector3 currentPos = GetPosition();
+        currentPos.y = 0;
+
+        Vector3 direction = (targetPos - currentPos).normalisedCopy();
+
         Quaternion targetRotationYaw = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
         Radian yaw = targetRotationYaw.getYaw();
         Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
+
         m_Node->setOrientation(targetRotationYawOnly);
-
-
         m_IsMoving = true;
     }
 }

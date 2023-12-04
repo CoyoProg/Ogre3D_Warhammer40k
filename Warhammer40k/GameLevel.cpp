@@ -29,26 +29,75 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 
 	TableTop* tabletop = new TableTop(gameEngineP);
 	gameEngineP.AddActor(tabletop);
-
+	gameEngineP.tabletop = tabletop;
 
 	/* =========== JUST FOR DEBUG PURPOSE =========== */
 	/* Import Custom mesh */
 	Ogre::MeshPtr mMesh = MeshManager::getSingleton().load("LowPolyMarine.mesh", "AssetsGroup");
 	mMesh->buildEdgeList();
 
+	/* Player One */
 	int count = 0;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 4; i++)
 	{
-	    for (int j = 0; j < 10; j++)
+	    for (int j = 0; j < 3; j++)
 	    {
 	        count++;
-	        std::string entityName = "Figurine " + std::to_string(count);
-	        std::string nodeName = "Node " + std::to_string(count);
+	        std::string entityName = "Figurine1 " + std::to_string(count);
+	        std::string nodeName = "Node1 " + std::to_string(count);
 	
-	        Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName);
+	        Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 	        gameEngineP.AddActor(figurines);
-	        figurines->SetPosition(Vector3(i * 10 + 10 / 2 +1, 0.f, -j * 10 - 10 / 2 +1) + Vector3(-90, 0, 250));
+	        figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(14, 0, 235));
+			figurines->SetYawRotation(Degree(180));
 	    }
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			count++;
+			std::string entityName = "Figurine1 " + std::to_string(count);
+			std::string nodeName = "Node1 " + std::to_string(count);
+
+			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
+			gameEngineP.AddActor(figurines);
+			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(-14 -3*7, 0, 235));
+			figurines->SetYawRotation(Degree(180));
+		}
+	}
+
+	/* Player 2 */
+	count = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			count++;
+			std::string entityName = "Figurine2 " + std::to_string(count);
+			std::string nodeName = "Node2 " + std::to_string(count);
+
+			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
+			gameEngineP.AddActor(figurines);
+			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(14, 0, 0));
+			figurines->SetYawRotation(Degree(0));
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			count++;
+			std::string entityName = "Figurine2 " + std::to_string(count);
+			std::string nodeName = "Node2 " + std::to_string(count);
+
+			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
+			gameEngineP.AddActor(figurines);
+			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(-14 - 3 * 7, 0, 0));
+			figurines->SetYawRotation(Degree(0));
+		}
 	}
 	/* =========== JUST FOR DEBUG PURPOSE =========== */
 

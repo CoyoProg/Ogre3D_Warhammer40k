@@ -19,7 +19,7 @@ public:
 	std::vector<Vector3> lookPoints;
 	std::vector<TurnThreshold*> turnBoundaries;
 	int finishLineIndex;
-	int turnDst = 2;
+	int turnDst = 5;
 	SceneManager* sceneManager;
 
 	/* DEBUG */

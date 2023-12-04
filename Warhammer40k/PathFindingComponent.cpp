@@ -76,8 +76,6 @@ bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositi
 			if (totalCost / GRID_MULTIPLICATEUR > movementActionP)
 				return false;
 
-			std::cout << totalCost / 2 << std::endl;
-
 			RetracePath(startTile, targetTile);
 			return true;
 		}

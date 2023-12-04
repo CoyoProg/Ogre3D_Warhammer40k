@@ -14,7 +14,10 @@
 
 using namespace Ogre;
 
-GameEngine::GameEngine()
+GameEngine::GameEngine() :
+    tabletop(nullptr),
+    m_SceneManager(nullptr),
+    m_grid(nullptr)
 {
 }
 
@@ -50,6 +53,17 @@ void GameEngine::Update(float deltaTimeP)
     {
         actors->Update(deltaTimeP);
     }
+
+    debugDelay -= deltaTimeP;
+
+
+    if (debugDelay <= 0)
+    {
+        debugDelay = 2;
+        isFlipping = true;
+    }
+
+    flipTableTop(deltaTimeP);
 }
 
 Actors* GameEngine::GetSceneActor(const SceneNode* sceneNodeP)
@@ -96,4 +110,34 @@ bool GameEngine::keyPressed(const KeyboardEvent& evt)
     }
 
     return true;
+}
+
+void GameEngine::flipTableTop(float deltaTime)
+{
+    if (isFlipping)
+    {
+        //flipProgress += deltaTime * animationSpeed;
+        //
+        //float rotationAngle = flipSpeed * deltaTime;
+        //flipProgress += rotationAngle;
+        //tabletop->GetSceneNode()->yaw(Ogre::Degree(rotationAngle));
+        //
+        //float translationAmount = bumpHeight * deltaTime;
+        //tabletop->GetSceneNode()->translate(Ogre::Vector3::UNIT_Y * translationAmount, Ogre::Node::TS_LOCAL);
+        //
+        //// Check if the flip is complete
+        //if (flipProgress >= 180.0f)
+        //{
+        //    isFlipping = false;
+        //    flipFlop = -flipFlop;
+        //    flipProgress = 0.0f; // Reset the flip progress for future flips
+        //
+        //    Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
+        //    orientation.FromAngleAxis(Degree(90 * flipFlop), Ogre::Vector3::UNIT_Y);
+        //    tabletop->GetSceneNode()->setOrientation(orientation);
+        //
+        //    Vector3 finalPos = tabletop->GetSceneNode()->getPosition();
+        //    tabletop->GetSceneNode()->setPosition(Vector3(finalPos.x, 0, finalPos.z));
+        //}
+    }
 }

@@ -9,7 +9,7 @@ TableTop::TableTop(GameEngine& gameEngineP)
     tabletopEntity->setMaterialName("Plateau.bois");
 
     /* Table Top */
-    SceneNode* tabletopNode = sceneManager.getRootSceneNode()->createChildSceneNode("TableTopNode");
+    tabletopNode = sceneManager.getRootSceneNode()->createChildSceneNode("TableTopNode");
     tabletopNode->attachObject(tabletopEntity);
     tabletopNode->setPosition(Vector3(0, 0, 100));
     tabletopNode->yaw(Degree(90));

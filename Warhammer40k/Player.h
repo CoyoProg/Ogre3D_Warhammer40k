@@ -14,6 +14,7 @@ public:
 
 private:
 	GameEngine& m_GameEngine;
+	int PlayerID{ 1 };
 
 	void OnLBMouseDown(int mouseX, int mouseY);
 	void OnRBMouseDown(int mouseX, int mouseY);

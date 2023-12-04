@@ -80,9 +80,13 @@ void Player::OnLBMouseDown(int mouseX, int mouseY)
         Actors* getActor = m_GameEngine.GetSceneActor(sceneNodeHit);
         if (!getActor)
             break;
+
         Figurines* temporary = dynamic_cast<Figurines*>(getActor);
         if (!temporary)
             break;
+
+        if (temporary->getOwner() != PlayerID)
+            break; // Add Logic to see Enemy Stat here
 
         if (!m_IsActorSelected)
         {

@@ -7,7 +7,7 @@ class PathFindingComponent;
 class Figurines : public Actors
 {
 public:
-	Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP);
+	Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP, int owner);
 	~Figurines();
 
 	void Update(float deltaTime) override;
@@ -15,16 +15,20 @@ public:
 
 	Vector3 GetPosition() { return m_Node->getPosition(); }
 	void SetPosition(Vector3 positionP);
+	void SetYawRotation(Degree rotationP);
 	bool IsSleeping() { return !m_IsMoving; }
 
 	void OnSelected(bool isSelected);
 
 	void MoveTo(Vector3 targetPositionP);
 	float GetMovementAction() { return m_MovementActionDistance; }
+	int getOwner() { return ownerID; }
+
 private:
 	bool m_IsSelected{ false };
 	float m_UniformScale{ 0.02 };
 	Vector3 m_Offset{ 0,0.75f,0 };
+	int ownerID{ 0 };
 
 	/* Figurine Stats */
 	float m_MovementActionDistance{50};
