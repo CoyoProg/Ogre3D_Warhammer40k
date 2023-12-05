@@ -31,6 +31,7 @@ public:
     Actors* GetSceneActor(const SceneNode* sceneNodeP);
 private:
     SceneManager* m_SceneManager;
+    SceneNode* centerOfWorldNode;
     Grid* m_grid;
 
     std::set<Keycode> m_KeysPressed;
@@ -44,11 +45,12 @@ private:
     float debugDelay = 2;
     void flipTableTop(float deltaTime);
     bool isFlipping = false;
+    bool changeDirection = false;
     int flipFlop = 1;
-    float bumpHeight = 5.0f; // Height of the bump in units
+    float bumpHeight = 10.0f; // Height of the bump in units
     float flipProgress = 0.0f; // Progress of the flip animation
-    float animationSpeed = 1;
+    float animationSpeed = 0.f;
     float flipSpeed = 180.0f; // Degrees per second
-
+    float rotationAngle = 0;
 };
 

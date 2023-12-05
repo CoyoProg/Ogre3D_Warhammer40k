@@ -48,7 +48,7 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	
 	        Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 	        gameEngineP.AddActor(figurines);
-	        figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(14, 0, 235));
+	        figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(14, 0, 100));
 			figurines->SetYawRotation(Degree(180));
 	    }
 	}
@@ -63,7 +63,7 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 
 			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 			gameEngineP.AddActor(figurines);
-			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(-14 -3*7, 0, 235));
+			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(-14 -3*7, 0, 100));
 			figurines->SetYawRotation(Degree(180));
 		}
 	}
@@ -80,7 +80,7 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 
 			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
 			gameEngineP.AddActor(figurines);
-			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(14, 0, 0));
+			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(14, 0, -100));
 			figurines->SetYawRotation(Degree(0));
 		}
 	}
@@ -95,7 +95,7 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 
 			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
 			gameEngineP.AddActor(figurines);
-			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(-14 - 3 * 7, 0, 0));
+			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(-14 - 3 * 7, 0, -100));
 			figurines->SetYawRotation(Degree(0));
 		}
 	}

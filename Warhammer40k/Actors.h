@@ -9,7 +9,7 @@ public:
 	virtual void Update(float deltaTime);
 
 	const Entity* GetEntity() const { return m_Entity; }
-	const SceneNode* GetSceneNode() const { return m_Node; }
+	SceneNode* GetSceneNode() { return m_Node; }
 
 protected:
 	void AddComponent(Components* componentP) { myComponents.emplace_back(componentP); }

@@ -13,7 +13,7 @@ public:
 	void Update(float deltaTime) override;
 	void UpdatePositions(float deltaTime);
 
-	Vector3 GetPosition() { return m_Node->getPosition(); }
+	Vector3 GetPosition() { return m_Node->_getDerivedPosition(); }
 	void SetPosition(Vector3 positionP);
 	void SetYawRotation(Degree rotationP);
 	bool IsSleeping() { return !m_IsMoving; }

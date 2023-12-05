@@ -48,7 +48,8 @@ void Grid::CreateGrid()
 	//planeNode2->pitch(Degree(-90));
 	//planeNode2->setScale(Vector3(.250f, .250f, 1.f));
 	//
-	//Obstacles* obstacle = new Obstacles(m_gameEngine);
+	Obstacles* obstacle = new Obstacles(m_gameEngine);
+	m_gameEngine.AddActor(obstacle);
 	/* ======================== DEBUG ========================*/
 }
 
@@ -134,4 +135,15 @@ Vector3 Grid::SnapToGrid(Vector3 positionP)
 	Vector3 position = GetWorldPosition(gridCoords);
 
 	return position;
+}
+
+void Grid::OnFlip()
+{
+	for (int x = 0; x < GRID_SIZE_X; x++)
+	{
+		for (int z = 0; z < GRID_SIZE_Z; z++)
+		{
+			grid[x][z]->SetTile(TILE_EMPTY);
+		}
+	}
 }

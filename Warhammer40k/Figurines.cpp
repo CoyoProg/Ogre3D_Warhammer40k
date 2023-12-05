@@ -14,6 +14,8 @@ Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::stri
     m_Entity->setQueryFlags(QueryFlags::FIGURINE_MASK);
 
     m_Node = gameEngineP.GetSceneManager()->getRootSceneNode()->createChildSceneNode(nodeNameP);
+
+
     m_Node->attachObject(m_Entity);
     m_Node->setScale(m_UniformScale, m_UniformScale, m_UniformScale);
 
@@ -76,14 +78,14 @@ void Figurines::SetPosition(Vector3 positionP)
 {
     positionP.y = m_Offset.y;
 
-    m_Node->setPosition(positionP);
+    m_Node->_setDerivedPosition(positionP);
 }
 
 void Figurines::SetYawRotation(Degree rotationP)
 {
     Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
     orientation.FromAngleAxis(rotationP, Ogre::Vector3::UNIT_Y);
-    m_Node->setOrientation(orientation);
+    m_Node->_setDerivedOrientation(orientation);
 }
 
 void Figurines::OnSelected(bool isSelected)
@@ -117,14 +119,14 @@ void Figurines::MoveTo(Vector3 targetPositionP)
         Radian yaw = targetRotationYaw.getYaw();
         Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
 
-        m_Node->setOrientation(targetRotationYawOnly);
+        m_Node->_setDerivedOrientation(targetRotationYawOnly);
         m_IsMoving = true;
     }
 }
 
 void Figurines::LookAt(const Ogre::Vector3& targetPosition, float deltaTime, int turnSpeed)
 {
-    Quaternion currentRotation = m_Node->getOrientation();
+    Quaternion currentRotation = m_Node->_getDerivedOrientation();
     Vector3 direction = (targetPosition - GetPosition()).normalisedCopy();
 
     Quaternion targetRotationYaw = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
@@ -135,5 +137,5 @@ void Figurines::LookAt(const Ogre::Vector3& targetPosition, float deltaTime, int
 
     Quaternion myRotation = Quaternion::Slerp(deltaTime * turnSpeed, currentRotation, targetRotationYawOnly, true);
 
-    m_Node->setOrientation(myRotation);
+    m_Node->_setDerivedOrientation(myRotation);
 }

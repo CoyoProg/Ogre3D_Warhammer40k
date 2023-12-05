@@ -21,8 +21,8 @@ private:
 	float m_ClampMinY{ 20 };
 	float m_ClampMaxY{ 175 };
 	float m_ClampMaxX{ 300 };
-	float m_ClampMinZ{ 55 };
-	float m_ClampMaxZ{ 400 };
+	float m_ClampMinZ{ -55 };
+	float m_ClampMaxZ{ 300 };
 	Camera* m_Camera{ nullptr };
 	SceneNode* m_CamNode{ nullptr };
 

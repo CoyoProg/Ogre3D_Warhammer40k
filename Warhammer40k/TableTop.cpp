@@ -11,7 +11,7 @@ TableTop::TableTop(GameEngine& gameEngineP)
     /* Table Top */
     tabletopNode = sceneManager.getRootSceneNode()->createChildSceneNode("TableTopNode");
     tabletopNode->attachObject(tabletopEntity);
-    tabletopNode->setPosition(Vector3(0, 0, 100));
+    tabletopNode->setPosition(Vector3(0, 0, 0));
     tabletopNode->yaw(Degree(90));
     tabletopNode->setScale(10, 2.5, 10);
 
@@ -20,7 +20,7 @@ TableTop::TableTop(GameEngine& gameEngineP)
     planeEntity->setMaterialName("Plateau.tapis");
     SceneNode* planeNode = sceneManager.getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
-    planeNode->setPosition(Vector3(0, -12, 0));
+    planeNode->setPosition(Vector3(0, -12, -100));
     planeNode->pitch(Degree(-90));
     planeNode->setScale(Vector3(6, 4, 1));
 }

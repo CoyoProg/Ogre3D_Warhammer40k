@@ -18,7 +18,7 @@ Obstacles::Obstacles(GameEngine& gameEngineP)
 	m_Entity->setQueryFlags(QueryFlags::OBSTACLE_MASK);
 
 	// Set position
-	m_Node->setPosition(grid.GetWorldPosition(Vector2(0, 5 * GRID_MULTIPLICATEUR)));
+	m_Node->setPosition(grid.GetWorldPosition(Vector2(15, 15 * GRID_MULTIPLICATEUR)));
 	m_Node->yaw(Degree(-90));
 	AddLineCollision(grid, m_Node->getPosition(), false, 5 * GRID_MULTIPLICATEUR);
 }

@@ -11,7 +11,7 @@ const int GRID_SIZE_Z = 30 * GRID_MULTIPLICATEUR;
 const int GRID_SIZE_X = 20 * GRID_MULTIPLICATEUR;
 
 const float GRID_CELL_SIZE{ 10.f / GRID_MULTIPLICATEUR };
-const Vector3 GRID_OFFSET{ -90, 0, 250 }; // To put the grid where the TableTop is
+const Vector3 GRID_OFFSET{ -90, 0, 150 }; // To put the grid where the TableTop is
 
 class Tile
 {
@@ -71,6 +71,7 @@ public:
 	Vector3 GetWorldPosition(Vector2 gridCoords);
 	Vector3 SnapToGrid(Vector3 positionP);
 
+	void OnFlip();
 private:
 	GameEngine& m_gameEngine;
 
