@@ -11,6 +11,8 @@ public:
 	~Player();
 
 	virtual void Update(float deltaTime) override;
+	void SwapPlayer() { PlayerID = (PlayerID == 1) ? 2 : 1; }
+	int GetCurrentPlayer() { return PlayerID; }
 
 private:
 	GameEngine& m_GameEngine;

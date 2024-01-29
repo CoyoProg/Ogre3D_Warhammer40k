@@ -9,11 +9,12 @@ CameraComponent::CameraComponent(GameEngine& gameEngineP)
     m_Camera->setNearClipDistance(5); // specific to this sample
     m_Camera->setAutoAspectRatio(true); 
 
+
     /* Create a scene node for the camera */
     m_CamNode = gameEngineP.GetSceneManager()->getRootSceneNode()->createChildSceneNode();
     m_CamNode->attachObject(m_Camera);
-    m_CamNode->setPosition(0, 100, 222);
-    m_CamNode->pitch(Degree(-45));
+	m_CamNode->setPosition(0, 100, 222);
+	m_CamNode->pitch(Degree(-45));
 
     gameEngineP.addInputListener(this);
 }

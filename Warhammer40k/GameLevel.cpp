@@ -25,7 +25,6 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	/* Player need to be initialize first for the main camera */
 	// ===== Player ==== 
 	Player* player = new Player(gameEngineP);
-	gameEngineP.AddActor(player);
 
 	TableTop* tabletop = new TableTop(gameEngineP);
 	gameEngineP.AddActor(tabletop);
@@ -45,11 +44,12 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	        count++;
 	        std::string entityName = "Figurine1 " + std::to_string(count);
 	        std::string nodeName = "Node1 " + std::to_string(count);
-	
+
 	        Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 	        gameEngineP.AddActor(figurines);
 	        figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(14, 0, 100));
 			figurines->SetYawRotation(Degree(180));
+			figurines->SetMaterial("LowPolyMarine.blue");
 	    }
 	}
 
@@ -65,6 +65,7 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 			gameEngineP.AddActor(figurines);
 			figurines->SetPosition(Vector3(i * 7, 0.f, -j * 7) + Vector3(-14 -3*7, 0, 100));
 			figurines->SetYawRotation(Degree(180));
+			figurines->SetMaterial("LowPolyMarine.blue");
 		}
 	}
 

@@ -51,22 +51,33 @@ void Figurines::Update(float deltaTime)
 
 void Figurines::UpdatePositions(float deltaTime)
 {
-    if (m_IndexPosition >= pathfinding->lookPoints.size())
-     {
-         m_IndexPosition = 1;
-         m_IsMoving = false;
-         return;
-     }
-
-    Vector2 pos2D = Vector2(GetPosition().x, GetPosition().z);
-    if (m_Path[m_IndexPosition - 1]->HasCrossedLine(pos2D))
+    if (!m_MoveStraight)
     {
-        m_IndexPosition++;
+        if (m_IndexPosition >= pathfinding->lookPoints.size())
+        {
+            m_IndexPosition = 1;
+            m_IsMoving = false;
+            return;
+        }
+
+        Vector2 pos2D = Vector2(GetPosition().x, GetPosition().z);
+        if (m_Path[m_IndexPosition - 1]->HasCrossedLine(pos2D))
+        {
+            m_IndexPosition++;
+        }
+
+        Vector3 targetPos = pathfinding->lookPoints[m_IndexPosition];
+
+        LookAt(targetPos, deltaTime, turnSpeed);
     }
-
-    Vector3 targetPos = pathfinding->lookPoints[m_IndexPosition];
-
-    LookAt(targetPos, deltaTime, turnSpeed);
+    else
+    {
+        if (GetPosition().distance(straightTargetPosition) <= 0.5f)
+        {
+            SetPosition(straightTargetPosition);
+            m_IsMoving = false;
+        }
+    }
 
     // Translate the entity forward in its local space
     Vector3 forward = m_Node->getOrientation() * Ogre::Vector3::UNIT_Z;
@@ -120,8 +131,30 @@ void Figurines::MoveTo(Vector3 targetPositionP)
         Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
 
         m_Node->_setDerivedOrientation(targetRotationYawOnly);
+        m_MoveStraight = false;
         m_IsMoving = true;
     }
+}
+
+void Figurines::MoveStraight(Vector3 targetPositionP)
+{
+    straightTargetPosition = targetPositionP;
+
+    /* Orient the figurine to the first point on the path */
+    Vector3 targetPos = targetPositionP;
+    targetPos.y = 0;
+    Vector3 currentPos = GetPosition();
+    currentPos.y = 0;
+
+    Vector3 direction = (targetPos - currentPos).normalisedCopy();
+
+    Quaternion targetRotationYaw = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
+    Radian yaw = targetRotationYaw.getYaw();
+    Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
+
+    m_Node->_setDerivedOrientation(targetRotationYawOnly);
+    m_MoveStraight = true;
+    m_IsMoving = true;
 }
 
 void Figurines::LookAt(const Ogre::Vector3& targetPosition, float deltaTime, int turnSpeed)

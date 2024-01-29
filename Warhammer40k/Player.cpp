@@ -20,6 +20,7 @@ Player::Player(GameEngine& gameEngineP) :
     m_RayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
 
     gameEngineP.addInputListener(this);
+    gameEngineP.SetPlayer(this);
 }
 
 Player::~Player()
@@ -146,8 +147,8 @@ void Player::OnRBMouseDown(int mouseX, int mouseY)
                         return;
                     }
                 }
-
-                m_CurrentSelected->SetPosition(m_NewPosition);
+                m_CurrentSelected->MoveStraight(m_NewPosition);
+                //m_CurrentSelected->SetPosition(m_NewPosition);
                 break;
             }
 

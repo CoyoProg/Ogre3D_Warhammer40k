@@ -131,5 +131,8 @@
     <ClInclude Include="TurnThreshold.h">
       <Filter>Fichiers d%27en-tête\Grid</Filter>
     </ClInclude>
+    <ClInclude Include="OgreText.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

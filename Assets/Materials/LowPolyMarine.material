@@ -5,7 +5,21 @@ material LowPolyMarine.objMetal
 	{
 		pass 
 		{
-			ambient 0 0 0 1
+			ambient 1. .0 .0 1
+			diffuse 0.6 0.6 0.6 1
+		}
+
+	}
+
+}
+
+material LowPolyMarine.blue
+{
+	technique
+	{
+		pass 
+		{
+			ambient .0 .0 1 1
 			diffuse 0.6 0.6 0.6 1
 		}
 

@@ -21,13 +21,14 @@ public:
 	void OnSelected(bool isSelected);
 
 	void MoveTo(Vector3 targetPositionP);
+	void MoveStraight(Vector3 targetPositionP);
 	float GetMovementAction() { return m_MovementActionDistance; }
 	int getOwner() { return ownerID; }
 
 private:
 	bool m_IsSelected{ false };
 	float m_UniformScale{ 0.02 };
-	Vector3 m_Offset{ 0,0.75f,0 };
+	Vector3 m_Offset{ 0,0.f,0 };
 	int ownerID{ 0 };
 
 	/* Figurine Stats */
@@ -44,8 +45,10 @@ private:
 	/* On Movement */
 	PathFindingComponent* pathfinding{ nullptr };
 	std::vector<TurnThreshold*> m_Path;
+	Vector3 straightTargetPosition;
 	int m_IndexPosition{ 1 };
 	bool m_IsMoving{ false };
+	bool m_MoveStraight{ false };
 	int turnSpeed{ 4 };
 
 	void LookAt(const Ogre::Vector3& targetPosition, float deltaTime, int turnSpeed);

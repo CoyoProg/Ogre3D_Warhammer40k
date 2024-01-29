@@ -2,6 +2,9 @@
 
 /* Ogre Related */
 #include "OgreRTShaderSystem.h"
+#include "OgreText.h"
+#include <OgreFontManager.h>
+#include <OgreTrays.h>
 
 /* C++ Related */
 #include <iostream>
@@ -21,7 +24,8 @@ using namespace Ogre;
 GameEngine::GameEngine() :
 	tabletop(nullptr),
 	m_SceneManager(nullptr),
-	m_grid(nullptr)
+	m_grid(nullptr),
+	m_Player(nullptr)
 {
 }
 
@@ -52,12 +56,40 @@ void GameEngine::setup()
 	m_SceneManager->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 
 	/* Load mesh into ressources */
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("..\\Assets/Materials", "FileSystem", "AssetsGroup");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("..\\Assets/Meshes", "FileSystem", "AssetsGroup");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+		"..\\Assets/Materials",
+		"FileSystem",
+		"AssetsGroup"
+	);
+
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+		"..\\Assets/Meshes", 
+		"FileSystem", 
+		"AssetsGroup"
+	);
+
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+		"..\\Assets/Fonts", 
+		"FileSystem", 
+		"MyFontGroup"
+	);
+
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	/*Load Level */
 	GameLevel::LoadLevel(*this);
+
+	//Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("MyFontGroup");
+	//Ogre::FontManager::getSingleton().load("MyFont", "MyFontGroup");
+
+	Ogre::OverlaySystem* pOverlaySystem = getOverlaySystem();
+	m_SceneManager->addRenderQueueListener(pOverlaySystem);
+
+	textItem = new OgreText;
+	textItem->setText("Player One");
+
+	textItem->setPos(0.5f, 0.9f);
+	textItem->setCol(0.0f, 0.f, 0.7f, 1.f);
 }
 
 void GameEngine::Update(float deltaTimeP)
@@ -67,28 +99,50 @@ void GameEngine::Update(float deltaTimeP)
 		actors->Update(deltaTimeP);
 	}
 
-	debugDelay -= deltaTimeP;
+	if(m_Player)
+		m_Player->Update(deltaTimeP);
 
-
-	if (debugDelay <= 0)
-	{
-		debugDelay = 999999;
-		isFlipping = true;
-
-		for (auto actors : m_Actors)
-		{
-			if (!actors->GetSceneNode())
-				continue;
-
-			SceneNode* currentParent = actors->GetSceneNode()->getParentSceneNode();
-			if (currentParent)
-				currentParent->removeChild(actors->GetSceneNode());
-
-			centerOfWorldNode->addChild(actors->GetSceneNode());
-		}
-	}
+	if (LastFlipTimer < TimeBetweenFlips)
+		LastFlipTimer += deltaTimeP;
 
 	flipTableTop(deltaTimeP);
+}
+
+void GameEngine::EndTurn()
+{
+	// NEEDS TO CHECK IF ALL THE ACTORS AREN'T MOVING
+
+	if (LastFlipTimer < TimeBetweenFlips)
+		return;
+
+	LastFlipTimer = 0;
+
+	isFlipping = true;
+	m_Player->SwapPlayer();
+	int playerTurns = m_Player->GetCurrentPlayer();
+
+	if (playerTurns == 1)
+	{
+		textItem->setText("Player One");
+		textItem->setCol(0.0f, 0.f, 0.7f, 1.f);
+	}
+	else
+	{
+		textItem->setText("Player Two");
+		textItem->setCol(0.7f, 0.f, 0.0f, 1.f);
+	}
+
+	for (auto actors : m_Actors)
+	{
+		if (!actors->GetSceneNode())
+			continue;
+
+		SceneNode* currentParent = actors->GetSceneNode()->getParentSceneNode();
+		if (currentParent)
+			currentParent->removeChild(actors->GetSceneNode());
+
+		centerOfWorldNode->addChild(actors->GetSceneNode());
+	}
 }
 
 Actors* GameEngine::GetSceneActor(const SceneNode* sceneNodeP)
@@ -132,6 +186,11 @@ bool GameEngine::keyPressed(const KeyboardEvent& evt)
 	if (key == SDLK_ESCAPE)
 	{
 		getRoot()->queueEndRendering();
+	}
+
+	if (key == SDLK_SPACE)
+	{
+		EndTurn();
 	}
 
 	return true;

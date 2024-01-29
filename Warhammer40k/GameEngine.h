@@ -8,6 +8,8 @@ using namespace OgreBites;
 class Actors;
 class Grid;
 class TableTop;
+class Player;
+class OgreText;
 
 class GameEngine : public ApplicationContext, public InputListener
 {
@@ -21,28 +23,41 @@ public:
     /* Update Game Logic */
     void Update(float deltaTimeP);
 
+    /* Actors */
     void AddActor(Actors* actorP) { m_Actors.emplace_back(actorP) ; }
     std::vector<Actors*> GetActors() { return m_Actors; }
+
+    /* Player */
+    void SetPlayer(Player* playerP) { m_Player = playerP; }
+    void EndTurn();
+
+    /* Grid */
     void SetGrid(Grid* gridP) { m_grid = gridP; }
     Grid& GetGrid() { return *m_grid; }
+
+    /* Tabletop*/
     TableTop* tabletop;
 
+    /* Managers */
     SceneManager* GetSceneManager() { return m_SceneManager; }
     Actors* GetSceneActor(const SceneNode* sceneNodeP);
 private:
     SceneManager* m_SceneManager;
     SceneNode* centerOfWorldNode;
     Grid* m_grid;
+    OgreText* textItem;
 
     std::set<Keycode> m_KeysPressed;
     std::vector<Actors*> m_Actors;
+    Player* m_Player;
 
     /* Inputs */
     bool ProcessUnbufferedInput(const FrameEvent& fe);
     virtual bool keyPressed(const KeyboardEvent& evt) override;
 
 
-    float debugDelay = 2;
+    const float TimeBetweenFlips = 5;
+    float LastFlipTimer = 0;
     void flipTableTop(float deltaTime);
     bool isFlipping = false;
     bool changeDirection = false;

@@ -1,0 +1,7 @@
+font MyFont
+{
+    type truetype
+    source arial.ttf
+    size 32
+    resoltuion 1024
+}
