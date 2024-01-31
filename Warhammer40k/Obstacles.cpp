@@ -4,23 +4,29 @@
 #include <iostream>
 #include "QueryFlags.h"
 
-Obstacles::Obstacles(GameEngine& gameEngineP)
+Obstacles::Obstacles(GameEngine& gameEngineP, Vector3 positionP, std::string ID, bool flip)
 {
 	SceneManager& sceneManager = *gameEngineP.GetSceneManager();
 	Grid& grid = gameEngineP.GetGrid();
 
 	/* Import Custom mesh */
-	m_Entity = sceneManager.createEntity("WallEntity", "Wall.mesh");
+	m_Entity = sceneManager.createEntity("WallEntity " + ID, "Wall.mesh");
 	m_Entity->setCastShadows(false);
-	m_Node = sceneManager.getRootSceneNode()->createChildSceneNode("WallNode");
-	m_Node->setScale(10, 10, 10 / GRID_MULTIPLICATEUR);
+	//m_Entity->setMaterialName("ruinsTexture");
+	m_Node = sceneManager.getRootSceneNode()->createChildSceneNode("WallNode " + ID);
+	m_Node->setScale(.1, .1, .2);
 	m_Node->attachObject(m_Entity);
 	m_Entity->setQueryFlags(QueryFlags::OBSTACLE_MASK);
 
 	// Set position
-	m_Node->setPosition(grid.GetWorldPosition(Vector2(15, 15 * GRID_MULTIPLICATEUR)));
-	m_Node->yaw(Degree(-90));
-	AddLineCollision(grid, m_Node->getPosition(), false, 5 * GRID_MULTIPLICATEUR);
+	m_Node->setPosition(positionP);
+
+	if(flip)
+		m_Node->yaw(Degree(-90));
+
+	isFlipped = flip;
+
+	AddLineCollision(grid, m_Node->getPosition(), !flip, 2 * GRID_MULTIPLICATEUR);
 }
 
 Obstacles::~Obstacles()

@@ -30,26 +30,14 @@ void Grid::CreateGrid()
 	}
 
 	/* ======================== DEBUG ========================*/
-	/* Create a background under the tiles */
-	//Entity* planeEntity = sceneManager.createEntity("BackgroundTile", SceneManager::PT_PLANE);
-	//planeEntity->setMaterialName("Tile_Background");
-	//SceneNode* planeNode = sceneManager.getRootSceneNode()->createChildSceneNode();
-	//planeNode->attachObject(planeEntity);
-	//planeNode->setPosition(GRID_OFFSET + Vector3(75, 0.1f, -25));
-	//planeNode->pitch(Degree(-90));
-	//planeNode->setScale(Vector3(.250f, .250f, 1.f));
-	//
-	///* Create a background under the tiles */
-	//Entity* planeEntity2 = sceneManager.createEntity("BackgroundTile2", SceneManager::PT_PLANE);
-	//planeEntity2->setMaterialName("Tile_Background");
-	//SceneNode* planeNode2 = sceneManager.getRootSceneNode()->createChildSceneNode();
-	//planeNode2->attachObject(planeEntity2);
-	//planeNode2->setPosition(GRID_OFFSET + Vector3(125, 0.1f, -25));
-	//planeNode2->pitch(Degree(-90));
-	//planeNode2->setScale(Vector3(.250f, .250f, 1.f));
-	//
-	Obstacles* obstacle = new Obstacles(m_gameEngine);
+	Obstacles* obstacle = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 30)), "01", true);
 	m_gameEngine.AddActor(obstacle);
+
+	Obstacles* obstacle2 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 26)), "02", true);
+	m_gameEngine.AddActor(obstacle2);
+
+	Obstacles* obstacle3 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(17.5, 32)), "03", false);
+	m_gameEngine.AddActor(obstacle3);
 	/* ======================== DEBUG ========================*/
 }
 

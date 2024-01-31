@@ -6,7 +6,7 @@ class GameEngine;
 class Obstacles : public Actors
 {
 public:
-	Obstacles(GameEngine& gameEngineP);
+	Obstacles(GameEngine& gameEngineP, Vector3 positionP, std::string ID, bool flip = false);
 	~Obstacles();
 
 	/// <summary>
@@ -17,6 +17,6 @@ public:
 	/// <param name="lengthP">: How many nodes occupy the collision Box </param>
 	void AddLineCollision(Grid& gridP, Vector3 centerP, bool onAxisX, int lengthP);
 
-private:
+	bool isFlipped = false;
 };
 

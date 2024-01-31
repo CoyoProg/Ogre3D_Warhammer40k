@@ -79,9 +79,6 @@ void GameEngine::setup()
 	/*Load Level */
 	GameLevel::LoadLevel(*this);
 
-	//Ogre::ResourceGroupManager::getSingleton().loadResourceGroup("MyFontGroup");
-	//Ogre::FontManager::getSingleton().load("MyFont", "MyFontGroup");
-
 	Ogre::OverlaySystem* pOverlaySystem = getOverlaySystem();
 	m_SceneManager->addRenderQueueListener(pOverlaySystem);
 
@@ -285,7 +282,7 @@ void GameEngine::flipTableTop(float deltaTime)
 				if(actors->GetEntity()->getQueryFlags() == QueryFlags::OBSTACLE_MASK)
 				{
 					Obstacles* temporary = dynamic_cast<Obstacles*>(actors);
-					temporary->AddLineCollision(*m_grid, temporary->GetSceneNode()->_getDerivedPosition(), false, 5 * GRID_MULTIPLICATEUR);
+					temporary->AddLineCollision(*m_grid, temporary->GetSceneNode()->_getDerivedPosition(), !temporary->isFlipped, 2 * GRID_MULTIPLICATEUR);
 				}
 			}
 		}
