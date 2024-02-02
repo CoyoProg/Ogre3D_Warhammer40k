@@ -59,7 +59,7 @@ bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositi
 		/* If the lowest cost was the targetTile then the algorithm is done */
 		if (currentTile == targetTile)
 		{
-			int totalCost = targetTile->gCost;
+			totalCost = targetTile->gCost;
 
 			for (auto tiles : openSet)
 			{
@@ -77,6 +77,9 @@ bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositi
 				return false;
 
 			RetracePath(startTile, targetTile);
+
+			totalCost = totalCost / GRID_MULTIPLICATEUR;
+
 			return true;
 		}
 

@@ -32,6 +32,8 @@ public:
 	}
 	/* DEBUG */
 
+	int totalCost = 0;
+
 private:
 	Grid& grid;
 

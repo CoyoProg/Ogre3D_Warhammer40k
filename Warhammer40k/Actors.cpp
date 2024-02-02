@@ -9,3 +9,7 @@ void Actors::Update(float deltaTime)
 		components->Update(deltaTime);
 	}
 }
+
+void Actors::OnEndTurnEvent()
+{
+}

@@ -3,23 +3,22 @@
 #include "PathFindingComponent.h"
 
 #include <OgreMath.h>
-
 #include <iostream>
 
-
-Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP, int owner)
+Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP, int owner) :
+    m_GameEngine(gameEngineP)
 {
-    m_Entity = gameEngineP.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
+    m_Entity = m_GameEngine.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
     m_Entity->setCastShadows(true);
     m_Entity->setQueryFlags(QueryFlags::FIGURINE_MASK);
 
-    m_Node = gameEngineP.GetSceneManager()->getRootSceneNode()->createChildSceneNode(nodeNameP);
+    m_Node = m_GameEngine.GetSceneManager()->getRootSceneNode()->createChildSceneNode(nodeNameP);
 
 
     m_Node->attachObject(m_Entity);
     m_Node->setScale(m_UniformScale, m_UniformScale, m_UniformScale);
 
-    pathfinding = new PathFindingComponent(gameEngineP);
+    pathfinding = new PathFindingComponent(m_GameEngine);
     AddComponent(pathfinding);
 
     ownerID = owner;
@@ -27,7 +26,6 @@ Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::stri
 
 Figurines::~Figurines()
 {
-
 }
 
 void Figurines::Update(float deltaTime)
@@ -109,13 +107,22 @@ void Figurines::OnSelected(bool isSelected)
     }
 }
 
+void Figurines::OnEndTurnEvent()
+{
+    m_CurrentMovementAction = m_MaxMovementAction;
+    m_CurrentActionPoint = m_MaxActionPoint;
+}
+
 void Figurines::MoveTo(Vector3 targetPositionP)
 {
     m_Path.clear();
-    bool pathFound = pathfinding->FindPath(GetPosition(), targetPositionP, m_MovementActionDistance);
+
+    bool pathFound = pathfinding->FindPath(GetPosition(), targetPositionP, m_CurrentMovementAction);
 
     if (pathFound)
     {
+        m_CurrentMovementAction -= pathfinding->totalCost;
+
         m_Path = pathfinding->GetTurnPath();
 
         /* Orient the figurine to the first point on the path */
@@ -146,6 +153,9 @@ void Figurines::MoveStraight(Vector3 targetPositionP)
     Vector3 currentPos = GetPosition();
     currentPos.y = 0;
 
+    float distanceFromSelected = (currentPos - targetPos).length();
+    m_CurrentMovementAction -= distanceFromSelected;
+
     Vector3 direction = (targetPos - currentPos).normalisedCopy();
 
     Quaternion targetRotationYaw = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
@@ -155,6 +165,28 @@ void Figurines::MoveStraight(Vector3 targetPositionP)
     m_Node->_setDerivedOrientation(targetRotationYawOnly);
     m_MoveStraight = true;
     m_IsMoving = true;
+}
+
+void Figurines::Attack(Figurines* targetP)
+{
+    targetP->GetHit(1);
+    m_CurrentActionPoint--;
+}
+
+void Figurines::GetHit(int damageAmountP)
+{
+    m_CurrentHealthPoint -= damageAmountP;
+
+    if (m_CurrentHealthPoint <= 0)
+    {
+        m_IsDead = true;
+
+        m_GameEngine.GetSceneManager()->destroyEntity(m_Entity);
+        m_GameEngine.GetSceneManager()->destroySceneNode(m_Node);
+
+        m_GameEngine.RemoveActor(this);
+        std::cout << "IS DEAD";
+    }
 }
 
 void Figurines::LookAt(const Ogre::Vector3& targetPosition, float deltaTime, int turnSpeed)

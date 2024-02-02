@@ -4,6 +4,11 @@
 class Components;
 class Figurines;
 
+namespace Ogre
+{
+	class OverlayManager;
+}
+
 class Player : public Actors, public InputListener
 {
 public:
@@ -15,16 +20,23 @@ public:
 	int GetCurrentPlayer() { return PlayerID; }
 
 private:
+	/* References */
+	Ogre::OverlayManager* m_OverlayManager;
 	GameEngine& m_GameEngine;
 	int PlayerID{ 1 };
 
 	void OnLBMouseDown(int mouseX, int mouseY);
 	void OnRBMouseDown(int mouseX, int mouseY);
 
+	void SetCardTextValues(float movementPoint, int healthPoint, bool isRightCard = false);
+
 	/* Mouse Ray */
 	Ray mouseRay;
 	Ray MouseRayTo3D(int mouseX, int mouseY);
 	RaySceneQuery* m_RayScnQuery{ nullptr };
+
+	/* Dice */
+	Entity* m_Dice;
 
 	/* Selected Actor */
 	void SelectFigurine(Figurines* figurineP);
@@ -33,8 +45,9 @@ private:
 	Figurines* m_CurrentSelected{ nullptr };
 
 	float functionDelay = 0.1f;
-	void IsTargetOnSight();
+	void IsOnMovementSight();
 	bool m_OnSightFromSelected{ false };
+	float distanceFromSelected = 0;
 	Vector3 m_CurrentSelectedPosition;
 	Vector3 m_TargetPosition;
 	Vector3 m_NewPosition;

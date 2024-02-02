@@ -12,10 +12,10 @@ public:
 	SceneNode* GetSceneNode() { return m_Node; }
 
 	void SetMaterial(std::string materialName) { m_Entity->setMaterialName(materialName); }
+	virtual void OnEndTurnEvent();
 
 protected:
 	void AddComponent(Components* componentP) { myComponents.emplace_back(componentP); }
-	//std::vector<Components*> GetComponents() { return myComponents; }
 
 	Entity* m_Entity{ nullptr };
 	SceneNode* m_Node{ nullptr };

@@ -25,6 +25,7 @@ public:
 
     /* Actors */
     void AddActor(Actors* actorP) { m_Actors.emplace_back(actorP) ; }
+    void RemoveActor(Actors* actorP);
     std::vector<Actors*> GetActors() { return m_Actors; }
 
     /* Player */
@@ -45,7 +46,7 @@ private:
     SceneManager* m_SceneManager;
     SceneNode* centerOfWorldNode;
     Grid* m_grid;
-    OgreText* textItem;
+    OgreText* overlayWidgets;
 
     std::set<Keycode> m_KeysPressed;
     std::vector<Actors*> m_Actors;

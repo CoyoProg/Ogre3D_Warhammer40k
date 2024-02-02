@@ -42,8 +42,8 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	    for (int j = 0; j < 3; j++)
 	    {
 	        count++;
-	        std::string entityName = "Figurine1 " + std::to_string(count);
-	        std::string nodeName = "Node1 " + std::to_string(count);
+	        std::string entityName = "Space Marine " + std::to_string(count);
+	        std::string nodeName = "Node " + std::to_string(count);
 
 	        Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 	        gameEngineP.AddActor(figurines);
@@ -58,8 +58,8 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 		for (int j = 0; j < 3; j++)
 		{
 			count++;
-			std::string entityName = "Figurine1 " + std::to_string(count);
-			std::string nodeName = "Node1 " + std::to_string(count);
+			std::string entityName = "Space Marine " + std::to_string(count);
+			std::string nodeName = "Node " + std::to_string(count);
 
 			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 			gameEngineP.AddActor(figurines);
@@ -70,14 +70,13 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	}
 
 	/* Player 2 */
-	count = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
 			count++;
-			std::string entityName = "Figurine2 " + std::to_string(count);
-			std::string nodeName = "Node2 " + std::to_string(count);
+			std::string entityName = "Space Marine " + std::to_string(count);
+			std::string nodeName = "Node" + std::to_string(count);
 
 			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
 			gameEngineP.AddActor(figurines);
@@ -91,8 +90,8 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 		for (int j = 0; j < 3; j++)
 		{
 			count++;
-			std::string entityName = "Figurine2 " + std::to_string(count);
-			std::string nodeName = "Node2 " + std::to_string(count);
+			std::string entityName = "Space Marine " + std::to_string(count);
+			std::string nodeName = "Node" + std::to_string(count);
 
 			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
 			gameEngineP.AddActor(figurines);

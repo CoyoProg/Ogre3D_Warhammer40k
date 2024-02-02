@@ -1,0 +1,20 @@
+
+material Dice
+{
+	technique
+	{
+		pass 
+		{
+			diffuse 0.8 0.8 0.8 1
+			specular 0.8 0.8 0.8 1
+
+			texture_unit
+			{
+				texture dice.png
+			}
+
+		}
+
+	}
+
+}

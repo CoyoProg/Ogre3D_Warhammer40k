@@ -39,6 +39,9 @@ void GameEngine::setup()
 	Root* root = getRoot();
 	m_SceneManager = root->createSceneManager();
 
+	Ogre::OverlaySystem* pOverlaySystem = getOverlaySystem();
+	m_SceneManager->addRenderQueueListener(pOverlaySystem);
+
 	// Create an empty SceneNode
 	centerOfWorldNode = m_SceneManager->getRootSceneNode()->createChildSceneNode("CenterOfWorldNode");
 
@@ -79,14 +82,8 @@ void GameEngine::setup()
 	/*Load Level */
 	GameLevel::LoadLevel(*this);
 
-	Ogre::OverlaySystem* pOverlaySystem = getOverlaySystem();
-	m_SceneManager->addRenderQueueListener(pOverlaySystem);
-
-	textItem = new OgreText;
-	textItem->setText("Player One");
-
-	textItem->setPos(0.5f, 0.9f);
-	textItem->setCol(0.0f, 0.f, 0.7f, 1.f);
+	overlayWidgets = new OgreText;
+	overlayWidgets->GetPlayerTextElement()->setCaption("Player One");
 }
 
 void GameEngine::Update(float deltaTimeP)
@@ -105,6 +102,20 @@ void GameEngine::Update(float deltaTimeP)
 	flipTableTop(deltaTimeP);
 }
 
+void GameEngine::RemoveActor(Actors* actorP)
+{
+	// Find the iterator pointing to the element
+	auto iter = std::find(m_Actors.begin(), m_Actors.end(), actorP);
+
+	// Check if the element was found before erasing
+	if (iter != m_Actors.end())
+	{
+		m_Actors.erase(iter);
+	}
+
+	delete actorP;
+}
+
 void GameEngine::EndTurn()
 {
 	// NEEDS TO CHECK IF ALL THE ACTORS AREN'T MOVING
@@ -120,19 +131,20 @@ void GameEngine::EndTurn()
 
 	if (playerTurns == 1)
 	{
-		textItem->setText("Player One");
-		textItem->setCol(0.0f, 0.f, 0.7f, 1.f);
+		overlayWidgets->GetPlayerTextElement()->setCaption("Player One");
+		overlayWidgets->GetPlayerTextElement()->setColour(Ogre::ColourValue(0.0f, 0.f, 0.7f, 1.f));
 	}
 	else
 	{
-		textItem->setText("Player Two");
-		textItem->setCol(0.7f, 0.f, 0.0f, 1.f);
+		overlayWidgets->GetPlayerTextElement()->setCaption("Player Two");
+		overlayWidgets->GetPlayerTextElement()->setColour(Ogre::ColourValue(0.7f, 0.f, 0.0f, 1.f));
 	}
 
 	for (auto actors : m_Actors)
 	{
 		if (!actors->GetSceneNode())
 			continue;
+		actors->OnEndTurnEvent();
 
 		SceneNode* currentParent = actors->GetSceneNode()->getParentSceneNode();
 		if (currentParent)
