@@ -30,12 +30,12 @@ Player::Player(GameEngine& gameEngineP) :
     m_OverlayManager = OverlayManager::getSingletonPtr();
 
     /* Create the Dice */
-    m_Dice = m_GameEngine.GetSceneManager()->createEntity("Dice", "Dice.mesh");
-    m_Dice->setMaterialName("Dice");
-    SceneNode* diceNode = m_GameEngine.GetSceneManager()->getRootSceneNode()->createChildSceneNode("DiceNode");
-    diceNode->attachObject(m_Dice);
-    diceNode->setPosition(Vector3(0, 10, 0));
-    diceNode->setScale(Vector3(.05f, .05f, .05f));
+    //m_Dice = m_GameEngine.GetSceneManager()->createEntity("Dice", "Dice.mesh");
+    //m_Dice->setMaterialName("Dice");
+    //SceneNode* diceNode = m_GameEngine.GetSceneManager()->getRootSceneNode()->createChildSceneNode("DiceNode");
+    //diceNode->attachObject(m_Dice);
+    //diceNode->setPosition(Vector3(0, 10, 0));
+    //diceNode->setScale(Vector3(.05f, .05f, .05f));
 }
 
 Player::~Player()
