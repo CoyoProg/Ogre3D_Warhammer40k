@@ -28,11 +28,12 @@ private:
 	void OnLBMouseDown(int mouseX, int mouseY);
 	void OnRBMouseDown(int mouseX, int mouseY);
 
+	void ShowFigurineCard(Figurines* figurineP, bool isRightCard = false);
 	void SetCardTextValues(float movementPoint, int healthPoint, bool isRightCard = false);
 
 	/* Mouse Ray */
 	Ray mouseRay;
-	Ray MouseRayTo3D(int mouseX, int mouseY);
+	void MouseRayTo3D(int mouseX, int mouseY);
 	RaySceneQuery* m_RayScnQuery{ nullptr };
 
 	/* Dice */
@@ -41,8 +42,10 @@ private:
 	/* Selected Actor */
 	void SelectFigurine(Figurines* figurineP);
 	void UnselectFigurine();
+	void HideCards();
 	bool m_IsActorSelected{ false };
 	Figurines* m_CurrentSelected{ nullptr };
+	Figurines* m_CurrentMouseOver{ nullptr };
 
 	float functionDelay = 0.1f;
 	void IsOnMovementSight();

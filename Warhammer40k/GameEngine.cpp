@@ -169,6 +169,9 @@ Actors* GameEngine::GetSceneActor(const SceneNode* sceneNodeP)
 
 bool GameEngine::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
+	if (!isGameLoaded)
+		isGameLoaded = true;
+
 	// Calculate the delta time (time since the last frame)
 	float deltaTime = fe.timeSinceLastFrame;
 
@@ -176,6 +179,7 @@ bool GameEngine::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	Update(deltaTime);
 
 	bool ret = ApplicationContext::frameRenderingQueued(fe);
+
 
 	if (!ProcessUnbufferedInput(fe))
 		return false;

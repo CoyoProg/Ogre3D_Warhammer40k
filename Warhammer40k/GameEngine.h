@@ -42,6 +42,8 @@ public:
     /* Managers */
     SceneManager* GetSceneManager() { return m_SceneManager; }
     Actors* GetSceneActor(const SceneNode* sceneNodeP);
+    bool isGameLoaded{ false };
+
 private:
     SceneManager* m_SceneManager;
     SceneNode* centerOfWorldNode;

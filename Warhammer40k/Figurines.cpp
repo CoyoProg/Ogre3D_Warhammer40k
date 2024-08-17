@@ -107,6 +107,21 @@ void Figurines::OnSelected(bool isSelected)
     }
 }
 
+void Figurines::OnMouseOver(bool isEnemy)
+{
+    // Show possible movement action grid
+
+    if (isEnemy)
+    {
+        // Change grid Color
+    }
+}
+
+void Figurines::OnMouseOut()
+{
+    // Hide possible movement action grid
+}
+
 void Figurines::OnEndTurnEvent()
 {
     m_CurrentMovementAction = m_MaxMovementAction;

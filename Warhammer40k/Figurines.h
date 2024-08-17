@@ -22,6 +22,9 @@ public:
 
 	/* Events */
 	void OnSelected(bool isSelected);
+	void OnMouseOver(bool isEnemy);
+	void OnMouseOut();
+
 	virtual void OnEndTurnEvent() override;
 
 	/* Actions */
