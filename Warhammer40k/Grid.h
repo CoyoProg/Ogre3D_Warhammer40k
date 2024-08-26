@@ -7,10 +7,10 @@ const int TILE_OBSTACLE = 2; // RED
 const int TILE_VALID = 1;	 // GREEN
 const int TILE_EMPTY = 0;	 // NOT VISIBLE
 
-const int GRID_SIZE_Z = 30 * GRID_MULTIPLICATEUR;
-const int GRID_SIZE_X = 20 * GRID_MULTIPLICATEUR;
+const int GRID_SIZE_Z = 60 * GRID_MULTIPLICATEUR;
+const int GRID_SIZE_X = 40 * GRID_MULTIPLICATEUR;
 
-const float GRID_CELL_SIZE{ 10.f / GRID_MULTIPLICATEUR };
+const float GRID_CELL_SIZE{ 5.f / GRID_MULTIPLICATEUR };
 const Vector3 GRID_OFFSET{ -90, 0, 150 }; // To put the grid where the TableTop is
 
 class Tile
@@ -34,7 +34,8 @@ public:
 			tileType = 0;
 			break;
 		case 1:
-			tileEntity->setMaterialName("Tile_Valid"); // Just for debug
+			tileEntity->setMaterialName("Tile_Valid");
+			tileType = 1;
 			break;
 		case 2:
 			tileEntity->setMaterialName("Tile_Obstacle");
@@ -42,9 +43,10 @@ public:
 			break;
 		}
 	}
+
 	int GetType() { return tileType; }
 	int GetFCost() { return gCost + hCost; }
-	int gCost{0};
+	int gCost{INT_MAX};
 	int hCost{0};
 
 	Vector2 gridCoordinates{ 0,0 };

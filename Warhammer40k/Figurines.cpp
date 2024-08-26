@@ -104,22 +104,26 @@ void Figurines::OnSelected(bool isSelected)
     if (!isSelected)
     {
         m_Node->setScale(Vector3(m_UniformScale, m_UniformScale, m_UniformScale));
+        pathfinding->HideMovementGrid();
     }
 }
 
 void Figurines::OnMouseOver(bool isEnemy)
 {
-    // Show possible movement action grid
+    // Show movement action Grid
+    pathfinding->GetMovementGrid(GetPosition(), m_CurrentMovementAction);
 
     if (isEnemy)
     {
-        // Change grid Color
+        pathfinding->ChangeGridColor();
     }
 }
 
 void Figurines::OnMouseOut()
 {
-    // Hide possible movement action grid
+    // Hide Movement Action Grid if not selected
+    if(!m_IsSelected)
+        pathfinding->HideMovementGrid();
 }
 
 void Figurines::OnEndTurnEvent()

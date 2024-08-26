@@ -13,6 +13,11 @@ public:
 
 	virtual void Update(float deltaTime) override;
 
+	/* This function uses Dijkstra's algorithm to find all the tiles that are accessible. */
+	void GetMovementGrid(Vector3 startPositionP, int movementPointP);
+	void HideMovementGrid();
+	void ChangeGridColor();
+
 	bool FindPath(Vector3 startPositionP, Vector3 targetPositionP, int movementActionP);
 	std::vector<TurnThreshold*> GetTurnPath();
 
@@ -37,6 +42,7 @@ public:
 private:
 	Grid& grid;
 
+	std::vector<Tile*> m_MovementGrid;
 	std::map<Tile*, Tile*> m_ParentSet;
 	std::vector<Vector3> m_FinalPath;
 	Vector3 m_StartPosition;

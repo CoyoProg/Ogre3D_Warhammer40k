@@ -34,6 +34,7 @@ private:
 	/* Mouse Ray */
 	Ray mouseRay;
 	void MouseRayTo3D(int mouseX, int mouseY);
+	void ResetMouseOver();
 	RaySceneQuery* m_RayScnQuery{ nullptr };
 
 	/* Dice */

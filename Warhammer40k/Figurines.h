@@ -22,7 +22,7 @@ public:
 
 	/* Events */
 	void OnSelected(bool isSelected);
-	void OnMouseOver(bool isEnemy);
+	void OnMouseOver(bool isEnemy = false);
 	void OnMouseOut();
 
 	virtual void OnEndTurnEvent() override;
@@ -51,15 +51,15 @@ private:
 	int ownerID{ 0 };
 
 	/* Figurine Stats */
-	float m_MaxMovementAction{ 50 };
+	float m_MaxMovementAction{ 108 };
 	int m_MaxHealthPoint{ 2 };
 	float m_AttackRange{ 50 };
 	int m_MaxActionPoint{ 2 };
 
 	/* Current Stats */
-	int m_CurrentHealthPoint{ 2 };
-	float m_CurrentMovementAction{ 50 };
-	int m_CurrentActionPoint{ 2 };
+	int m_CurrentHealthPoint{ m_MaxHealthPoint };
+	float m_CurrentMovementAction{ m_MaxMovementAction };
+	int m_CurrentActionPoint{ m_MaxActionPoint };
 
 	/* On selected Animation properties */
 	float animationTime{ 0 };

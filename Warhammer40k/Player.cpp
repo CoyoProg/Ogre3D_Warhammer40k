@@ -75,23 +75,47 @@ void Player::MouseRayTo3D(int mouseX, int mouseY)
     // Check for Collisions //
     RaySceneQueryResult& result = m_RayScnQuery->execute();
     RaySceneQueryResult::iterator it = result.begin();
-    m_CurrentMouseOver = nullptr;
 
     /* Check if the entity is not a figurine */
     if (!it->movable || it->movable->getQueryFlags() != FIGURINE_MASK)
+    {
+        ResetMouseOver();
         return;
+    }
 
     /* Try to get the entity's actor class and cast it to figurines */
     SceneNode* sceneNodeHit = it->movable->getParentSceneNode();
     Actors* getActor = m_GameEngine.GetSceneActor(sceneNodeHit);
     if (!getActor)
+    {
+        ResetMouseOver();
         return;
+    }
 
     Figurines* temporary = dynamic_cast<Figurines*>(getActor);
     if (!temporary)
+    {
+        ResetMouseOver();
         return;
+    }
 
-    m_CurrentMouseOver = temporary;
+    if (temporary != m_CurrentMouseOver)
+    {
+        ResetMouseOver();
+
+        m_CurrentMouseOver = temporary;
+
+        bool isEnemy = m_CurrentMouseOver->getOwner() != PlayerID;
+        m_CurrentMouseOver->OnMouseOver(isEnemy);
+    }
+}
+
+void Player::ResetMouseOver()
+{
+    if (m_CurrentMouseOver)
+        m_CurrentMouseOver->OnMouseOut();
+
+    m_CurrentMouseOver = nullptr;
 }
 
 void Player::OnLBMouseDown(int mouseX, int mouseY)

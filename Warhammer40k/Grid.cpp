@@ -30,14 +30,14 @@ void Grid::CreateGrid()
 	}
 
 	/* ======================== DEBUG ========================*/
-	Obstacles* obstacle = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 30)), "01", true);
-	m_gameEngine.AddActor(obstacle);
-
-	Obstacles* obstacle2 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 26)), "02", true);
-	m_gameEngine.AddActor(obstacle2);
-
-	Obstacles* obstacle3 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(17.5, 32)), "03", false);
-	m_gameEngine.AddActor(obstacle3);
+	//Obstacles* obstacle = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 30)), "01", true);
+	//m_gameEngine.AddActor(obstacle);
+	//
+	//Obstacles* obstacle2 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 26)), "02", true);
+	//m_gameEngine.AddActor(obstacle2);
+	//
+	//Obstacles* obstacle3 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(17.5, 32)), "03", false);
+	//m_gameEngine.AddActor(obstacle3);
 	/* ======================== DEBUG ========================*/
 }
 
@@ -52,7 +52,7 @@ void Grid::CreateTiles(Ogre::SceneManager& sceneManager, int count, int coordX, 
 	planeNode->attachObject(planeEntity);
 	planeNode->setPosition(Vector3(coordX * GRID_CELL_SIZE + GRID_CELL_SIZE / 2, 0.11f, -coordZ * GRID_CELL_SIZE - GRID_CELL_SIZE / 2) + GRID_OFFSET);
 	planeNode->pitch(Degree(-90));
-	planeNode->setScale(Vector3(.025f, .025f, 1.f));
+	planeNode->setScale(Vector3(.025f / GRID_MULTIPLICATEUR, .025f / GRID_MULTIPLICATEUR, 1.f));
 
 	grid[coordX][coordZ] = new Tile(planeEntity, 0, Vector2(coordX, coordZ));
 }

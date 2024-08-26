@@ -18,6 +18,78 @@ void PathFindingComponent::Update(float deltaTime)
 {
 }
 
+void PathFindingComponent::GetMovementGrid(Vector3 startPositionP, int movementPointP)
+{
+	m_MovementGrid.clear();
+
+	std::vector<Tile*> openSet;
+	std::vector<Tile*> closeSet;
+
+	Tile* startTile = grid.GetTile(startPositionP);
+	startTile->gCost = 0;
+
+	openSet.push_back(startTile);
+
+	while (openSet.size() > 0)
+	{
+		Tile* currentTile = openSet[0];
+
+		openSet.erase(openSet.begin());
+		closeSet.emplace_back(currentTile);
+
+		if (currentTile->gCost > movementPointP)
+			continue;
+
+		m_MovementGrid.push_back(currentTile);
+		currentTile->SetTile(TILE_VALID);
+
+		for (auto neighbours : grid.GetNeighboursTiles(currentTile))
+		{
+			bool isVisited = std::find(closeSet.begin(), closeSet.end(), neighbours) != closeSet.end();
+
+			if (neighbours->GetType() == TILE_OBSTACLE || isVisited)
+				continue;
+
+			/* We Update the costs for each neighbours */
+			int newMovementCost = currentTile->gCost + GetDistance(*currentTile, *neighbours);
+			if (newMovementCost < neighbours->gCost)
+			{
+				neighbours->gCost = newMovementCost;
+
+				m_ParentSet[neighbours] = currentTile;
+
+				bool isOpened = std::find(openSet.begin(), openSet.end(), neighbours) != openSet.end();
+
+				if (!isOpened)
+				{
+					openSet.push_back(neighbours);
+				}
+			}
+		}
+	}
+
+	for (auto tiles : closeSet)
+	{
+		tiles->gCost = INT_MAX;
+	}
+}
+
+void PathFindingComponent::HideMovementGrid()
+{
+	for (auto tiles : m_MovementGrid)
+	{
+		tiles->SetTile(TILE_EMPTY);
+	}
+}
+
+void PathFindingComponent::ChangeGridColor()
+{
+	for (auto tiles : m_MovementGrid)
+	{
+		tiles->SetTile(TILE_OBSTACLE);
+	}
+}
+
 bool PathFindingComponent::FindPath(Vector3 startPositionP, Vector3 targetPositionP, int movementActionP)
 {
 	m_StartPosition = startPositionP;
