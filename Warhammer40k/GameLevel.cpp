@@ -9,6 +9,7 @@
 #include "TableTop.h"
 #include "Figurines.h"
 #include "Grid.h"
+#include "Obstacles.h"
 
 using namespace Ogre;
 
@@ -30,7 +31,6 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 	gameEngineP.AddActor(tabletop);
 	gameEngineP.tabletop = tabletop;
 
-	/* =========== JUST FOR DEBUG PURPOSE =========== */
 	/* Import Custom mesh */
 	Ogre::MeshPtr mMesh = MeshManager::getSingleton().load("LowPolyMarine.mesh", "AssetsGroup");
 	mMesh->buildEdgeList();
@@ -107,12 +107,11 @@ void GameLevel::LoadLevel(GameEngine& gameEngineP)
 			figurines->SetYawRotation(Degree(0));
 		}
 	}
-	/* =========== JUST FOR DEBUG PURPOSE =========== */
 
-	LoadEnvironment(sceneManager);
+	LoadEnvironment(sceneManager, gameEngineP, grid);
 }
 
-void GameLevel::LoadEnvironment(Ogre::SceneManager& sceneManager)
+void GameLevel::LoadEnvironment(Ogre::SceneManager& sceneManager, GameEngine& gameEngine, Grid* grid)
 {
 	// ===== LIGHT ==== 
 	/* Create the light */
@@ -136,4 +135,28 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager& sceneManager)
 	Ogre::ColourValue fadeColour(0.9, 0.9, 0.9);
 	mainViewport->setBackgroundColour(fadeColour);
 	sceneManager.setFog(Ogre::FOG_LINEAR, fadeColour, 0, 2000, 10000);
+
+	/* Buildings */
+	Obstacles* obstacle = new Obstacles(
+		gameEngine, 
+		Vector2(20, 25), 
+		Vector3(7,5,14), 
+		"01");
+	gameEngine.AddActor(obstacle);
+
+	Obstacles* obstacle2 = new Obstacles(
+		gameEngine,
+		Vector2(30, 35),
+		Vector3(14, 4, 3),
+		"02");
+	gameEngine.AddActor(obstacle2);
+	
+	
+	Obstacles* obstacle3 = new Obstacles(
+		gameEngine,
+		Vector2(5, 20),
+		Vector3(5, 5, 5),
+		"03");
+	gameEngine.AddActor(obstacle3);
+
 }

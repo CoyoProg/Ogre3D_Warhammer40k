@@ -11,7 +11,7 @@ const int GRID_SIZE_Z = 60 * GRID_MULTIPLICATEUR;
 const int GRID_SIZE_X = 40 * GRID_MULTIPLICATEUR;
 
 const float GRID_CELL_SIZE{ 5.f / GRID_MULTIPLICATEUR };
-const Vector3 GRID_OFFSET{ -90, 0, 150 }; // To put the grid where the TableTop is
+const Vector3 GRID_OFFSET{ -GRID_SIZE_X / 2 * GRID_CELL_SIZE, 0, GRID_SIZE_Z / 2 * GRID_CELL_SIZE };
 
 class Tile
 {

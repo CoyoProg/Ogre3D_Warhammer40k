@@ -292,13 +292,15 @@ void GameEngine::flipTableTop(float deltaTime)
 
 			for (auto actors : m_Actors)
 			{
-				if (!actors->GetEntity())
+				if (!actors->GetObject())
 					continue;
 
-				if(actors->GetEntity()->getQueryFlags() == QueryFlags::OBSTACLE_MASK)
+				if(actors->GetObject()->getQueryFlags() == QueryFlags::OBSTACLE_MASK)
 				{
 					Obstacles* temporary = dynamic_cast<Obstacles*>(actors);
-					temporary->AddLineCollision(*m_grid, temporary->GetSceneNode()->_getDerivedPosition(), !temporary->isFlipped, 2 * GRID_MULTIPLICATEUR);
+					temporary->FlipCollisions(*m_grid);
+
+					std::cout << "Update Collisions" << std::endl;
 				}
 			}
 		}

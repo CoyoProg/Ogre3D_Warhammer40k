@@ -1,8 +1,6 @@
 #include "Grid.h"
 #include <iostream>
 
-#include "Obstacles.h"
-
 Grid::Grid(GameEngine& gameEngineP) :
 	m_gameEngine(gameEngineP)
 {
@@ -29,16 +27,14 @@ void Grid::CreateGrid()
 		}
 	}
 
-	/* ======================== DEBUG ========================*/
-	//Obstacles* obstacle = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 30)), "01", true);
-	//m_gameEngine.AddActor(obstacle);
-	//
-	//Obstacles* obstacle2 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(15, 26)), "02", true);
-	//m_gameEngine.AddActor(obstacle2);
-	//
-	//Obstacles* obstacle3 = new Obstacles(m_gameEngine, GetWorldPosition(Vector2(17.5, 32)), "03", false);
-	//m_gameEngine.AddActor(obstacle3);
-	/* ======================== DEBUG ========================*/
+	grid[0][GRID_SIZE_Z-1]->SetTile(TILE_VALID);
+	grid[GRID_SIZE_X-1][GRID_SIZE_Z-1]->SetTile(TILE_VALID);
+
+	grid[0][0]->SetTile(TILE_VALID);
+	grid[GRID_SIZE_X-1][0]->SetTile(TILE_VALID);
+
+	grid[39][0]->SetTile(TILE_VALID);
+	grid[40][0]->SetTile(TILE_VALID);
 }
 
 void Grid::CreateTiles(Ogre::SceneManager& sceneManager, int count, int coordX, int coordZ)
