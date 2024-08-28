@@ -174,15 +174,7 @@ void Player::OnRBMouseDown(int mouseX, int mouseY)
             /* Check if the RayCast collide with a Figurine or an Obstacle */
             if (hitResult->movable->getQueryFlags() != FIGURINE_MASK && hitResult->movable->getQueryFlags() != OBSTACLE_MASK)
             {
-                //IsOnMovementSight();
-
-                //if (!m_OnSightFromSelected)
-                //    return;
-
-                /* Calculate the new Position to move to */
-                m_CurrentSelectedPosition = m_CurrentSelected->GetPosition();
-                m_CurrentSelectedPosition.y = 2.f;
-
+                /* Calculate the target position depending on the hitresult */
                 Vector3 rayOrigin = mouseRay.getOrigin();
                 Vector3 rayDirection = mouseRay.getDirection();
 
@@ -191,40 +183,16 @@ void Player::OnRBMouseDown(int mouseX, int mouseY)
                 m_NewPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
 
                 m_TargetPosition = m_NewPosition;
-                m_TargetPosition.y = 2.f;
+                Tile* targetTile = m_GameEngine.GetGrid().GetTile(m_TargetPosition);
 
-                /* Cast a second Ray to check if there is an Obstacle
-                   Between the Figurine and the targetPosition */
-                Ray rayCast(m_CurrentSelectedPosition, m_TargetPosition - m_CurrentSelectedPosition);
-                m_RayScnQuery->setRay(rayCast);
-                m_RayScnQuery->setSortByDistance(true);
-                m_RayScnQuery->execute();
-
-                RaySceneQueryResult& secondResult = m_RayScnQuery->execute();
-                RaySceneQueryResult::iterator secondHitResult = secondResult.begin();
-
-                for (; secondHitResult != secondResult.end(); secondHitResult++)
+                /* Check if the tile is on the Figurine Grid Movement */
+                if (targetTile->GetType() == TILE_MOVEMENT_SELECTED)
                 {
-                    if (secondHitResult->distance > 1)
-                        break;
+                    m_TargetPosition.y = 2.f;
 
-                    if (secondHitResult->movable->getQueryFlags() == OBSTACLE_MASK)
-                    {
-                        /* Trigger Figurine MoveTo
-                        The figurine will move around the obstacle */
-                        m_CurrentSelected->MoveTo(m_TargetPosition);
-
-                        /* Update Left Card Text */
-                        float movementAction = m_CurrentSelected->GetMovementAction();
-                        int healthPoint = m_CurrentSelected->GetHealthPoint();
-                        SetCardTextValues(movementAction, healthPoint);
-
-                        return;
-                    }
+                    /* Move to the target position */
+                    m_CurrentSelected->MoveTo(targetTile);
                 }
-
-                /* Trigger move straight if there is no obstacles on the way */
-                m_CurrentSelected->MoveStraight(m_NewPosition);
 
                 /* Update Left Card Text */
                 float movementAction = m_CurrentSelected->GetMovementAction();

@@ -23,6 +23,82 @@ material Tile_Valid
     }
 }
 
+material Tile_SoftValid
+{
+    technique
+    {
+        pass
+        {
+	    // Set blending mode for transparency
+            scene_blend alpha_blend
+
+            // Disable depth writing for transparent materials
+            depth_write off
+
+	    // Set the diffuse color
+            diffuse 1 1 1 0.5  // RGBA, adjust as needed
+            texture_unit
+            {
+                texture Tile_Valid.png
+
+		max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}
+
+material Tile_Enemy
+{
+    technique
+    {
+        pass
+        {
+	    // Set blending mode for transparency
+            scene_blend alpha_blend
+
+            // Disable depth writing for transparent materials
+            depth_write off
+
+	    // Set the diffuse color
+            diffuse 1 1 1 0.75  // RGBA, adjust as needed
+            texture_unit
+            {
+                texture Tile_Obstacle.png
+
+		max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}
+
+material Tile_Blend
+{
+    technique
+    {
+        pass
+        {
+	    // Set blending mode for transparency
+            scene_blend alpha_blend
+
+            // Disable depth writing for transparent materials
+            depth_write off
+
+	    // Set the diffuse color
+            diffuse 1 1 1 .5  // RGBA, adjust as needed
+
+            texture_unit
+            {
+                texture Tile_Valid.png
+
+		max_anisotropy 16
+		filtering none
+            }
+        }
+    }
+}
+
 material Tile_Empty
 {
     technique

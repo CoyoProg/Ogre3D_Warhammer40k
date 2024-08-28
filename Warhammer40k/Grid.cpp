@@ -27,14 +27,14 @@ void Grid::CreateGrid()
 		}
 	}
 
-	grid[0][GRID_SIZE_Z-1]->SetTile(TILE_VALID);
-	grid[GRID_SIZE_X-1][GRID_SIZE_Z-1]->SetTile(TILE_VALID);
+	grid[0][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
+	grid[GRID_SIZE_X-1][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
 
-	grid[0][0]->SetTile(TILE_VALID);
-	grid[GRID_SIZE_X-1][0]->SetTile(TILE_VALID);
+	grid[0][0]->SetTile(TILE_MOVEMENT_SELECTED);
+	grid[GRID_SIZE_X-1][0]->SetTile(TILE_MOVEMENT_SELECTED);
 
-	grid[39][0]->SetTile(TILE_VALID);
-	grid[40][0]->SetTile(TILE_VALID);
+	grid[39][0]->SetTile(TILE_MOVEMENT_SELECTED);
+	grid[40][0]->SetTile(TILE_MOVEMENT_SELECTED);
 }
 
 void Grid::CreateTiles(Ogre::SceneManager& sceneManager, int count, int coordX, int coordZ)

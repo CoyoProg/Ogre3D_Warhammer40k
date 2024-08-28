@@ -3,9 +3,12 @@
 
 const int GRID_MULTIPLICATEUR = 2;
 
-const int TILE_OBSTACLE = 2; // RED
-const int TILE_VALID = 1;	 // GREEN
-const int TILE_EMPTY = 0;	 // NOT VISIBLE
+const int TILE_MOVEMENT_BLEND = 5;			// SOFT GREEN & RED
+const int TILE_MOVEMENT_ENEMY = 4;			// SOFT RED
+const int TILE_MOVEMENT_MOUSEOVER = 3;		// SOFT GREEN
+const int TILE_OBSTACLE = 2;				// RED
+const int TILE_MOVEMENT_SELECTED = 1;		// GREEN
+const int TILE_EMPTY = 0;					// NOT VISIBLE
 
 const int GRID_SIZE_Z = 60 * GRID_MULTIPLICATEUR;
 const int GRID_SIZE_X = 40 * GRID_MULTIPLICATEUR;
@@ -40,6 +43,18 @@ public:
 		case 2:
 			tileEntity->setMaterialName("Tile_Obstacle");
 			tileType = 2;
+			break;
+		case 3:
+			tileEntity->setMaterialName("Tile_SoftValid");
+			tileType = 3;
+			break;
+		case 4:
+			tileEntity->setMaterialName("Tile_Enemy");
+			tileType = 4;
+			break;
+		case 5:
+			tileEntity->setMaterialName("Tile_Blend");
+			tileType = 5;
 			break;
 		}
 	}

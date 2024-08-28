@@ -5,6 +5,9 @@
 #include <OgreMath.h>
 #include <iostream>
 
+
+#include "Grid.h"
+
 Figurines::Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP, int owner) :
     m_GameEngine(gameEngineP)
 {
@@ -104,26 +107,33 @@ void Figurines::OnSelected(bool isSelected)
     if (!isSelected)
     {
         m_Node->setScale(Vector3(m_UniformScale, m_UniformScale, m_UniformScale));
-        pathfinding->HideMovementGrid();
+        pathfinding->HideMovementGrid(true);
+
+        return;
     }
+
+    OnMouseOver(m_IsEnemy);
 }
 
 void Figurines::OnMouseOver(bool isEnemy)
 {
-    // Show movement action Grid
-    pathfinding->GetMovementGrid(GetPosition(), m_CurrentMovementAction);
+    m_IsEnemy = isEnemy;
+    int tileType = TILE_MOVEMENT_SELECTED;
 
-    if (isEnemy)
-    {
-        pathfinding->ChangeGridColor();
-    }
+    if (m_IsEnemy)
+        tileType = TILE_MOVEMENT_ENEMY;
+    else if (!m_IsSelected)
+        tileType = TILE_MOVEMENT_MOUSEOVER;
+
+    // Show movement action Grid
+    pathfinding->GetMovementGrid(GetPosition(), m_CurrentMovementAction, tileType);
 }
 
 void Figurines::OnMouseOut()
 {
-    // Hide Movement Action Grid if not selected
+    // Hide Movement Action Grid
     if(!m_IsSelected)
-        pathfinding->HideMovementGrid();
+        pathfinding->HideMovementGrid(false);
 }
 
 void Figurines::OnEndTurnEvent()
@@ -132,48 +142,22 @@ void Figurines::OnEndTurnEvent()
     m_CurrentActionPoint = m_MaxActionPoint;
 }
 
-void Figurines::MoveTo(Vector3 targetPositionP)
+void Figurines::MoveTo(Tile* targetTileP)
 {
+    Vector3 targetPositionP;
+
     m_Path.clear();
+    pathfinding->RetracePath(m_GameEngine.GetGrid().GetTile(GetPosition()), targetTileP);
 
-    bool pathFound = pathfinding->FindPath(GetPosition(), targetPositionP, m_CurrentMovementAction);
+    m_CurrentMovementAction -= pathfinding->totalCost;
 
-    if (pathFound)
-    {
-        m_CurrentMovementAction -= pathfinding->totalCost;
-
-        m_Path = pathfinding->GetTurnPath();
-
-        /* Orient the figurine to the first point on the path */
-        Vector3 targetPos = pathfinding->lookPoints[1];
-        targetPos.y = 0;
-        Vector3 currentPos = GetPosition();
-        currentPos.y = 0;
-
-        Vector3 direction = (targetPos - currentPos).normalisedCopy();
-
-        Quaternion targetRotationYaw = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
-        Radian yaw = targetRotationYaw.getYaw();
-        Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
-
-        m_Node->_setDerivedOrientation(targetRotationYawOnly);
-        m_MoveStraight = false;
-        m_IsMoving = true;
-    }
-}
-
-void Figurines::MoveStraight(Vector3 targetPositionP)
-{
-    straightTargetPosition = targetPositionP;
+    m_Path = pathfinding->GetTurnPath();
 
     /* Orient the figurine to the first point on the path */
-    Vector3 targetPos = targetPositionP;
+    Vector3 targetPos = pathfinding->lookPoints[1];
     targetPos.y = 0;
     Vector3 currentPos = GetPosition();
     currentPos.y = 0;
-
-    float distanceFromSelected = (currentPos - targetPos).length();
-    m_CurrentMovementAction -= distanceFromSelected;
 
     Vector3 direction = (targetPos - currentPos).normalisedCopy();
 
@@ -182,7 +166,7 @@ void Figurines::MoveStraight(Vector3 targetPositionP)
     Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
 
     m_Node->_setDerivedOrientation(targetRotationYawOnly);
-    m_MoveStraight = true;
+    m_MoveStraight = false;
     m_IsMoving = true;
 }
 

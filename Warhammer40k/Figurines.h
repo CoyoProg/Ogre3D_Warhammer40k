@@ -2,6 +2,7 @@
 #include "Actors.h"
 #include "TurnThreshold.h"
 
+class Tile;
 class PathFindingComponent;
 
 class Figurines : public Actors
@@ -28,8 +29,7 @@ public:
 	virtual void OnEndTurnEvent() override;
 
 	/* Actions */
-	void MoveTo(Vector3 targetPositionP);
-	void MoveStraight(Vector3 targetPositionP);
+	void MoveTo(Tile* targetTileP);
 	void Attack(Figurines* targetP);
 	void GetHit(int damageAmountP);
 
@@ -46,6 +46,7 @@ private:
 	GameEngine& m_GameEngine;
 
 	bool m_IsSelected{ false };
+	bool m_IsEnemy{ false };
 	float m_UniformScale{ 0.02 };
 	Vector3 m_Offset{ 0,0.f,0 };
 	int ownerID{ 0 };
