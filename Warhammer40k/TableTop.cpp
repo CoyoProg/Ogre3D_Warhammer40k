@@ -1,24 +1,24 @@
 #include "TableTop.h"
 
-TableTop::TableTop(GameEngine& gameEngineP)
+TableTop::TableTop(GameEngine &gameEngineP)
 {
-    SceneManager& sceneManager = *gameEngineP.GetSceneManager();
+    SceneManager &sceneManager = *gameEngineP.GetSceneManager();
 
     /* Import Custom mesh */
-    Entity* tabletopEntity = sceneManager.createEntity("TableTopEntity", "Plateau.mesh");
+    Entity *tabletopEntity = sceneManager.createEntity("TableTopEntity", "Plateau.mesh");
     tabletopEntity->setMaterialName("Plateau.bois");
 
     /* Table Top */
-    tabletopNode = sceneManager.getRootSceneNode()->createChildSceneNode("TableTopNode");
-    tabletopNode->attachObject(tabletopEntity);
-    tabletopNode->setPosition(Vector3(0, 0, 0));
-    tabletopNode->yaw(Degree(90));
-    tabletopNode->setScale(10, 2.5, 10);
+    mTabletopNode = sceneManager.getRootSceneNode()->createChildSceneNode("TableTopNode");
+    mTabletopNode->attachObject(tabletopEntity);
+    mTabletopNode->setPosition(Vector3(0, 0, 0));
+    mTabletopNode->yaw(Degree(90));
+    mTabletopNode->setScale(10, 2.5, 10);
 
     /* Blue carpet */
-    Entity* planeEntity = sceneManager.createEntity("Plane", SceneManager::PT_PLANE);
+    Entity *planeEntity = sceneManager.createEntity("Plane", SceneManager::PT_PLANE);
     planeEntity->setMaterialName("Plateau.tapis");
-    SceneNode* planeNode = sceneManager.getRootSceneNode()->createChildSceneNode();
+    SceneNode *planeNode = sceneManager.getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
     planeNode->setPosition(Vector3(0, -12, -100));
     planeNode->pitch(Degree(-90));

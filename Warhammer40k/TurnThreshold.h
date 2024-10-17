@@ -11,29 +11,30 @@ using namespace Ogre;
 struct TurnThreshold
 {
 public:
-	TurnThreshold(Vector2 pointOnLine, Vector2 pointPerdencicularToLine);
+	TurnThreshold(Vector2 pointOnLineP, Vector2 pointPerdencicularToLineP);
 
-	bool HasCrossedLine(Vector2 point)
+	bool HasCrossedLine(Vector2 pointP)
 	{
-		return GetSide(point) != approachSide;
+		return GetSide(pointP) != mIsNearSide;
 	}
 
-	void DrawLine(SceneManager* sceneMgr);
+	void DrawLine(SceneManager *sceneMgrP);
+
 private:
-	const float verticalLineGradient = 1e5f;
+	const float mVerticalLineGradient = 1e5f;
 
-	float gradient{ 0 };
-	float y_intercept{ 0 };
-	Vector2 startPoint{ 0,0 };
-	Vector2 targetPoint{ 0,0 };
+	float mGradient = 0;
+	float mY_Intercept = 0;
+	Vector2 mStartPoint = Vector2(0);
+	Vector2 mTargetPoint = Vector2(0);
 
-	float gradientPerpendicular;
-	bool approachSide{ false };
+	float mGradientPerpendicular = 0;
+	bool mIsNearSide = false;
 
-	bool GetSide(Vector2 point)
+	bool GetSide(Vector2 pointP)
 	{
-		return (point.x - startPoint.x) * (targetPoint.y - startPoint.y) > 
-			(point.y - startPoint.y) * (targetPoint.x - startPoint.x);
+		return (pointP.x - mStartPoint.x) * (mTargetPoint.y - mStartPoint.y) >
+			(pointP.y - mStartPoint.y) * (mTargetPoint.x - mStartPoint.x);
 	}
 };
 

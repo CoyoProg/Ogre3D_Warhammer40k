@@ -2,11 +2,11 @@
 
 #include "Components.h"
 
-void Actors::Update(float deltaTime)
+void Actors::Update(float deltaTimeP)
 {
 	for (auto& components : myComponents)
 	{
-		components->Update(deltaTime);
+		components->Update(deltaTimeP);
 	}
 }
 

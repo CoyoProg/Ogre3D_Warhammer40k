@@ -4,11 +4,11 @@
 class TableTop : public Actors
 {
 public:
-	TableTop(GameEngine& gameEngineP);
+	TableTop(GameEngine &gameEngineP);
 	~TableTop() {};
 
-	SceneNode* GetSceneNode() { return tabletopNode; }
+	SceneNode* GetSceneNode() { return mTabletopNode; }
 private:
-	SceneNode* tabletopNode;
+	SceneNode *mTabletopNode;
 };
 

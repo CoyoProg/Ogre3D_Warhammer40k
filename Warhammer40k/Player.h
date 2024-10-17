@@ -12,55 +12,55 @@ namespace Ogre
 class Player : public Actors, public InputListener
 {
 public:
-	Player(GameEngine& gameEngineP);
+	Player(GameEngine &gameEngineP);
 	~Player();
 
-	virtual void Update(float deltaTime) override;
-	void SwapPlayer() { PlayerID = (PlayerID == 1) ? 2 : 1; }
-	int GetCurrentPlayer() { return PlayerID; }
+	virtual void Update(float deltaTimeP) override;
+	void SwapPlayer() { mPlayerID = (mPlayerID == 1) ? 2 : 1; }
+	int GetCurrentPlayer() { return mPlayerID; }
 
 private:
 	/* References */
-	Ogre::OverlayManager* m_OverlayManager;
-	GameEngine& m_GameEngine;
-	int PlayerID{ 1 };
+	Ogre::OverlayManager *m_OverlayManager = nullptr;
+	GameEngine &mGameEngine;
+	int mPlayerID = 1;
 
-	void OnLBMouseDown(int mouseX, int mouseY);
-	void OnRBMouseDown(int mouseX, int mouseY);
+	void OnLBMouseDown(int mouseXP, int mouseYP);
+	void OnRBMouseDown(int mouseXP, int mouseYP);
 
-	void ShowFigurineCard(Figurines* figurineP, bool isRightCard = false);
-	void SetCardTextValues(float movementPoint, int healthPoint, bool isRightCard = false);
+	void ShowFigurineCard(Figurines *figurineP, bool isRightCardP = false);
+	void SetCardTextValues(float movementPointP, int healthPointP, bool isRightCardP = false);
 
 	/* Mouse Ray */
-	Ray mouseRay;
-	void MouseRayTo3D(int mouseX, int mouseY);
+	Ray mMouseRay;
+	void MouseRayTo3D(int mouseXP, int mouseYP);
 	void ResetMouseOver();
-	RaySceneQuery* m_RayScnQuery{ nullptr };
+	RaySceneQuery *mRayScnQuery = nullptr;
 
 	/* Dice */
-	Entity* m_Dice;
+	Entity *mDice;
 
 	/* Selected Actor */
-	void SelectFigurine(Figurines* figurineP);
+	void SelectFigurine(Figurines *figurineP);
 	void UnselectFigurine();
 	void HideCards();
-	bool m_IsActorSelected{ false };
-	Figurines* m_CurrentSelected{ nullptr };
-	Figurines* m_CurrentMouseOver{ nullptr };
+	bool mIsActorSelected = false;
+	Figurines *mCurrentSelected = nullptr;
+	Figurines* mCurrentMouseOver = nullptr;
 
-	float functionDelay = 0.1f;
+	float mFunctionDelay = 0.1f;
 	void IsOnMovementSight();
-	bool m_OnSightFromSelected{ false };
-	float distanceFromSelected = 0;
-	Vector3 m_CurrentSelectedPosition;
-	Vector3 m_TargetPosition;
-	Vector3 m_NewPosition;
+	bool mOnSightFromSelected = false;
+	float mDistanceFromSelected = 0.f;
+	Vector3 mCurrentSelectedPosition;
+	Vector3 mTargetPosition;
+	Vector3 mNewPosition;
 
 	/* Inputs */
 	virtual bool mouseMoved(const MouseMotionEvent& evt) override;
 	virtual bool mousePressed(const MouseButtonEvent& evt) override;
 	virtual bool mouseReleased(const MouseButtonEvent& evt) override;
-	bool m_IsLMBDown{ false };
-	bool m_IsRMBDown{ false };
+	bool mIsLMBDown = false;
+	bool mIsRMBDown = false;
 };
 

@@ -21,11 +21,7 @@
 
 using namespace Ogre;
 
-GameEngine::GameEngine() :
-	tabletop(nullptr),
-	m_SceneManager(nullptr),
-	m_grid(nullptr),
-	m_Player(nullptr)
+GameEngine::GameEngine()
 {
 }
 
@@ -36,27 +32,27 @@ void GameEngine::setup()
 	addInputListener(this);
 
 	// get a pointer to the already created root
-	Root* root = getRoot();
-	m_SceneManager = root->createSceneManager();
+	Root *root = getRoot();
+	mSceneManager = root->createSceneManager();
 
-	Ogre::OverlaySystem* pOverlaySystem = getOverlaySystem();
-	m_SceneManager->addRenderQueueListener(pOverlaySystem);
+	Ogre::OverlaySystem *pOverlaySystem = getOverlaySystem();
+	mSceneManager->addRenderQueueListener(pOverlaySystem);
 
 	// Create an empty SceneNode
-	centerOfWorldNode = m_SceneManager->getRootSceneNode()->createChildSceneNode("CenterOfWorldNode");
+	mCenterOfWorldNode = mSceneManager->getRootSceneNode()->createChildSceneNode("CenterOfWorldNode");
 
 	// Optionally, set the position, orientation, or scale of the empty SceneNode
-	centerOfWorldNode->setPosition(Vector3(0, 0, 0));
-	centerOfWorldNode->setOrientation(Ogre::Quaternion::IDENTITY);
-	centerOfWorldNode->setScale(Vector3(1, 1, 1));
+	mCenterOfWorldNode->setPosition(Vector3(0, 0, 0));
+	mCenterOfWorldNode->setOrientation(Ogre::Quaternion::IDENTITY);
+	mCenterOfWorldNode->setScale(Vector3(1, 1, 1));
 
 
 	// register our scene with the RTSS
-	RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
-	shadergen->addSceneManager(m_SceneManager);
+	RTShader::ShaderGenerator *shadergen = RTShader::ShaderGenerator::getSingletonPtr();
+	shadergen->addSceneManager(mSceneManager);
 
 	/* Set ambient light for the Scene Manager */
-	m_SceneManager->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+	mSceneManager->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 
 	/* Load mesh into ressources */
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
@@ -82,35 +78,35 @@ void GameEngine::setup()
 	/*Load Level */
 	GameLevel::LoadLevel(*this);
 
-	overlayWidgets = new OgreText;
-	overlayWidgets->GetPlayerTextElement()->setCaption("Player One");
+	mOverlayWidgets = new OgreText;
+	mOverlayWidgets->GetPlayerTextElement()->setCaption("Player One");
 }
 
 void GameEngine::Update(float deltaTimeP)
 {
-	for (auto& actors : m_Actors)
+	for (auto& actors : mActors)
 	{
 		actors->Update(deltaTimeP);
 	}
 
-	if(m_Player)
-		m_Player->Update(deltaTimeP);
+	if(mPlayer)
+		mPlayer->Update(deltaTimeP);
 
-	if (LastFlipTimer < TimeBetweenFlips)
-		LastFlipTimer += deltaTimeP;
+	if (mLastFlipTimer < mTimeBetweenFlips)
+		mLastFlipTimer += deltaTimeP;
 
-	flipTableTop(deltaTimeP);
+	FlipTableTop(deltaTimeP);
 }
 
-void GameEngine::RemoveActor(Actors* actorP)
+void GameEngine::RemoveActor(Actors *actorP)
 {
 	// Find the iterator pointing to the element
-	auto iter = std::find(m_Actors.begin(), m_Actors.end(), actorP);
+	auto iter = std::find(mActors.begin(), mActors.end(), actorP);
 
 	// Check if the element was found before erasing
-	if (iter != m_Actors.end())
+	if (iter != mActors.end())
 	{
-		m_Actors.erase(iter);
+		mActors.erase(iter);
 	}
 
 	delete actorP;
@@ -120,43 +116,43 @@ void GameEngine::EndTurn()
 {
 	// NEEDS TO CHECK IF ALL THE ACTORS AREN'T MOVING
 
-	if (LastFlipTimer < TimeBetweenFlips)
+	if (mLastFlipTimer < mTimeBetweenFlips)
 		return;
 
-	LastFlipTimer = 0;
+	mLastFlipTimer = 0;
 
-	isFlipping = true;
-	m_Player->SwapPlayer();
-	int playerTurns = m_Player->GetCurrentPlayer();
+	mIsFlipping = true;
+	mPlayer->SwapPlayer();
+	int playerTurns = mPlayer->GetCurrentPlayer();
 
 	if (playerTurns == 1)
 	{
-		overlayWidgets->GetPlayerTextElement()->setCaption("Player One");
-		overlayWidgets->GetPlayerTextElement()->setColour(Ogre::ColourValue(0.0f, 0.f, 0.7f, 1.f));
+		mOverlayWidgets->GetPlayerTextElement()->setCaption("Player One");
+		mOverlayWidgets->GetPlayerTextElement()->setColour(Ogre::ColourValue(0.0f, 0.f, 0.7f, 1.f));
 	}
 	else
 	{
-		overlayWidgets->GetPlayerTextElement()->setCaption("Player Two");
-		overlayWidgets->GetPlayerTextElement()->setColour(Ogre::ColourValue(0.7f, 0.f, 0.0f, 1.f));
+		mOverlayWidgets->GetPlayerTextElement()->setCaption("Player Two");
+		mOverlayWidgets->GetPlayerTextElement()->setColour(Ogre::ColourValue(0.7f, 0.f, 0.0f, 1.f));
 	}
 
-	for (auto actors : m_Actors)
+	for (auto actors : mActors)
 	{
 		if (!actors->GetSceneNode())
 			continue;
 		actors->OnEndTurnEvent();
 
-		SceneNode* currentParent = actors->GetSceneNode()->getParentSceneNode();
+		SceneNode *currentParent = actors->GetSceneNode()->getParentSceneNode();
 		if (currentParent)
 			currentParent->removeChild(actors->GetSceneNode());
 
-		centerOfWorldNode->addChild(actors->GetSceneNode());
+		mCenterOfWorldNode->addChild(actors->GetSceneNode());
 	}
 }
 
-Actors* GameEngine::GetSceneActor(const SceneNode* sceneNodeP)
+Actors* GameEngine::GetSceneActor(const SceneNode *sceneNodeP)
 {
-	for (auto actors : m_Actors)
+	for (auto actors : mActors)
 	{
 		if (actors->GetSceneNode() == sceneNodeP)
 		{
@@ -209,88 +205,88 @@ bool GameEngine::keyPressed(const KeyboardEvent& evt)
 	return true;
 }
 
-void GameEngine::flipTableTop(float deltaTime)
+void GameEngine::FlipTableTop(float deltaTimeP)
 {
-	if (isFlipping)
+	if (mIsFlipping)
 	{
-		if (flipProgress > -0.28f && !changeDirection)
+		if (mFlipProgress > -0.28f && !mChangeDirection)
 		{
-			flipProgress -= deltaTime;
+			mFlipProgress -= deltaTimeP;
 
-			if (animationSpeed < 1.f)
-				animationSpeed += deltaTime;
+			if (mAnimationSpeed < 1.f)
+				mAnimationSpeed += deltaTimeP;
 			else
-				animationSpeed = 1.f;
+				mAnimationSpeed = 1.f;
 
 		}
 		else
 		{
-			changeDirection = true;
-			flipProgress += deltaTime;
+			mChangeDirection = true;
+			mFlipProgress += deltaTimeP;
 
-			if (animationSpeed < 5.f)
-				animationSpeed += deltaTime * 6;
+			if (mAnimationSpeed < 5.f)
+				mAnimationSpeed += deltaTimeP * 6;
 			else
-				animationSpeed = 5.f;
+				mAnimationSpeed = 5.f;
 		}
 
 		/* Bump Height */
-		//flipProgress += deltaTime;
-		float translationY = sin(flipProgress * animationSpeed) * bumpHeight;
+		//mFlipProgress += deltaTimeP;
+		float translationY = sin(mFlipProgress * mAnimationSpeed) * mBumpHeight;
 		Vector3 newPos = tabletop->GetSceneNode()->getPosition();
 		newPos.y = translationY;
 		tabletop->GetSceneNode()->setPosition(newPos);
 
-		newPos = centerOfWorldNode->getPosition();
+		newPos = mCenterOfWorldNode->getPosition();
 		newPos.y = translationY;
-		centerOfWorldNode->setPosition(newPos);
+		mCenterOfWorldNode->setPosition(newPos);
 
 
 		/* Rotation Angle */
-		rotationAngle = sin(flipProgress * animationSpeed / 2) * 180;
+		mRotationAngle = sin(mFlipProgress * mAnimationSpeed / 2) * 180;
 		Quaternion orientation = Ogre::Quaternion::IDENTITY;
-		orientation.FromAngleAxis(Degree(rotationAngle + 90 * flipFlop), Ogre::Vector3::UNIT_Y);
+		orientation.FromAngleAxis(Degree(mRotationAngle + 90 * mFlipFlop), Ogre::Vector3::UNIT_Y);
 		tabletop->GetSceneNode()->setOrientation(orientation);
 
-		if (flipFlop == -1)
-			orientation.FromAngleAxis(Degree(rotationAngle + 180), Ogre::Vector3::UNIT_Y);
+		if (mFlipFlop == -1)
+			orientation.FromAngleAxis(Degree(mRotationAngle + 180), Ogre::Vector3::UNIT_Y);
 		else
-			orientation.FromAngleAxis(Degree(rotationAngle), Ogre::Vector3::UNIT_Y);
-		centerOfWorldNode->setOrientation(orientation);
+			orientation.FromAngleAxis(Degree(mRotationAngle), Ogre::Vector3::UNIT_Y);
+		mCenterOfWorldNode->setOrientation(orientation);
 
 
 		Quaternion currentOrientation = Ogre::Quaternion::IDENTITY;
 		currentOrientation = tabletop->GetSceneNode()->getOrientation();
 		// Check if the flip is complete
-		if (rotationAngle > 179)
+		if (mRotationAngle > 179)
 		{
-			flipFlop = -flipFlop;
-			flipProgress = 0.0f;
+			mFlipFlop = -mFlipFlop;
+			mFlipProgress = 0.0f;
 
 			/* Reset Table orientation & position */
 			Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
-			orientation.FromAngleAxis(Degree(90 * flipFlop), Ogre::Vector3::UNIT_Y);
+			orientation.FromAngleAxis(Degree(90 * mFlipFlop), Ogre::Vector3::UNIT_Y);
 			tabletop->GetSceneNode()->setOrientation(orientation);
 
 			Vector3 finalPos = tabletop->GetSceneNode()->getPosition();
 			tabletop->GetSceneNode()->setPosition(Vector3(finalPos.x, 0, finalPos.z));
 
 			/* Reset Actors orientation & position */
-			if (flipFlop == -1)
+			if (mFlipFlop == -1)
 				orientation.FromAngleAxis(Degree(180), Ogre::Vector3::UNIT_Y);
 			else
 				orientation.FromAngleAxis(Degree(0), Ogre::Vector3::UNIT_Y);
-			centerOfWorldNode->setOrientation(orientation);
-			centerOfWorldNode->setPosition(Vector3(0, 0, 0));
+			mCenterOfWorldNode->setOrientation(orientation);
+			mCenterOfWorldNode->setPosition(Vector3(0, 0, 0));
 
 
-			isFlipping = false;
-			changeDirection = false;
-			animationSpeed = 0.f;
+			mIsFlipping = false;
+			mChangeDirection = false;
+			mAnimationSpeed = 0.f;
 
-			m_grid->OnFlip();
+			mGrid->OnFlip();
 
-			for (auto actors : m_Actors)
+			for (auto actors : mActors)
 			{
 				if (!actors->GetObject())
 					continue;
@@ -298,7 +294,7 @@ void GameEngine::flipTableTop(float deltaTime)
 				if(actors->GetObject()->getQueryFlags() == QueryFlags::OBSTACLE_MASK)
 				{
 					Obstacles* temporary = dynamic_cast<Obstacles*>(actors);
-					temporary->FlipCollisions(*m_grid);
+					temporary->FlipCollisions(*mGrid);
 
 					std::cout << "Update Collisions" << std::endl;
 				}

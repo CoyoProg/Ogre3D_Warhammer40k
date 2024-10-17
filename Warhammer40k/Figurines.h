@@ -8,18 +8,18 @@ class PathFindingComponent;
 class Figurines : public Actors
 {
 public:
-	Figurines(GameEngine& gameEngineP, std::string entityNameP, std::string nodeNameP, int owner);
+	Figurines(GameEngine &gameEngineP, std::string entityNameP, std::string nodeNameP, int ownerP);
 	~Figurines();
 
 	/* Updates */
-	void Update(float deltaTime) override;
-	void UpdatePositions(float deltaTime);
+	void Update(float deltaTimeP) override;
+	void UpdatePositions(float deltaTimeP);
 
 	/* Positions */
-	Vector3 GetPosition() { return m_Node->_getDerivedPosition(); }
+	Vector3 GetPosition() { return mNode->_getDerivedPosition(); }
 	void SetPosition(Vector3 positionP);
 	void SetYawRotation(Degree rotationP);
-	bool IsSleeping() { return !m_IsMoving; }
+	bool IsSleeping() { return !mIsMoving; }
 
 	/* Events */
 	void OnSelected(bool isSelected);
@@ -29,58 +29,58 @@ public:
 	virtual void OnEndTurnEvent() override;
 
 	/* Actions */
-	void MoveTo(Tile* targetTileP);
-	void Attack(Figurines* targetP);
+	void MoveTo(Tile *targetTileP);
+	void Attack(Figurines *targetP);
 	void GetHit(int damageAmountP);
 
 	/* Getters */
-	const float GetMovementAction() { return m_CurrentMovementAction; }
-	const int GetActionPoint() { return m_CurrentActionPoint; }
-	const int GetHealthPoint() { return m_CurrentHealthPoint; }
-	const float GetAttackRange() { return m_AttackRange; }
-	const int getOwner() { return ownerID; }
-	const bool IsDead() { return m_IsDead; }
+	const float GetMovementAction() { return mCurrentMovementAction; }
+	const int GetActionPoint() { return mCurrentActionPoint; }
+	const int GetHealthPoint() { return mCurrentHealthPoint; }
+	const float GetAttackRange() { return mAttackRange; }
+	const int GetOwner() { return mOwnerID; }
+	const bool IsDead() { return mIsDead; }
 
 private:
 	/* References */
-	GameEngine& m_GameEngine;
+	GameEngine &mGameEngine;
 
-	bool m_IsSelected{ false };
-	bool m_IsEnemy{ false };
-	float m_UniformScale{ 0.02 };
-	Vector3 m_Offset{ 0,0.f,0 };
-	int ownerID{ 0 };
+	bool mIsSelected = false;
+	bool mIsEnemy = false;
+	float mUniformScale = 0.02f;
+	Vector3 mOffset = Vector3(0);
+	int mOwnerID = 0;
 
 	/* Figurine Stats */
-	float m_MaxMovementAction{ 108 };
-	int m_MaxHealthPoint{ 2 };
-	float m_AttackRange{ 50 };
-	int m_MaxActionPoint{ 2 };
+	float mMaxMovementAction = 108.f;
+	int mMaxHealthPoint = 2;
+	float mAttackRange = 50.f;
+	int mMaxActionPoint = 2;
 
 	/* Current Stats */
-	int m_CurrentHealthPoint{ m_MaxHealthPoint };
-	float m_CurrentMovementAction{ m_MaxMovementAction };
-	int m_CurrentActionPoint{ m_MaxActionPoint };
+	int mCurrentHealthPoint;
+	float mCurrentMovementAction;
+	int mCurrentActionPoint;
 
 	/* On selected Animation properties */
-	float animationTime{ 0 };
-	float scaleSpeed{ 2.f };
-	float scaleFactor{ 0.002f };
-	float flattenSpeed{ 1.f };
-	float flattenFactor{ 0.001f };
-	float m_MovementSpeed{ 10.f };
+	float mAnimationTime = 0.f;
+	float mScaleSpeed = 2.f;
+	float mScaleFactor = 0.002f;
+	float mFlattenSpeed = 1.f;
+	float mFlattenFactor = 0.001f;
+	float mMovementSpeed = 10.f;
 
 	/* On Movement */
-	PathFindingComponent* pathfinding{ nullptr };
-	std::vector<TurnThreshold*> m_Path;
-	Vector3 straightTargetPosition;
-	int m_IndexPosition{ 1 };
-	bool m_IsMoving{ false };
-	bool m_MoveStraight{ false };
-	int turnSpeed{ 4 };
+	PathFindingComponent* mPathfinding = nullptr;
+	std::vector<TurnThreshold*> mPath;
+	Vector3 mStraightTargetPosition;
+	int mIndexPosition = 1;
+	bool mIsMoving = false;
+	bool mMoveStraight = false;
+	int mTurnSpeed = 4;
 
 	/* On Death */
-	bool m_IsDead = false;
-	void LookAt(const Ogre::Vector3& targetPosition, float deltaTime, int turnSpeed);
+	bool mIsDead = false;
+	void LookAt(const Ogre::Vector3& targetPositionP, float deltaTimeP);
 };
 

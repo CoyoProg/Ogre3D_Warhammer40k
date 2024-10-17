@@ -4,7 +4,7 @@
 class Components
 {
 public:
-	virtual void Update(float deltaTime) {};
+	virtual void Update(float deltaTimeP) {};
 
 private:
 };

@@ -9,18 +9,18 @@
 #include "QueryFlags.h"
 #include <iostream>
 
-Player::Player(GameEngine& gameEngineP) :
-	m_GameEngine (gameEngineP),
-    m_RayScnQuery(0)
+Player::Player(GameEngine &gameEngineP) :
+	mGameEngine (gameEngineP),
+    mRayScnQuery(0)
 {
     /*  Add Components */
-	CameraComponent* camera = new CameraComponent(gameEngineP);
+	CameraComponent *camera = new CameraComponent(gameEngineP);
 	gameEngineP.getRenderWindow()->addViewport(camera->getCamera());
 	AddComponent(camera);
 
     /* Create the Ray */
-    m_RayScnQuery = gameEngineP.GetSceneManager()->createRayQuery(Ogre::Ray());
-    m_RayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
+    mRayScnQuery = gameEngineP.GetSceneManager()->createRayQuery(Ogre::Ray());
+    mRayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
 
     /* Add listener */
     gameEngineP.addInputListener(this);
@@ -30,50 +30,50 @@ Player::Player(GameEngine& gameEngineP) :
     m_OverlayManager = OverlayManager::getSingletonPtr();
 
     /* Create the Dice */
-    //m_Dice = m_GameEngine.GetSceneManager()->createEntity("Dice", "Dice.mesh");
-    //m_Dice->setMaterialName("Dice");
-    //SceneNode* diceNode = m_GameEngine.GetSceneManager()->getRootSceneNode()->createChildSceneNode("DiceNode");
-    //diceNode->attachObject(m_Dice);
+    //mDice = mGameEngine.GetSceneManager()->createEntity("Dice", "Dice.mesh");
+    //mDice->setMaterialName("Dice");
+    //SceneNode* diceNode = mGameEngine.GetSceneManager()->getRootSceneNode()->createChildSceneNode("DiceNode");
+    //diceNode->attachObject(mDice);
     //diceNode->setPosition(Vector3(0, 10, 0));
     //diceNode->setScale(Vector3(.05f, .05f, .05f));
 }
 
 Player::~Player()
 {
-    m_GameEngine.GetSceneManager()->destroyQuery(m_RayScnQuery);
+    mGameEngine.GetSceneManager()->destroyQuery(mRayScnQuery);
 }
 
-void Player::Update(float deltaTime)
+void Player::Update(float deltaTimeP)
 {
-	Actors::Update(deltaTime);
+	Actors::Update(deltaTimeP);
 
     /* We dont want it to be called every framed */
-    //functionDelay -= deltaTime;
-    //if (m_CurrentSelected && functionDelay <= 0)
+    //mFunctionDelay -= deltaTime;
+    //if (mCurrentSelected && mFunctionDelay <= 0)
     //{
-    //    functionDelay = .2f;
+    //    mFunctionDelay = .2f;
     //    IsOnMovementSight();
     //}
 }
 
-void Player::MouseRayTo3D(int mouseX, int mouseY)
+void Player::MouseRayTo3D(int mouseXP, int mouseYP)
 {
     // Cast Ray //
-    float width = mouseX / (float)m_GameEngine.getRenderWindow()->getWidth();
-    float height = mouseY / (float)m_GameEngine.getRenderWindow()->getHeight();
+    float width = mouseXP / (float)mGameEngine.getRenderWindow()->getWidth();
+    float height = mouseYP / (float)mGameEngine.getRenderWindow()->getHeight();
 
-    CameraComponent* camComp = (CameraComponent*)myComponents[0];
-    Camera* m_Camera = camComp->getCamera();
+    CameraComponent *camComp = (CameraComponent*)myComponents[0];
+    Camera *mCamera = camComp->getCamera();
 
-    mouseRay = m_Camera->getCameraToViewportRay(width, height);
+    mMouseRay = mCamera->getCameraToViewportRay(width, height);
 
-    m_RayScnQuery->setRay(mouseRay);
-    m_RayScnQuery->setSortByDistance(true);
-    m_RayScnQuery->setQueryMask(FIGURINE_MASK | OBSTACLE_MASK);
+    mRayScnQuery->setRay(mMouseRay);
+    mRayScnQuery->setSortByDistance(true);
+    mRayScnQuery->setQueryMask(FIGURINE_MASK | OBSTACLE_MASK);
 
 
     // Check for Collisions //
-    RaySceneQueryResult& result = m_RayScnQuery->execute();
+    RaySceneQueryResult &result = mRayScnQuery->execute();
     RaySceneQueryResult::iterator it = result.begin();
 
     /* Check if the entity is not a figurine */
@@ -84,89 +84,89 @@ void Player::MouseRayTo3D(int mouseX, int mouseY)
     }
 
     /* Try to get the entity's actor class and cast it to figurines */
-    SceneNode* sceneNodeHit = it->movable->getParentSceneNode();
-    Actors* getActor = m_GameEngine.GetSceneActor(sceneNodeHit);
+    SceneNode *sceneNodeHit = it->movable->getParentSceneNode();
+    Actors *getActor = mGameEngine.GetSceneActor(sceneNodeHit);
     if (!getActor)
     {
         ResetMouseOver();
         return;
     }
 
-    Figurines* temporary = dynamic_cast<Figurines*>(getActor);
+    Figurines *temporary = dynamic_cast<Figurines*>(getActor);
     if (!temporary)
     {
         ResetMouseOver();
         return;
     }
 
-    if (temporary != m_CurrentMouseOver)
+    if (temporary != mCurrentMouseOver)
     {
         ResetMouseOver();
 
-        m_CurrentMouseOver = temporary;
+        mCurrentMouseOver = temporary;
 
-        bool isEnemy = m_CurrentMouseOver->getOwner() != PlayerID;
-        m_CurrentMouseOver->OnMouseOver(isEnemy);
+        bool isEnemy = mCurrentMouseOver->GetOwner() != mPlayerID;
+        mCurrentMouseOver->OnMouseOver(isEnemy);
     }
 }
 
 void Player::ResetMouseOver()
 {
-    if (m_CurrentMouseOver)
-        m_CurrentMouseOver->OnMouseOut();
+    if (mCurrentMouseOver)
+        mCurrentMouseOver->OnMouseOut();
 
-    m_CurrentMouseOver = nullptr;
+    mCurrentMouseOver = nullptr;
 }
 
-void Player::OnLBMouseDown(int mouseX, int mouseY)
+void Player::OnLBMouseDown(int mouseXP, int mouseYP)
 {
     /* Unselect current selection if nothing is Moused Over */
-    if (!m_CurrentMouseOver && m_IsActorSelected)
+    if (!mCurrentMouseOver && mIsActorSelected)
     {
         UnselectFigurine();
         return;
     }
 
-    if (!m_CurrentMouseOver)
+    if (!mCurrentMouseOver)
     {
         HideCards();
         return;
     }
 
     /* Check if selecting an Enemy's figurine */
-    if (m_CurrentMouseOver->getOwner() != PlayerID)
+    if (mCurrentMouseOver->GetOwner() != mPlayerID)
     {
-        ShowFigurineCard(m_CurrentMouseOver, true);
+        ShowFigurineCard(mCurrentMouseOver, true);
         return;
     }
 
     /* If no current selection, select the new figurine */
-    if (!m_IsActorSelected)
+    if (!mIsActorSelected)
     {
-        SelectFigurine(m_CurrentMouseOver);
+        SelectFigurine(mCurrentMouseOver);
         return;
     }
 
     /* Check if current selection isn't the same as the new selected figurine */
-    if (m_CurrentMouseOver->GetSceneNode() != m_CurrentSelected->GetSceneNode())
+    if (mCurrentMouseOver->GetSceneNode() != mCurrentSelected->GetSceneNode())
     {
         UnselectFigurine();
-        SelectFigurine(m_CurrentMouseOver);
+        SelectFigurine(mCurrentMouseOver);
     }else
         UnselectFigurine();
 }
 
-void Player::OnRBMouseDown(int mouseX, int mouseY)
+void Player::OnRBMouseDown(int mouseXP, int mouseYP)
 {
     /* Check if a figurine is selected */
-    if (m_CurrentSelected)
+    if (mCurrentSelected)
     { 
         /* Check if the figurine is already doing an action */
-        if (!m_CurrentSelected->IsSleeping())
+        if (!mCurrentSelected->IsSleeping())
             return;
 
         /* Cast a Ray to check what we right click on */
-        RaySceneQueryResult& result = m_RayScnQuery->execute();
+        RaySceneQueryResult &result = mRayScnQuery->execute();
         RaySceneQueryResult::iterator hitResult = result.begin();
 
         for (; hitResult != result.end(); hitResult++)
@@ -175,70 +175,70 @@ void Player::OnRBMouseDown(int mouseX, int mouseY)
             if (hitResult->movable->getQueryFlags() != FIGURINE_MASK && hitResult->movable->getQueryFlags() != OBSTACLE_MASK)
             {
                 /* Calculate the target position depending on the hitresult */
-                Vector3 rayOrigin = mouseRay.getOrigin();
-                Vector3 rayDirection = mouseRay.getDirection();
+                Vector3 rayOrigin = mMouseRay.getOrigin();
+                Vector3 rayDirection = mMouseRay.getDirection();
 
-                m_NewPosition.x = rayOrigin.x + hitResult->distance * rayDirection.x;
-                m_NewPosition.y = rayOrigin.y + hitResult->distance * rayDirection.y;
-                m_NewPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
+                mNewPosition.x = rayOrigin.x + hitResult->distance * rayDirection.x;
+                mNewPosition.y = rayOrigin.y + hitResult->distance * rayDirection.y;
+                mNewPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
 
-                m_TargetPosition = m_NewPosition;
-                Tile* targetTile = m_GameEngine.GetGrid().GetTile(m_TargetPosition);
+                mTargetPosition = mNewPosition;
+                Tile *targetTile = mGameEngine.GetGrid().GetTile(mTargetPosition);
 
                 /* Check if the tile is on the Figurine Grid Movement */
                 if (targetTile->GetType() == TILE_MOVEMENT_SELECTED)
                 {
-                    m_TargetPosition.y = 2.f;
+                    mTargetPosition.y = 2.f;
 
                     /* Move to the target position */
-                    m_CurrentSelected->MoveTo(targetTile);
+                    mCurrentSelected->MoveTo(targetTile);
                 }
 
                 /* Update Left Card Text */
-                float movementAction = m_CurrentSelected->GetMovementAction();
-                int healthPoint = m_CurrentSelected->GetHealthPoint();
+                float movementAction = mCurrentSelected->GetMovementAction();
+                int healthPoint = mCurrentSelected->GetHealthPoint();
                 SetCardTextValues(movementAction, healthPoint);
 
                 break;
             }
 
             /* Check if the selected figurine has any ActionPoint Left*/
-            if (m_CurrentSelected->GetActionPoint() <= 0)
+            if (mCurrentSelected->GetActionPoint() <= 0)
                 return;
 
             if(hitResult->movable->getQueryFlags() == QueryFlags::FIGURINE_MASK)
             {
                 /* If right clicking on the current selected figurine, return */
-                if (m_CurrentSelected->GetEntity() == hitResult->movable)
+                if (mCurrentSelected->GetEntity() == hitResult->movable)
                     return;
 
 
                 /* Try to get entity's actor class and cast it to figurines */
-                SceneNode* sceneNodeHit = hitResult->movable->getParentSceneNode();
-                Actors* getActor = m_GameEngine.GetSceneActor(sceneNodeHit);
+                SceneNode *sceneNodeHit = hitResult->movable->getParentSceneNode();
+                Actors *getActor = mGameEngine.GetSceneActor(sceneNodeHit);
                 if (!getActor)
                     return;
 
-                Figurines* target = dynamic_cast<Figurines*>(getActor);
+                Figurines *target = dynamic_cast<Figurines*>(getActor);
                 if (!target)
                     return;
 
                 /* Check if targeting an ally */
-                if (target->getOwner() == m_CurrentSelected->getOwner())
+                if (target->GetOwner() == mCurrentSelected->GetOwner())
                     return; // Heal or Buff Ally Here
 
                 /* Check if the enemy is On Shooting Sight */
-                if (distanceFromSelected > m_CurrentSelected->GetAttackRange())
+                if (mDistanceFromSelected > mCurrentSelected->GetAttackRange())
                     return;
 
-                m_CurrentSelected->Attack(target);
+                mCurrentSelected->Attack(target);
             }
             break;
         }
     }
 }
 
-void Player::ShowFigurineCard(Figurines* figurineP, bool isRightCard)
+void Player::ShowFigurineCard(Figurines *figurineP, bool isRightCardP)
 {
     /* Update the Right Card Texts*/
     float movementAction = figurineP->GetMovementAction();
@@ -248,7 +248,7 @@ void Player::ShowFigurineCard(Figurines* figurineP, bool isRightCard)
     std::string figurineName = figurineP->GetEntity()->getName();
 
     /* Show right card if it's an enemy card */
-    if (isRightCard)
+    if (isRightCardP)
     {
         m_OverlayManager->getOverlayElement("RightCardNameText")->setCaption(figurineName);
         m_OverlayManager->getOverlayElement("RightCard")->show();
@@ -261,19 +261,19 @@ void Player::ShowFigurineCard(Figurines* figurineP, bool isRightCard)
     m_OverlayManager->getOverlayElement("LeftCard")->show();
 }
 
-void Player::SetCardTextValues(float movementPoint, int healthPoint, bool isRightCard)
+void Player::SetCardTextValues(float movementPointP, int healthPointP, bool isRightCardP)
 {
     // Convert to string with precision of 1 decimal place
-    std::string result = std::to_string(movementPoint);
+    std::string result = std::to_string(movementPointP);
     size_t dotPos = result.find('.');
     if (dotPos != std::string::npos && result.length() > dotPos + 2)
     {
         result = result.substr(0, dotPos + 2);
     }
 
-    std::string figurinesPoints = std::string("Health Point: " + std::to_string(healthPoint) + " \n\n" + std::string("Movement Point: ") + result);
+    std::string figurinesPoints = std::string("Health Point: " + std::to_string(healthPointP) + " \n\n" + std::string("Movement Point: ") + result);
    
-    if (isRightCard)
+    if (isRightCardP)
     {
         m_OverlayManager->getOverlayElement("RightCardText")->setCaption(figurinesPoints);
         return;
@@ -284,37 +284,37 @@ void Player::SetCardTextValues(float movementPoint, int healthPoint, bool isRigh
 
 void Player::IsOnMovementSight()
 {
-    //RaySceneQueryResult& result = m_RayScnQuery->execute();
+    //RaySceneQueryResult& result = mRayScnQuery->execute();
     //RaySceneQueryResult::iterator hitResult = result.begin();
     //
     //Vector3 rayOrigin = mouseRay.getOrigin();
     //Vector3 rayDirection = mouseRay.getDirection();
     //
-    //m_NewPosition.x = rayOrigin.x + hitResult->distance * rayDirection.x;
-    //m_NewPosition.y = rayOrigin.y + hitResult->distance * rayDirection.y;
-    //m_NewPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
+    //mNewPosition.x = rayOrigin.x + hitResult->distance * rayDirection.x;
+    //mNewPosition.y = rayOrigin.y + hitResult->distance * rayDirection.y;
+    //mNewPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
     //
-    //m_TargetPosition = m_NewPosition;
+    //m_TargetPosition = mNewPosition;
     //m_TargetPosition.y = 2.f;
-    //m_CurrentSelectedPosition = m_CurrentSelected->GetPosition();
-    //m_CurrentSelectedPosition.y = 2.f;
+    //mCurrentSelectedPosition = mCurrentSelected->GetPosition();
+    //mCurrentSelectedPosition.y = 2.f;
     //
-    //distanceFromSelected = (m_CurrentSelectedPosition - m_TargetPosition).length();
+    //mDistanceFromSelected = (mCurrentSelectedPosition - m_TargetPosition).length();
     //
-    //if (distanceFromSelected > m_CurrentSelected->GetMovementAction())
+    //if (mDistanceFromSelected > mCurrentSelected->GetMovementAction())
     //{
-    //    m_OnSightFromSelected = false;
+    //    mOnSightFromSelected = false;
     //    return;
     //}
     //
-    //m_OnSightFromSelected = true;
+    //mOnSightFromSelected = true;
 }
 
-void Player::SelectFigurine(Figurines* figurineP)
+void Player::SelectFigurine(Figurines *figurineP)
 {
-    m_CurrentSelected = figurineP;
-    m_CurrentSelected->OnSelected(true);
-    m_IsActorSelected = true;
+    mCurrentSelected = figurineP;
+    mCurrentSelected->OnSelected(true);
+    mIsActorSelected = true;
 
     ShowFigurineCard(figurineP, false);
 }
@@ -322,9 +322,9 @@ void Player::SelectFigurine(Figurines* figurineP)
 void Player::UnselectFigurine()
 {
     // Unselect the last selected actor
-    m_CurrentSelected->OnSelected(false);
-    m_CurrentSelected = nullptr;
-    m_IsActorSelected = false;
+    mCurrentSelected->OnSelected(false);
+    mCurrentSelected = nullptr;
+    mIsActorSelected = false;
 
     HideCards();
 }
@@ -337,7 +337,7 @@ void Player::HideCards()
 
 bool Player::mouseMoved(const MouseMotionEvent& evt)
 {
-    if(m_GameEngine.isGameLoaded)
+    if(mGameEngine.isGameLoaded)
         MouseRayTo3D(evt.x, evt.y);
 
     return false;
@@ -350,13 +350,13 @@ bool Player::mousePressed(const MouseButtonEvent& evt)
     if (key == 1)
     {
         OnLBMouseDown(evt.x, evt.y);
-        m_IsLMBDown = true;
+        mIsLMBDown = true;
     }
 
     if (key == 3)
     {
         OnRBMouseDown(evt.x, evt.y);
-        m_IsRMBDown = true;
+        mIsRMBDown = true;
     }
 
     return false;
@@ -368,12 +368,12 @@ bool Player::mouseReleased(const MouseButtonEvent& evt)
 
     if (key == 1)
     {
-        m_IsLMBDown = false;
+        mIsLMBDown = false;
     }
 
     if (key == 3)
     {
-        m_IsRMBDown = false;
+        mIsRMBDown = false;
     }
 
     return false;

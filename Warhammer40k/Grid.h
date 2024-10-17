@@ -21,82 +21,84 @@ class Tile
 public:
 	Tile(Entity* tileEntityP, int tileTypeP, Vector2 gridCoordinatesP) 
 	{
-		tileEntity = tileEntityP; 
-		tileType = tileTypeP;
+		mTileEntity = tileEntityP; 
+		mTileType = tileTypeP;
 
 		gridCoordinates = gridCoordinatesP;
 	}
 	~Tile() {};
 
-	void SetTile(int enumType)
+	void SetTile(int enumTypeP)
 	{
-		switch (enumType)
+		switch (enumTypeP)
 		{
 		case 0:
-			tileEntity->setMaterialName("Tile_Empty");
-			tileType = 0;
+			mTileEntity->setMaterialName("Tile_Empty");
+			mTileType = 0;
 			break;
 		case 1:
-			tileEntity->setMaterialName("Tile_Valid");
-			tileType = 1;
+			mTileEntity->setMaterialName("Tile_Valid");
+			mTileType = 1;
 			break;
 		case 2:
-			tileEntity->setMaterialName("Tile_Obstacle");
-			tileType = 2;
+			mTileEntity->setMaterialName("Tile_Obstacle");
+			mTileType = 2;
 			break;
 		case 3:
-			tileEntity->setMaterialName("Tile_SoftValid");
-			tileType = 3;
+			mTileEntity->setMaterialName("Tile_SoftValid");
+			mTileType = 3;
 			break;
 		case 4:
-			tileEntity->setMaterialName("Tile_Enemy");
-			tileType = 4;
+			mTileEntity->setMaterialName("Tile_Enemy");
+			mTileType = 4;
 			break;
 		case 5:
-			tileEntity->setMaterialName("Tile_Blend");
-			tileType = 5;
+			mTileEntity->setMaterialName("Tile_Blend");
+			mTileType = 5;
 			break;
 		}
 	}
 
-	int GetType() { return tileType; }
+	int GetType() { return mTileType; }
 	int GetFCost() { return gCost + hCost; }
-	int gCost{INT_MAX};
-	int hCost{0};
+	int gCost = INT_MAX;
+	int hCost = 0;
 
-	Vector2 gridCoordinates{ 0,0 };
-	Tile* parentNode{ nullptr };
+	Vector2 gridCoordinates = Vector2(0);
+	Tile *parentNode = nullptr;
+
 private:
-	Entity* tileEntity;
-	int tileType{ 0 };
+	Entity *mTileEntity;
+	int mTileType{ 0 };
 };
 
 class Grid
 {
 public:
-	Grid(GameEngine& gameEngineP);
+	Grid(GameEngine &gameEngineP);
 	~Grid();
 
-	void SetTileMaterial(int coordX, int coordZ, int enumType);
+	void SetTileMaterial(int coordXP, int coordZP, int enumTypeP);
 
 	/* PathFinding */
-	int GetTileType(int coordX, int coordZ) { return grid[coordX][-coordZ]->GetType(); }
+	int GetTileType(int coordXP, int coordZP) { return mGrid[coordXP][-coordZP]->GetType(); }
 	Tile* GetTile(Vector3 positionP);
-	std::vector<Tile*> GetNeighboursTiles(Tile* currentTile);
+	std::vector<Tile*> GetNeighboursTiles(Tile *currentTileP);
 
 	Vector2 GetGridCoords(Vector3 positionP);
-	Vector3 GetWorldPosition(Vector2 gridCoords);
+	Vector3 GetWorldPosition(Vector2 gridCoordsP);
 	Vector3 SnapToGrid(Vector3 positionP);
 
 	void OnFlip();
+
 private:
-	GameEngine& m_gameEngine;
+	GameEngine &mGameEngine;
 
 	/*Grid properties */
-	float padding{ 1.f };
-	Tile* grid[GRID_SIZE_X][GRID_SIZE_Z];
+	float mPadding = 1.f;
+	Tile* mGrid[GRID_SIZE_X][GRID_SIZE_Z];
 
 	void CreateGrid();
-	void CreateTiles(Ogre::SceneManager& sceneManager, int count, int coordX, int coordZ);
+	void CreateTiles(Ogre::SceneManager& sceneManagerP, int countP, int coordXP, int coordZP);
 };
 

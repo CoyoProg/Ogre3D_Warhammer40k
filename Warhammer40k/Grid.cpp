@@ -2,7 +2,7 @@
 #include <iostream>
 
 Grid::Grid(GameEngine& gameEngineP) :
-	m_gameEngine(gameEngineP)
+	mGameEngine(gameEngineP)
 {
 	gameEngineP.SetGrid(this);
 	CreateGrid();
@@ -15,7 +15,7 @@ Grid::~Grid()
 
 void Grid::CreateGrid()
 {
-	SceneManager& sceneManager = *m_gameEngine.GetSceneManager();
+	SceneManager &sceneManager = *mGameEngine.GetSceneManager();
 
 	int count = 0;
 	for (int x = 0; x < GRID_SIZE_X; x++)
@@ -27,35 +27,35 @@ void Grid::CreateGrid()
 		}
 	}
 
-	grid[0][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
-	grid[GRID_SIZE_X-1][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
+	mGrid[0][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
+	mGrid[GRID_SIZE_X-1][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
 
-	grid[0][0]->SetTile(TILE_MOVEMENT_SELECTED);
-	grid[GRID_SIZE_X-1][0]->SetTile(TILE_MOVEMENT_SELECTED);
+	mGrid[0][0]->SetTile(TILE_MOVEMENT_SELECTED);
+	mGrid[GRID_SIZE_X-1][0]->SetTile(TILE_MOVEMENT_SELECTED);
 
-	grid[39][0]->SetTile(TILE_MOVEMENT_SELECTED);
-	grid[40][0]->SetTile(TILE_MOVEMENT_SELECTED);
+	mGrid[39][0]->SetTile(TILE_MOVEMENT_SELECTED);
+	mGrid[40][0]->SetTile(TILE_MOVEMENT_SELECTED);
 }
 
-void Grid::CreateTiles(Ogre::SceneManager& sceneManager, int count, int coordX, int coordZ)
+void Grid::CreateTiles(Ogre::SceneManager &sceneManagerP, int countP, int coordXP, int coordZP)
 {
-	std::string entityName = "Tile " + std::to_string(count);
-	std::string nodeName = "TileNode " + std::to_string(count);
+	std::string entityName = "Tile " + std::to_string(countP);
+	std::string nodeName = "TileNode " + std::to_string(countP);
 
-	Entity* planeEntity = sceneManager.createEntity(entityName, SceneManager::PT_PLANE);
+	Entity *planeEntity = sceneManagerP.createEntity(entityName, SceneManager::PT_PLANE);
 	planeEntity->setMaterialName("Tile_Empty");
-	SceneNode* planeNode = sceneManager.getRootSceneNode()->createChildSceneNode();
+	SceneNode *planeNode = sceneManagerP.getRootSceneNode()->createChildSceneNode();
 	planeNode->attachObject(planeEntity);
-	planeNode->setPosition(Vector3(coordX * GRID_CELL_SIZE + GRID_CELL_SIZE / 2, 0.11f, -coordZ * GRID_CELL_SIZE - GRID_CELL_SIZE / 2) + GRID_OFFSET);
+	planeNode->setPosition(Vector3(coordXP * GRID_CELL_SIZE + GRID_CELL_SIZE / 2, 0.11f, -coordZP * GRID_CELL_SIZE - GRID_CELL_SIZE / 2) + GRID_OFFSET);
 	planeNode->pitch(Degree(-90));
 	planeNode->setScale(Vector3(.025f / GRID_MULTIPLICATEUR, .025f / GRID_MULTIPLICATEUR, 1.f));
 
-	grid[coordX][coordZ] = new Tile(planeEntity, 0, Vector2(coordX, coordZ));
+	mGrid[coordXP][coordZP] = new Tile(planeEntity, 0, Vector2(coordXP, coordZP));
 }
 
-void Grid::SetTileMaterial(int coordX, int coordZ, int enumType)
+void Grid::SetTileMaterial(int coordXP, int coordZP, int enumTypeP)
 {
-	grid[coordX][-coordZ]->SetTile(enumType);
+	mGrid[coordXP][-coordZP]->SetTile(enumTypeP);
 }
 
 Tile* Grid::GetTile(Vector3 positionP)
@@ -64,10 +64,10 @@ Tile* Grid::GetTile(Vector3 positionP)
 	int coordX = tileCoords.x;
 	int coordZ = tileCoords.y;
 
-	return grid[coordX][-coordZ];
+	return mGrid[coordX][-coordZ];
 }
 
-std::vector<Tile*> Grid::GetNeighboursTiles(Tile* currentTile)
+std::vector<Tile*> Grid::GetNeighboursTiles(Tile *currentTileP)
 {
 	std::vector<Tile*> neighbours;
 	for (int x = -1; x <= 1; x++)
@@ -77,13 +77,13 @@ std::vector<Tile*> Grid::GetNeighboursTiles(Tile* currentTile)
 			if (x == 0 && z == 0)
 				continue;
 
-			int checkX = currentTile->gridCoordinates.x + x;
-			int checkZ = currentTile->gridCoordinates.y + z;
+			int checkX = currentTileP->gridCoordinates.x + x;
+			int checkZ = currentTileP->gridCoordinates.y + z;
 
 			if (checkX >= 0 && checkX < GRID_SIZE_X &&
 				checkZ >= 0 && checkZ < GRID_SIZE_Z)
 			{
-				neighbours.emplace_back(grid[checkX][checkZ]);
+				neighbours.emplace_back(mGrid[checkX][checkZ]);
 			}
 		}
 	}
@@ -100,12 +100,12 @@ Vector2 Grid::GetGridCoords(Vector3 positionP)
 	return Vector2(coordX, coordZ);
 }
 
-Vector3 Grid::GetWorldPosition(Vector2 gridCoords)
+Vector3 Grid::GetWorldPosition(Vector2 gridCoordsP)
 {
 	Vector3 position;
-	position.x = gridCoords.x * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
+	position.x = gridCoordsP.x * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
 	position.y = 0;
-	position.z = -gridCoords.y * GRID_CELL_SIZE - GRID_CELL_SIZE / 2;
+	position.z = -gridCoordsP.y * GRID_CELL_SIZE - GRID_CELL_SIZE / 2;
 
 	position += GRID_OFFSET;
 
@@ -127,7 +127,7 @@ void Grid::OnFlip()
 	{
 		for (int z = 0; z < GRID_SIZE_Z; z++)
 		{
-			grid[x][z]->SetTile(TILE_EMPTY);
+			mGrid[x][z]->SetTile(TILE_EMPTY);
 		}
 	}
 }

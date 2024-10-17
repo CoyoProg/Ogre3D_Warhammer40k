@@ -10,15 +10,15 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="Scale">: always need to be positive.</param>
-	Obstacles(GameEngine& gameEngineP, Vector2 gridCoordsP, Vector3 scaleP, std::string ID);
+	Obstacles(GameEngine &gameEngineP, Vector2 gridCoordsP, Vector3 scaleP, std::string ID);
 	~Obstacles();
 
-	void UpdateCollisions(Grid& gridP, bool OnFlip = false);
-	void FlipCollisions(Grid& gridP);
+	void UpdateCollisions(Grid &gridP, bool OnFlipP = false);
+	void FlipCollisions(Grid &gridP);
 
 private:
-	bool m_OnFlip{ false };
-	Vector3 m_Scale;
-	Vector2 m_GridCoords;
+	bool mOnFlip = false;
+	Vector3 mScale;
+	Vector2 mGridCoords;
 };
 

@@ -4,9 +4,8 @@
 #include <map>
 
 PathFindingComponent::PathFindingComponent(GameEngine& gameEngineP)  :
-	grid(gameEngineP.GetGrid()),
-	sceneManager(gameEngineP.GetSceneManager()),
-	finishLineIndex(0)
+	mGrid(gameEngineP.GetGrid()),
+	sceneManager(gameEngineP.GetSceneManager())
 {
 }
 
@@ -14,19 +13,19 @@ PathFindingComponent::~PathFindingComponent()
 {
 }
 
-void PathFindingComponent::Update(float deltaTime)
+void PathFindingComponent::Update(float deltaTimeP)
 {
 }
 
-void PathFindingComponent::GetMovementGrid(Vector3 startPositionP, int movementPointP, int tileType)
+void PathFindingComponent::GetMovementGrid(Vector3 startPositionP, int movementPointP, int tileTypeP)
 {
-	m_MovementGrid.clear();
-	m_ParentSet.clear();
+	mMovementGrid.clear();
+	mParentSet.clear();
 
 	std::vector<Tile*> openSet;
 	std::vector<Tile*> closeSet;
 
-	Tile* startTile = grid.GetTile(startPositionP);
+	Tile* startTile = mGrid.GetTile(startPositionP);
 	startTile->gCost = 0;
 
 	openSet.push_back(startTile);
@@ -41,15 +40,15 @@ void PathFindingComponent::GetMovementGrid(Vector3 startPositionP, int movementP
 		if (currentTile->gCost > movementPointP)
 			continue;
 
-		m_MovementGrid.push_back(currentTile);
+		mMovementGrid.push_back(currentTile);
 
 		if (currentTile->GetType() != TILE_MOVEMENT_SELECTED)
-			currentTile->SetTile(tileType);
-		else if (tileType == TILE_MOVEMENT_ENEMY)
+			currentTile->SetTile(tileTypeP);
+		else if (tileTypeP == TILE_MOVEMENT_ENEMY)
 			currentTile->SetTile(TILE_MOVEMENT_BLEND);
 
 
-		for (auto neighbours : grid.GetNeighboursTiles(currentTile))
+		for (auto neighbours : mGrid.GetNeighboursTiles(currentTile))
 		{
 			bool isVisited = std::find(closeSet.begin(), closeSet.end(), neighbours) != closeSet.end();
 
@@ -62,7 +61,7 @@ void PathFindingComponent::GetMovementGrid(Vector3 startPositionP, int movementP
 			{
 				neighbours->gCost = newMovementCost;
 
-				m_ParentSet[neighbours] = currentTile;
+				mParentSet[neighbours] = currentTile;
 
 				bool isOpened = std::find(openSet.begin(), openSet.end(), neighbours) != openSet.end();
 
@@ -84,11 +83,11 @@ void PathFindingComponent::HideMovementGrid(bool isSelectedP)
 {
 	if (!isSelectedP)
 	{
-		for (auto tiles : m_MovementGrid)
+		for (auto tiles : mMovementGrid)
 		{
-			int tileType = tiles->GetType();
+			int mTileType = tiles->GetType();
 
-			if(tileType != TILE_MOVEMENT_SELECTED && tileType != TILE_MOVEMENT_BLEND)
+			if(mTileType != TILE_MOVEMENT_SELECTED && mTileType != TILE_MOVEMENT_BLEND)
 				tiles->SetTile(TILE_EMPTY);
 			else
 				tiles->SetTile(TILE_MOVEMENT_SELECTED);
@@ -97,7 +96,7 @@ void PathFindingComponent::HideMovementGrid(bool isSelectedP)
 		return;
 	}
 
-	for (auto tiles : m_MovementGrid)
+	for (auto tiles : mMovementGrid)
 		tiles->SetTile(TILE_EMPTY);
 
 }
@@ -107,7 +106,7 @@ std::vector<TurnThreshold*> PathFindingComponent::GetTurnPath()
 	lookPoints.clear();
 	turnBoundaries.clear();
 
-	lookPoints = m_FinalPath;
+	lookPoints = mFinalPath;
 	finishLineIndex = lookPoints.size() - 1;
 
 	Vector2 previousNormDir{ 0,0 };
@@ -140,10 +139,10 @@ std::vector<TurnThreshold*> PathFindingComponent::GetTurnPath()
 	return turnBoundaries;
 }
 
-int PathFindingComponent::GetDistance(const Tile& tileA, const Tile& tileB)
+int PathFindingComponent::GetDistance(const Tile& tileAP, const Tile& tileBP)
 {
-	int distanceX = abs(tileA.gridCoordinates.x - tileB.gridCoordinates.x);
-	int distanceZ = abs(tileA.gridCoordinates.y - tileB.gridCoordinates.y);
+	int distanceX = abs(tileAP.gridCoordinates.x - tileBP.gridCoordinates.x);
+	int distanceZ = abs(tileAP.gridCoordinates.y - tileBP.gridCoordinates.y);
 
 	if (distanceX > distanceZ)
 		return 14 * distanceZ + 10 * (distanceX - distanceZ);
@@ -151,25 +150,25 @@ int PathFindingComponent::GetDistance(const Tile& tileA, const Tile& tileB)
 	return 14 * distanceX + 10 * (distanceZ - distanceX);
 }
 
-void PathFindingComponent::RetracePath(Tile* startTile, Tile* targetTile)
+void PathFindingComponent::RetracePath(Tile *startTileP, Tile *targetTileP)
 {
-	m_FinalPath.clear();
+	mFinalPath.clear();
 
-	Tile* currentTile = targetTile;
+	Tile *currentTile = targetTileP;
 	Vector3 currentTilePosition;
 
-	m_StartPosition = grid.GetWorldPosition(startTile->gridCoordinates);
-	m_TargetPosition = grid.GetWorldPosition(targetTile->gridCoordinates);
+	mStartPosition = mGrid.GetWorldPosition(startTileP->gridCoordinates);
+	mTargetPosition = mGrid.GetWorldPosition(targetTileP->gridCoordinates);
 
-	while (currentTile != startTile)
+	while (currentTile != startTileP)
 	{
-		currentTilePosition = grid.GetWorldPosition(currentTile->gridCoordinates);
-		m_FinalPath.insert(m_FinalPath.begin(), currentTilePosition);
-		currentTile = m_ParentSet[currentTile];
+		currentTilePosition = mGrid.GetWorldPosition(currentTile->gridCoordinates);
+		mFinalPath.insert(mFinalPath.begin(), currentTilePosition);
+		currentTile = mParentSet[currentTile];
 	}
-	m_StartPosition.y = 0.0f;
-	m_TargetPosition.y = 0.0f;
+	mStartPosition.y = 0.0f;
+	mTargetPosition.y = 0.0f;
 
-	m_FinalPath.insert(m_FinalPath.begin(), m_StartPosition);
-	m_FinalPath.back() = m_TargetPosition;
+	mFinalPath.insert(mFinalPath.begin(), mStartPosition);
+	mFinalPath.back() = mTargetPosition;
 }

@@ -8,23 +8,23 @@ class Tile;
 class PathFindingComponent : public Components
 {
 public:
-	PathFindingComponent(GameEngine& gameEngineP);
+	PathFindingComponent(GameEngine &gameEngineP);
 	~PathFindingComponent();
 
-	virtual void Update(float deltaTime) override;
+	virtual void Update(float deltaTimeP) override;
 
 	/* This function uses Dijkstra's algorithm to find all the tiles that are accessible. */
-	void GetMovementGrid(Vector3 startPositionP, int movementPointP, int tileType = 1);
+	void GetMovementGrid(Vector3 startPositionP, int movementPointP, int mTileTypeP = 1);
 	void HideMovementGrid(bool isSelectedP = false);
 
-	void RetracePath(Tile* startTile, Tile* targetTile);
+	void RetracePath(Tile *startTileP, Tile *targetTileP);
 	std::vector<TurnThreshold*> GetTurnPath();
 
 	std::vector<Vector3> lookPoints;
 	std::vector<TurnThreshold*> turnBoundaries;
-	int finishLineIndex;
+	int finishLineIndex = 0;
 	int turnDst = 5;
-	SceneManager* sceneManager;
+	SceneManager *sceneManager = nullptr;
 
 	/* DEBUG */
 	void DrawLines()
@@ -39,14 +39,14 @@ public:
 	int totalCost = 0;
 
 private:
-	Grid& grid;
+	Grid &mGrid;
 
-	std::vector<Tile*> m_MovementGrid;
-	std::map<Tile*, Tile*> m_ParentSet;
-	std::vector<Vector3> m_FinalPath;
-	Vector3 m_StartPosition;
-	Vector3 m_TargetPosition;
+	std::vector<Tile*> mMovementGrid;
+	std::map<Tile*, Tile*> mParentSet;
+	std::vector<Vector3> mFinalPath;
+	Vector3 mStartPosition;
+	Vector3 mTargetPosition;
 
-	int GetDistance(const Tile& tileA, const Tile& tileB);
+	int GetDistance(const Tile& tileAP, const Tile& tileBP);
 };
 

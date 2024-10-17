@@ -9,22 +9,22 @@ public:
 	CameraComponent(GameEngine& gameEngineP);
 	~CameraComponent();
 
-	virtual void Update(float deltaTime) override;
-	Camera* getCamera() { return m_Camera; }
+	virtual void Update(float deltaTimeP) override;
+	Camera* getCamera() { return mCamera; }
 
 private:
 	/* Camera properties */
-	float m_CameraSpeed{ 50.f };
-	float m_MoveX{ 0.f };
-	float m_MoveZ{ 0.f };
-	float m_ZoomSpeed{ 20 };
-	float m_ClampMinY{ 20 };
-	float m_ClampMaxY{ 175 };
-	float m_ClampMaxX{ 300 };
-	float m_ClampMinZ{ -55 };
-	float m_ClampMaxZ{ 300 };
-	Camera* m_Camera{ nullptr };
-	SceneNode* m_CamNode{ nullptr };
+	float mCameraSpeed = 50.f;
+	float mMoveX = 0.f;
+	float mMoveZ = 0.f;
+	float mZoomSpeed = 20.f;
+	float mClampMinY = 20.f;
+	float mClampMaxY = 175.f;
+	float mClampMaxX = 300.f;
+	float mClampMinZ = -55.f;
+	float mClampMaxZ = 300.f;
+	Camera *mCamera = nullptr;
+	SceneNode *mCamNode = nullptr;
 
 	/* Inputs Listener*/
 	virtual bool mouseWheelRolled(const MouseWheelEvent& evt) override;
@@ -32,7 +32,7 @@ private:
 	virtual bool keyReleased(const KeyboardEvent& evt) override;
 	virtual void frameRendered(const FrameEvent& evt) override;
 
-	int m_MouseWheelY{ 0 };
+	int mMouseWheelY = 0;
 	void UpdateCameraPosition(float deltaSec);
 	void Zoom(float deltaTime);
 };

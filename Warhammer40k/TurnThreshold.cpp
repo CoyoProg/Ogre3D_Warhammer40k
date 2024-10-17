@@ -2,43 +2,43 @@
 #include "Ogre.h"
 #include <iostream>
 
-TurnThreshold::TurnThreshold(Vector2 pointOnLine, Vector2 pointPerdencicularToLine)
+TurnThreshold::TurnThreshold(Vector2 pointOnLineP, Vector2 pointPerdencicularToLineP)
 {
-	float deltaX = pointOnLine.x - pointPerdencicularToLine.x;
-	float deltaY = pointOnLine.y - pointPerdencicularToLine.y;
+	float deltaX = pointOnLineP.x - pointPerdencicularToLineP.x;
+	float deltaY = pointOnLineP.y - pointPerdencicularToLineP.y;
 
 	if (deltaX == 0)
 	{
-		gradientPerpendicular = verticalLineGradient;
+		mGradientPerpendicular = mVerticalLineGradient;
 	}
 	else
 	{
-		gradientPerpendicular = deltaY / deltaX;
+		mGradientPerpendicular = deltaY / deltaX;
 	}
 
-	if (gradientPerpendicular == 0)
+	if (mGradientPerpendicular == 0)
 	{
-		gradient = verticalLineGradient;
+		mGradient = mVerticalLineGradient;
 	}
 	else
 	{
-		gradient = -1 / gradientPerpendicular;
+		mGradient = -1 / mGradientPerpendicular;
 	}
 
-	y_intercept = pointOnLine.y - gradient * pointOnLine.x;
-	startPoint = pointOnLine;
-	targetPoint = pointOnLine + Vector2(1, gradient);
+	mY_Intercept = pointOnLineP.y - mGradient * pointOnLineP.x;
+	mStartPoint = pointOnLineP;
+	mTargetPoint = pointOnLineP + Vector2(1, mGradient);
 
-	approachSide = GetSide(pointPerdencicularToLine);
+	mIsNearSide = GetSide(pointPerdencicularToLineP);
 }
 
-void TurnThreshold::DrawLine(SceneManager* sceneMgr)
+void TurnThreshold::DrawLine(SceneManager *sceneMgrP)
 {
-	ManualObject* manualObject = sceneMgr->createManualObject();
+	ManualObject *manualObject = sceneMgrP->createManualObject();
 	manualObject->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
 
-	Vector3 lineDir(1, 0, gradient);
-	Vector3 lineStart = Vector3(startPoint.x, 0.12f, startPoint.y);
+	Vector3 lineDir(1, 0, mGradient);
+	Vector3 lineStart = Vector3(mStartPoint.x, 0.12f, mStartPoint.y);
 
 	// Normalize the direction vector
 	Vector3 normalizedLineDir = lineDir.normalisedCopy();
@@ -57,6 +57,6 @@ void TurnThreshold::DrawLine(SceneManager* sceneMgr)
 	manualObject->end();
 
 	// Create a scene node to attach the manual object
-	Ogre::SceneNode* node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+	Ogre::SceneNode *node = sceneMgrP->getRootSceneNode()->createChildSceneNode();
 	node->attachObject(manualObject);
 }

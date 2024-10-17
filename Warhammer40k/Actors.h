@@ -6,22 +6,22 @@ class Components;
 class Actors
 {
 public:
-	virtual void Update(float deltaTime);
+	virtual void Update(float deltaTimeP);
 
-	const Entity* GetEntity() const { return m_Entity; }
-	const Ogre::ManualObject* GetObject() const { return m_ManualObject; }
+	const Entity* GetEntity() const { return mEntity; }
+	const Ogre::ManualObject* GetObject() const { return mManualObject; }
 
-	SceneNode* GetSceneNode() { return m_Node; }
+	SceneNode* GetSceneNode() { return mNode; }
 
-	void SetMaterial(std::string materialName) { m_Entity->setMaterialName(materialName); }
+	void SetMaterial(std::string materialNameP) { mEntity->setMaterialName(materialNameP); }
 	virtual void OnEndTurnEvent();
 
 protected:
 	void AddComponent(Components* componentP) { myComponents.emplace_back(componentP); }
 
-	Entity* m_Entity{ nullptr };
-	Ogre::ManualObject* m_ManualObject{ nullptr };
-	SceneNode* m_Node{ nullptr };
+	Entity *mEntity = nullptr;
+	Ogre::ManualObject *mManualObject = nullptr;
+	SceneNode *mNode = nullptr;
 	std::vector<Components*> myComponents;
 };
 

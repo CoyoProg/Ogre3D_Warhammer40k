@@ -14,61 +14,61 @@ class OgreText;
 class GameEngine : public ApplicationContext, public InputListener
 {
 public:
-    GameEngine();
-    virtual ~GameEngine() {};
+	GameEngine();
+	virtual ~GameEngine() {};
 
-    virtual void setup() override;                                           // OgreApplicationContextBase
-    virtual bool frameRenderingQueued(const FrameEvent& fe) override;        // OgreApplicationContextBase
+	virtual void setup() override;                                           // OgreApplicationContextBase
+	virtual bool frameRenderingQueued(const FrameEvent &fe) override;        // OgreApplicationContextBase
 
-    /* Update Game Logic */
-    void Update(float deltaTimeP);
+	/* Update Game Logic */
+	void Update(float deltaTimeP);
 
-    /* Actors */
-    void AddActor(Actors* actorP) { m_Actors.emplace_back(actorP) ; }
-    void RemoveActor(Actors* actorP);
-    std::vector<Actors*> GetActors() { return m_Actors; }
+	/* Actors */
+	void AddActor(Actors *actorP) { mActors.emplace_back(actorP); }
+	void RemoveActor(Actors *actorP);
+	std::vector<Actors*> GetActors() { return mActors; }
 
-    /* Player */
-    void SetPlayer(Player* playerP) { m_Player = playerP; }
-    void EndTurn();
+	/* Player */
+	void SetPlayer(Player *playerP) { mPlayer = playerP; }
+	void EndTurn();
 
-    /* Grid */
-    void SetGrid(Grid* gridP) { m_grid = gridP; }
-    Grid& GetGrid() { return *m_grid; }
+	/* Grid */
+	void SetGrid(Grid *gridP) { mGrid = gridP; }
+	Grid& GetGrid() { return *mGrid; }
 
-    /* Tabletop*/
-    TableTop* tabletop;
+	/* Tabletop*/
+	TableTop* tabletop;
 
-    /* Managers */
-    SceneManager* GetSceneManager() { return m_SceneManager; }
-    Actors* GetSceneActor(const SceneNode* sceneNodeP);
-    bool isGameLoaded{ false };
+	/* Managers */
+	SceneManager* GetSceneManager() { return mSceneManager; }
+	Actors* GetSceneActor(const SceneNode* sceneNodeP);
+	bool isGameLoaded = false;
 
 private:
-    SceneManager* m_SceneManager;
-    SceneNode* centerOfWorldNode;
-    Grid* m_grid;
-    OgreText* overlayWidgets;
+	SceneManager *mSceneManager = nullptr;
+	SceneNode *mCenterOfWorldNode = nullptr;
+	Grid *mGrid = nullptr;
+	OgreText *mOverlayWidgets = nullptr;
 
-    std::set<Keycode> m_KeysPressed;
-    std::vector<Actors*> m_Actors;
-    Player* m_Player;
+	std::set<Keycode> mKeysPressed;
+	std::vector<Actors*> mActors;
+	Player *mPlayer = nullptr;
 
-    /* Inputs */
-    bool ProcessUnbufferedInput(const FrameEvent& fe);
-    virtual bool keyPressed(const KeyboardEvent& evt) override;
+	/* Inputs */
+	bool ProcessUnbufferedInput(const FrameEvent& fe);
+	virtual bool keyPressed(const KeyboardEvent& evt) override;
 
+	void FlipTableTop(float deltaTimeP);
 
-    const float TimeBetweenFlips = 5;
-    float LastFlipTimer = 0;
-    void flipTableTop(float deltaTime);
-    bool isFlipping = false;
-    bool changeDirection = false;
-    int flipFlop = 1;
-    float bumpHeight = 10.0f; // Height of the bump in units
-    float flipProgress = 0.0f; // Progress of the flip animation
-    float animationSpeed = 0.f;
-    float flipSpeed = 180.0f; // Degrees per second
-    float rotationAngle = 0;
+	const float mTimeBetweenFlips = 5;
+	float mLastFlipTimer = 0;
+	bool mIsFlipping = false;
+	bool mChangeDirection = false;
+	int mFlipFlop = 1;
+	float mBumpHeight = 10.0f; // Height of the bump in units
+	float mFlipProgress = 0.0f; // Progress of the flip animation
+	float mAnimationSpeed = 0.f;
+	float mFlipSpeed = 180.0f; // Degrees per second
+	float mRotationAngle = 0;
 };
 
