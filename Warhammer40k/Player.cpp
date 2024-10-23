@@ -59,7 +59,7 @@ void Player::Update(float deltaTimeP)
 
 void Player::MouseRayTo3D(int mouseXP, int mouseYP)
 {
-    // Cast Ray //
+    /* Cast Ray */
     float width = mouseXP / (float)mGameEngine.getRenderWindow()->getWidth();
     float height = mouseYP / (float)mGameEngine.getRenderWindow()->getHeight();
 
@@ -105,7 +105,8 @@ void Player::MouseRayTo3D(int mouseXP, int mouseYP)
         ResetMouseOver();
 
         mCurrentMouseOver = temporary;
-
+        if (!mCurrentMouseOver->IsSleeping()) return;
+        
         bool isEnemy = mCurrentMouseOver->GetOwner() != mPlayerID;
         mCurrentMouseOver->OnMouseOver(isEnemy);
     }
@@ -197,14 +198,14 @@ void Player::OnRBMouseDown(int mouseXP, int mouseYP)
 
                 /* Update Left Card Text */
                 float movementAction = mCurrentSelected->GetMovementAction();
-                int healthPoint = mCurrentSelected->GetHealthPoint();
+                int healthPoint = mCurrentSelected->GetHealthPoints();
                 SetCardTextValues(movementAction, healthPoint);
 
                 break;
             }
 
             /* Check if the selected figurine has any ActionPoint Left*/
-            if (mCurrentSelected->GetActionPoint() <= 0)
+            if (mCurrentSelected->GetActionPoints() <= 0)
                 return;
 
             if(hitResult->movable->getQueryFlags() == QueryFlags::FIGURINE_MASK)
@@ -241,10 +242,10 @@ void Player::OnRBMouseDown(int mouseXP, int mouseYP)
 
 void Player::ShowFigurineCard(Figurines *figurineP, bool isRightCardP)
 {
-    /* Update the Right Card Texts*/
+    /* Update the Card Texts */
     float movementAction = figurineP->GetMovementAction();
-    int healthPoint = figurineP->GetHealthPoint();
-    SetCardTextValues(movementAction, healthPoint, true);
+    int healthPoint = figurineP->GetHealthPoints();
+    SetCardTextValues(movementAction, healthPoint, isRightCardP);
 
     std::string figurineName = figurineP->GetEntity()->getName();
 

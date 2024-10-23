@@ -1,6 +1,6 @@
 #include "Figurines.h"
 #include "QueryFlags.h"
-#include <OgreMath.h>
+#include "OgreMath.h"
 
 #include "PathFindingComponent.h"
 #include "Grid.h"
@@ -9,9 +9,9 @@
 
 Figurines::Figurines(GameEngine &gameEngineP, std::string entityNameP, std::string nodeNameP, int ownerP) :
     mGameEngine(gameEngineP),
-    mCurrentHealthPoint( mMaxHealthPoint ),
-    mCurrentMovementAction( mMaxMovementAction ),
-    mCurrentActionPoint( mMaxActionPoint )
+    mCurrentHealthPoint(MAX_HEALTH_POINTS),
+    mCurrentMovementAction(MAX_MOVEMENT_ACTION),
+    mCurrentActionPoint(MAX_ACTION_POINTS)
 {
     mEntity = mGameEngine.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
     mEntity->setCastShadows(true);
@@ -29,38 +29,55 @@ Figurines::Figurines(GameEngine &gameEngineP, std::string entityNameP, std::stri
 
 Figurines::~Figurines()
 {
+    delete mPathfinding;
+    mPathfinding = nullptr;
 }
 
 void Figurines::Update(float deltaTimeP)
 {   
     if (mIsSelected)
     {
-        mAnimationTime += deltaTimeP;
-
-        float scale = mUniformScale + sin(mAnimationTime * mScaleSpeed) * mScaleFactor;
-        float flatten = mUniformScale + cos(mAnimationTime * mFlattenSpeed) * mFlattenFactor;
-
-        Ogre::Vector3 newScale(flatten, scale, flatten);
-        mNode->setScale(newScale);
+        UpdateSelectedAinamtion(deltaTimeP);
     }
     else
-        mAnimationTime = 0;
+        mSelectedAnim_Time = 0; // Reset the animation
 
     if (mIsMoving)
         UpdatePositions(deltaTimeP);
 }
 
+void Figurines::UpdateSelectedAinamtion(float deltaTimeP)
+{
+    mSelectedAnim_Time += deltaTimeP;
+
+    float verticalScale = mUniformScale + sin(mSelectedAnim_Time * mSelectedAnim_ScaleSpeed) * mSelectedAnim_ScaleFactor;
+    float horizontalScale = mUniformScale + cos(mSelectedAnim_Time * mSelectedAnim_FlattenSpeed) * mSelectedAnim_FlattenFactor;
+
+    Ogre::Vector3 newScale(horizontalScale, verticalScale, horizontalScale);
+    mNode->setScale(newScale);
+}
+
 void Figurines::UpdatePositions(float deltaTimeP)
 {
-    if (!mMoveStraight)
+    if (!mShouldMoveStraight)
     {
+        /* If the figurine passes the last lookPoint, we stop it. */
         if (mIndexPosition >= mPathfinding->lookPoints.size())
         {
             mIndexPosition = 1;
             mIsMoving = false;
+
+            /* 
+             * If the figurine is still selected after it's movement, we trigger the OnSelected function,
+             * It will show and update its GridMovement
+             */
+            if (mIsSelected)
+                OnSelected(true);
+
             return;
         }
 
+        /* If the figurine passes the current lookPoint target, it goes to the next */
         Vector2 pos2D = Vector2(GetPosition().x, GetPosition().z);
         if (mPath[mIndexPosition - 1]->HasCrossedLine(pos2D))
         {
@@ -68,11 +85,11 @@ void Figurines::UpdatePositions(float deltaTimeP)
         }
 
         Vector3 targetPos = mPathfinding->lookPoints[mIndexPosition];
-
         LookAt(targetPos, deltaTimeP);
     }
     else
     {
+        /* Snap the figurine to the target position if close enough */
         if (GetPosition().distance(mStraightTargetPosition) <= 0.5f)
         {
             SetPosition(mStraightTargetPosition);
@@ -80,23 +97,24 @@ void Figurines::UpdatePositions(float deltaTimeP)
         }
     }
 
-    // Translate the entity forward in its local space
+    /* Translate the entity forward in its local space */
     Vector3 forward = mNode->getOrientation() * Ogre::Vector3::UNIT_Z;
-    Vector3 translation = forward * deltaTimeP * mMovementSpeed;
+    Vector3 translation = forward * deltaTimeP * mSelectedAnim_MovementSpeed;
     mNode->translate(translation);
 }
 
 void Figurines::SetPosition(Vector3 positionP)
 {
-    positionP.y = mOffset.y;
+    positionP.y = mPositionOffset.y;
 
     mNode->_setDerivedPosition(positionP);
 }
 
-void Figurines::SetYawRotation(Degree rotationP)
+void Figurines::SetYawRotation(const Degree &rotationP)
 {
     Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
     orientation.FromAngleAxis(rotationP, Ogre::Vector3::UNIT_Y);
+
     mNode->_setDerivedOrientation(orientation);
 }
 
@@ -106,40 +124,39 @@ void Figurines::OnSelected(bool isSelectedP)
 
     if (!isSelectedP)
     {
+        /* Reset the scale of the figurine to its initial state */
         mNode->setScale(Vector3(mUniformScale, mUniformScale, mUniformScale));
         mPathfinding->HideMovementGrid(true);
 
         return;
     }
 
-    OnMouseOver(mIsEnemy);
+    mPathfinding->GetMovementGrid(GetPosition(), mCurrentMovementAction, TILE_MOVEMENT_SELECTED);
 }
 
 void Figurines::OnMouseOver(bool isEnemyP)
 {
-    mIsEnemy = isEnemyP;
-    int mTileType = TILE_MOVEMENT_SELECTED;
+    int mTileType = 0;
 
-    if (mIsEnemy)
+    if (isEnemyP)
         mTileType = TILE_MOVEMENT_ENEMY;
-    else if (!mIsSelected)
+    else
         mTileType = TILE_MOVEMENT_MOUSEOVER;
 
-    // Show movement action Grid
+    /* Show the corresponding movement action Grid */
     mPathfinding->GetMovementGrid(GetPosition(), mCurrentMovementAction, mTileType);
 }
 
 void Figurines::OnMouseOut()
 {
-    // Hide Movement Action Grid
     if(!mIsSelected)
         mPathfinding->HideMovementGrid(false);
 }
 
 void Figurines::OnEndTurnEvent()
 {
-    mCurrentMovementAction = mMaxMovementAction;
-    mCurrentActionPoint = mMaxActionPoint;
+    mCurrentMovementAction = MAX_MOVEMENT_ACTION;
+    mCurrentActionPoint = MAX_ACTION_POINTS;
 }
 
 void Figurines::MoveTo(Tile *targetTileP)
@@ -148,10 +165,10 @@ void Figurines::MoveTo(Tile *targetTileP)
 
     mPath.clear();
     mPathfinding->RetracePath(mGameEngine.GetGrid().GetTile(GetPosition()), targetTileP);
+    mPath = mPathfinding->GetTurnPath();
 
     mCurrentMovementAction -= mPathfinding->totalCost;
-
-    mPath = mPathfinding->GetTurnPath();
+    mPathfinding->HideMovementGrid(true);
 
     /* Orient the figurine to the first point on the path */
     Vector3 targetPos = mPathfinding->lookPoints[1];
@@ -166,7 +183,7 @@ void Figurines::MoveTo(Tile *targetTileP)
     Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
 
     mNode->_setDerivedOrientation(targetRotationYawOnly);
-    mMoveStraight = false;
+    mShouldMoveStraight = false;
     mIsMoving = true;
 }
 

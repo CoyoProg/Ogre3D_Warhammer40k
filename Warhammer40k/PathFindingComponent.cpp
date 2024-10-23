@@ -99,7 +99,6 @@ void PathFindingComponent::HideMovementGrid(bool isSelectedP)
 
 	for (auto tiles : mMovementGrid)
 		tiles->SetTile(TILE_EMPTY);
-
 }
 
 std::vector<TurnThreshold*> PathFindingComponent::GetTurnPath()
@@ -154,6 +153,7 @@ int PathFindingComponent::GetDistance(const Tile& tileAP, const Tile& tileBP)
 void PathFindingComponent::RetracePath(Tile *startTileP, Tile *targetTileP)
 {
 	mFinalPath.clear();
+	totalCost = 0;
 
 	Tile *currentTile = targetTileP;
 	Vector3 currentTilePosition;
@@ -163,6 +163,8 @@ void PathFindingComponent::RetracePath(Tile *startTileP, Tile *targetTileP)
 
 	while (currentTile != startTileP)
 	{
+		totalCost += GetDistance(*currentTile, *mParentSet[currentTile]);
+
 		currentTilePosition = mGrid.GetWorldPosition(currentTile->gridCoordinates);
 		mFinalPath.insert(mFinalPath.begin(), currentTilePosition);
 		currentTile = mParentSet[currentTile];

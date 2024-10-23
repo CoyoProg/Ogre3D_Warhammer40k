@@ -48,8 +48,8 @@ void GameLevel::LoadLevel(GameEngine &gameEngineP)
 	        Figurines *figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 	        gameEngineP.AddActor(figurines);
 
-			Vector3 newPosition = grid->GetWorldPosition(Vector2(i * (2 * GRID_MULTIPLICATEUR), j * (2 * GRID_MULTIPLICATEUR)));
-	        figurines->SetPosition(newPosition + Vector3(45, 0, -125)); // -25
+			Vector3 newPosition = grid->GetWorldPosition(Vector2(i * (2 * GRID_MULTIPLICATEUR), j * (2 * GRID_MULTIPLICATEUR))) + Vector3(45, 0, -125);
+	        figurines->SetPosition(newPosition ); // -25
 			figurines->SetYawRotation(Degree(180));
 			figurines->SetMaterial("LowPolyMarine.blue");
 	    }
@@ -66,8 +66,8 @@ void GameLevel::LoadLevel(GameEngine &gameEngineP)
 			Figurines *figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 			gameEngineP.AddActor(figurines);
 
-			Vector3 newPosition = grid->GetWorldPosition(Vector2(i* (2 * GRID_MULTIPLICATEUR), j * (2 * GRID_MULTIPLICATEUR)));
-			figurines->SetPosition(newPosition + Vector3(135 - 3*10, 0, -125)); // -25
+			Vector3 newPosition = grid->GetWorldPosition(Vector2(i* (2 * GRID_MULTIPLICATEUR), j * (2 * GRID_MULTIPLICATEUR))) + Vector3(135 - 3 * 10, 0, -125); // -25
+			figurines->SetPosition(newPosition);
 			figurines->SetYawRotation(Degree(180));
 			figurines->SetMaterial("LowPolyMarine.blue");
 		}

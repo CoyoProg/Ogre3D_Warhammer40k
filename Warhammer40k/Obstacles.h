@@ -6,10 +6,7 @@ class GameEngine;
 class Obstacles : public Actors
 {
 public:
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="Scale">: always need to be positive.</param>
+	/* The scale always needs to be positive. */
 	Obstacles(GameEngine &gameEngineP, Vector2 gridCoordsP, Vector3 scaleP, std::string ID);
 	~Obstacles();
 

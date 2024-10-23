@@ -1,5 +1,4 @@
 #include "Actors.h"
-
 #include "Components.h"
 
 void Actors::Update(float deltaTimeP)
@@ -8,8 +7,4 @@ void Actors::Update(float deltaTimeP)
 	{
 		components->Update(deltaTimeP);
 	}
-}
-
-void Actors::OnEndTurnEvent()
-{
 }
