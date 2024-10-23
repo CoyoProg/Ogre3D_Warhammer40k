@@ -1,12 +1,11 @@
 #include "Figurines.h"
 #include "QueryFlags.h"
-#include "PathFindingComponent.h"
-
 #include <OgreMath.h>
-#include <iostream>
 
-
+#include "PathFindingComponent.h"
 #include "Grid.h"
+
+#include <iostream>
 
 Figurines::Figurines(GameEngine &gameEngineP, std::string entityNameP, std::string nodeNameP, int ownerP) :
     mGameEngine(gameEngineP),

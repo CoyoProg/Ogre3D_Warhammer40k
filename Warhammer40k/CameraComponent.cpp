@@ -1,4 +1,5 @@
 #include "CameraComponent.h"
+
 #include <iostream>
 
 CameraComponent::CameraComponent(GameEngine &gameEngineP)

@@ -1,23 +1,18 @@
 #include "GameEngine.h"
-
-/* Ogre Related */
 #include "OgreRTShaderSystem.h"
 #include "OgreText.h"
 #include <OgreFontManager.h>
 #include <OgreTrays.h>
 
-/* C++ Related */
-#include <iostream>
-
-/* My scripts */
 #include "Actors.h"
 #include "GameLevel.h"
 #include "Player.h"
 #include "TableTop.h"
-
 #include "Grid.h"
 #include "QueryFlags.h"
 #include "Obstacles.h"
+
+#include <iostream>
 
 using namespace Ogre;
 

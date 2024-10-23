@@ -1,8 +1,10 @@
 #include "Obstacles.h"
+#include "QueryFlags.h"
+
 #include "GameEngine.h"
 #include "Grid.h"
+
 #include <iostream>
-#include "QueryFlags.h"
 
 Obstacles::Obstacles(GameEngine &gameEngineP, Vector2 gridCoordsP, Vector3 scaleP, std::string ID):
 	mGridCoords(gridCoordsP),

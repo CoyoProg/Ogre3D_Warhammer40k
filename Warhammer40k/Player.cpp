@@ -1,12 +1,13 @@
 #include "Player.h"
-#include "CameraComponent.h"
 
+#include <OgreSceneQuery.h>
+#include "QueryFlags.h"
+
+#include "CameraComponent.h"
 #include "Figurines.h"
 #include "Grid.h"
 #include "OgreText.h"
 
-#include <OgreSceneQuery.h>
-#include "QueryFlags.h"
 #include <iostream>
 
 Player::Player(GameEngine &gameEngineP) :
