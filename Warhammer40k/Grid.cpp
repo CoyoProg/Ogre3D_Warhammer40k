@@ -53,7 +53,7 @@ void Grid::CreateTiles(Ogre::SceneManager &sceneManagerP, int countP, int coordX
 	mGrid[coordXP][coordZP] = new Tile(planeEntity, 0, Vector2(coordXP, coordZP));
 }
 
-void Grid::SetTileMaterial(int coordXP, int coordZP, int enumTypeP)
+void Grid::SetTileCollision(int coordXP, int coordZP, int enumTypeP)
 {
 	mGrid[coordXP][-coordZP]->SetTile(enumTypeP);
 }

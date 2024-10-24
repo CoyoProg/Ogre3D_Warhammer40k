@@ -4,23 +4,52 @@
 #include "GameEngine.h"
 #include "Grid.h"
 
-#include <iostream>
+constexpr float GRID_OFFSET_CENTER = GRID_CELL_SIZE / 2.0f;
 
-Obstacles::Obstacles(GameEngine &gameEngineP, Vector2 gridCoordsP, Vector3 scaleP, std::string ID):
+Obstacles::Obstacles(GameEngine &gameEngineP, const Vector2 &gridCoordsP, const Vector3 &scaleP, const std::string &ID):
 	mGridCoords(gridCoordsP),
-	mScale(scaleP)
+	mScale(scaleP),
+	mGrid(gameEngineP.GetGrid()),
+	mSceneManager(*gameEngineP.GetSceneManager())
 {
-	/* REFERENCES */
-	SceneManager &sceneManager = *gameEngineP.GetSceneManager();
-	Grid &mGrid = gameEngineP.GetGrid();
+	CreateCube(ID);
 
+	mNode = mSceneManager.getRootSceneNode()->createChildSceneNode("ObstacleNode" + ID);
+	mNode->setScale(mScale * GRID_CELL_SIZE);
+	mNode->attachObject(mManualObject);
+	mManualObject->setQueryFlags((QueryFlags::OBSTACLE_MASK));
 
-	/* CREATE CUBE OBJECT */
-	mManualObject = sceneManager.createManualObject("ObstacleObject" + ID);
+	SetCubePosition();
+
+	UpdateTilesCollision(mGridCoords.x, mGridCoords.y, false);
+}
+
+void Obstacles::SetCubePosition()
+{
+	Vector3 offsetPosition(0);
+	offsetPosition.y = mScale.y * 0.5f;
+
+	if (mScale.x > 1)
+	{
+		offsetPosition.x = (mScale.x * GRID_CELL_SIZE) * 0.5f - GRID_OFFSET_CENTER;
+	}
+
+	if (mScale.z > 1)
+	{
+		offsetPosition.z = -(mScale.z * GRID_CELL_SIZE) * 0.5f + GRID_OFFSET_CENTER;
+	}
+
+	Vector3 newPosition = mGrid.GetWorldPosition(mGridCoords);
+	mNode->setPosition(newPosition + offsetPosition);
+}
+
+void Obstacles::CreateCube(const std::string& ID)
+{
+	/* Create the cube object */
+	mManualObject = mSceneManager.createManualObject("ObstacleObject" + ID);
 
 	mManualObject->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_TRIANGLE_LIST);
-	mManualObject->setCastShadows(false);
-
+	mManualObject->setCastShadows(true);
 
 	/* VERTEX */
 	// Front face
@@ -58,98 +87,57 @@ Obstacles::Obstacles(GameEngine &gameEngineP, Vector2 gridCoordsP, Vector3 scale
 	mManualObject->textureCoord(1, 1);
 
 	/* INDICES */
-	// Front face
-	mManualObject->index(0); mManualObject->index(1); mManualObject->index(2);
-	mManualObject->index(2); mManualObject->index(3); mManualObject->index(0);
+	const int faces[6][6] = {
+		{ 0, 1, 2, 2, 3, 0 }, // Front face
+		{ 6, 5, 4, 4, 7, 6 }, // Back face
+		{ 3, 2, 6, 6, 7, 3 }, // Top face
+		{ 1, 0, 4, 4, 5, 1 }, // Bottom face
+		{ 0, 3, 7, 7, 4, 0 }, // Left face
+		{ 2, 1, 5, 5, 6, 2 }  // Right face
+	};
 
-	// Back face
-	mManualObject->index(6); mManualObject->index(5); mManualObject->index(4);
-	mManualObject->index(4); mManualObject->index(7); mManualObject->index(6);
-
-	// Top face
-	mManualObject->index(3); mManualObject->index(2); mManualObject->index(6);
-	mManualObject->index(6); mManualObject->index(7); mManualObject->index(3);
-
-	// Bottom face
-	mManualObject->index(1); mManualObject->index(0); mManualObject->index(4);
-	mManualObject->index(4); mManualObject->index(5); mManualObject->index(1);
-
-	// Left face
-	mManualObject->index(0); mManualObject->index(3); mManualObject->index(7);
-	mManualObject->index(7); mManualObject->index(4); mManualObject->index(0);
-
-	// Right face
-	mManualObject->index(2); mManualObject->index(1); mManualObject->index(5);
-	mManualObject->index(5); mManualObject->index(6); mManualObject->index(2);
+	// Define indices
+	for (const auto& face : faces) 
+	{
+		for (int index : face) 
+		{
+			mManualObject->index(index);
+		}
+	}
 
 	mManualObject->end();
 	mManualObject->convertToMesh("ObstacleMesh" + ID);
-
-	mNode = sceneManager.getRootSceneNode()->createChildSceneNode("ObstacleNode" + ID);
-	mNode->setScale(mScale * GRID_CELL_SIZE);
-	mNode->attachObject(mManualObject);
-	mManualObject->setQueryFlags((QueryFlags::OBSTACLE_MASK));
-
-
-
-	/* POSITION */
-	Vector3 offsetPosition(0);
-	offsetPosition.y = mScale.y / 2;
-
-	if (mScale.x > 1)
-	{
-		offsetPosition.x = (mScale.x / 2) * GRID_CELL_SIZE - GRID_CELL_SIZE / 2;
-	}
-
-	if (mScale.z > 1)
-	{
-		offsetPosition.z = -(mScale.z / 2) * GRID_CELL_SIZE + GRID_CELL_SIZE / 2;
-	}
-
-	Vector3 newPosition = mGrid.GetWorldPosition(mGridCoords);
-	mNode->setPosition(newPosition + offsetPosition);
-
-	//mManualObject->setVisible(false);
-
-	UpdateCollisions(mGrid);
 }
 
 Obstacles::~Obstacles()
 {
 }
 
-void Obstacles::UpdateCollisions(Grid &gridP, bool onFlipP)
+void Obstacles::UpdateTilesCollision(int coordXP, int coordYP, bool isFlippedP)
 {
+	int flipMult = isFlippedP ? -1 : 1;
+
 	for (int x = -1; x < mScale.x + 1; x++)
 	{
 		for (int z = -1; z < mScale.z + 1; z++)
 		{
-			gridP.SetTileMaterial(mGridCoords.x + x, -mGridCoords.y - z, TILE_OBSTACLE);
+			mGrid.SetTileCollision(coordXP + x * flipMult, -coordYP - z * flipMult, TILE_OBSTACLE);
 		}
 	}
 }
 
-void Obstacles::FlipCollisions(Grid &gridP)
+void Obstacles::FlipCollisions()
 {
-	mOnFlip = !mOnFlip;
+	mIsFlipped = !mIsFlipped;
 
-	int flipMult = 1;
 	int newCoordX = mGridCoords.x;
 	int newCoordZ = mGridCoords.y;
 
-	if (mOnFlip)
+	if (mIsFlipped)
 	{
 		newCoordX = (GRID_SIZE_X -1) - mGridCoords.x;
 		newCoordZ = (GRID_SIZE_Z - 1) - mGridCoords.y;
-
-		flipMult = -1;
 	}
 
-	for (int x = -1; x < mScale.x + 1; x++)
-	{
-		for (int z = -1; z < mScale.z + 1; z++)
-		{
-			gridP.SetTileMaterial(newCoordX + x * flipMult, -newCoordZ - z * flipMult, TILE_OBSTACLE);
-		}
-	}
+	UpdateTilesCollision(newCoordX, newCoordZ, mIsFlipped);
 }

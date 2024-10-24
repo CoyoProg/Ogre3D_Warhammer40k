@@ -1,20 +1,20 @@
 #pragma once
 #include "GameEngine.h"
 
-const int GRID_MULTIPLICATEUR = 2;
+constexpr int GRID_MULTIPLICATEUR = 2;
+	  
+constexpr int TILE_MOVEMENT_BLEND = 5;			// SOFT GREEN & RED
+constexpr int TILE_MOVEMENT_ENEMY = 4;			// SOFT RED
+constexpr int TILE_MOVEMENT_MOUSEOVER = 3;		// SOFT GREEN
+constexpr int TILE_OBSTACLE = 2;				// RED
+constexpr int TILE_MOVEMENT_SELECTED = 1;		// GREEN
+constexpr int TILE_EMPTY = 0;					// NOT VISIBLE
 
-const int TILE_MOVEMENT_BLEND = 5;			// SOFT GREEN & RED
-const int TILE_MOVEMENT_ENEMY = 4;			// SOFT RED
-const int TILE_MOVEMENT_MOUSEOVER = 3;		// SOFT GREEN
-const int TILE_OBSTACLE = 2;				// RED
-const int TILE_MOVEMENT_SELECTED = 1;		// GREEN
-const int TILE_EMPTY = 0;					// NOT VISIBLE
+constexpr int GRID_SIZE_Z = 60 * GRID_MULTIPLICATEUR;
+constexpr int GRID_SIZE_X = 40 * GRID_MULTIPLICATEUR;
 
-const int GRID_SIZE_Z = 60 * GRID_MULTIPLICATEUR;
-const int GRID_SIZE_X = 40 * GRID_MULTIPLICATEUR;
-
-const float GRID_CELL_SIZE{ 5.f / GRID_MULTIPLICATEUR };
-const Vector3 GRID_OFFSET{ -GRID_SIZE_X / 2 * GRID_CELL_SIZE, 0, GRID_SIZE_Z / 2 * GRID_CELL_SIZE };
+constexpr float GRID_CELL_SIZE{ 5.f / GRID_MULTIPLICATEUR };
+const Vector3 GRID_OFFSET{ -GRID_SIZE_X * 0.5f * GRID_CELL_SIZE, 0, GRID_SIZE_Z * 0.5f * GRID_CELL_SIZE };
 
 class Tile
 {
@@ -78,7 +78,7 @@ public:
 	Grid(GameEngine &gameEngineP);
 	~Grid();
 
-	void SetTileMaterial(int coordXP, int coordZP, int enumTypeP);
+	void SetTileCollision(int coordXP, int coordZP, int enumTypeP);
 
 	/* PathFinding */
 	int GetTileType(int coordXP, int coordZP) { return mGrid[coordXP][-coordZP]->GetType(); }

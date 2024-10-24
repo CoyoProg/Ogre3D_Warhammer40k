@@ -7,11 +7,13 @@
 
 #include <iostream>
 
-Figurines::Figurines(GameEngine &gameEngineP, std::string entityNameP, std::string nodeNameP, int ownerP) :
+constexpr float POSITION_SNAP_THRESHOLD = 0.5f;
+
+Figurines::Figurines(GameEngine &gameEngineP, const std::string& entityNameP, const std::string& nodeNameP, int ownerP) :
     mGameEngine(gameEngineP),
-    mCurrentHealthPoint(MAX_HEALTH_POINTS),
-    mCurrentMovementAction(MAX_MOVEMENT_ACTION),
-    mCurrentActionPoint(MAX_ACTION_POINTS)
+    mCurrentHealthPoint(FigurineStats::maxHealthPoints),
+    mCurrentMovementAction(FigurineStats::maxMovementAction),
+    mCurrentActionPoint(FigurineStats::maxActionPoints)
 {
     mEntity = mGameEngine.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
     mEntity->setCastShadows(true);
@@ -37,21 +39,25 @@ void Figurines::Update(float deltaTimeP)
 {   
     if (mIsSelected)
     {
-        UpdateSelectedAinamtion(deltaTimeP);
+        UpdateSelectedAnimation(deltaTimeP);
     }
     else
+    {
         mSelectedAnim_Time = 0; // Reset the animation
+    }
 
     if (mIsMoving)
+    {
         UpdatePositions(deltaTimeP);
+    }
 }
 
-void Figurines::UpdateSelectedAinamtion(float deltaTimeP)
+void Figurines::UpdateSelectedAnimation(float deltaTimeP)
 {
     mSelectedAnim_Time += deltaTimeP;
 
-    float verticalScale = mUniformScale + sin(mSelectedAnim_Time * mSelectedAnim_ScaleSpeed) * mSelectedAnim_ScaleFactor;
-    float horizontalScale = mUniformScale + cos(mSelectedAnim_Time * mSelectedAnim_FlattenSpeed) * mSelectedAnim_FlattenFactor;
+    float verticalScale = mUniformScale + sin(mSelectedAnim_Time * ANIM_SCALE_SPEED) * ANIM_SCALE_FACTOR;
+    float horizontalScale = mUniformScale + cos(mSelectedAnim_Time * ANIM_FLATTEN_SPEED) * ANIM_FLATTEN_FACTOR;
 
     Ogre::Vector3 newScale(horizontalScale, verticalScale, horizontalScale);
     mNode->setScale(newScale);
@@ -72,7 +78,9 @@ void Figurines::UpdatePositions(float deltaTimeP)
              * It will show and update its GridMovement
              */
             if (mIsSelected)
+            {
                 OnSelected(true);
+            }
 
             return;
         }
@@ -90,7 +98,7 @@ void Figurines::UpdatePositions(float deltaTimeP)
     else
     {
         /* Snap the figurine to the target position if close enough */
-        if (GetPosition().distance(mStraightTargetPosition) <= 0.5f)
+        if (GetPosition().distance(mStraightTargetPosition) <= POSITION_SNAP_THRESHOLD)
         {
             SetPosition(mStraightTargetPosition);
             mIsMoving = false;
@@ -99,7 +107,7 @@ void Figurines::UpdatePositions(float deltaTimeP)
 
     /* Translate the entity forward in its local space */
     Vector3 forward = mNode->getOrientation() * Ogre::Vector3::UNIT_Z;
-    Vector3 translation = forward * deltaTimeP * mSelectedAnim_MovementSpeed;
+    Vector3 translation = forward * deltaTimeP * ANIM_MOVEMENT_SPEED;
     mNode->translate(translation);
 }
 
@@ -136,12 +144,7 @@ void Figurines::OnSelected(bool isSelectedP)
 
 void Figurines::OnMouseOver(bool isEnemyP)
 {
-    int mTileType = 0;
-
-    if (isEnemyP)
-        mTileType = TILE_MOVEMENT_ENEMY;
-    else
-        mTileType = TILE_MOVEMENT_MOUSEOVER;
+    int mTileType = isEnemyP ? TILE_MOVEMENT_ENEMY : TILE_MOVEMENT_MOUSEOVER;
 
     /* Show the corresponding movement action Grid */
     mPathfinding->GetMovementGrid(GetPosition(), mCurrentMovementAction, mTileType);
@@ -149,14 +152,16 @@ void Figurines::OnMouseOver(bool isEnemyP)
 
 void Figurines::OnMouseOut()
 {
-    if(!mIsSelected)
+    if (!mIsSelected)
+    {
         mPathfinding->HideMovementGrid(false);
+    }
 }
 
 void Figurines::OnEndTurnEvent()
 {
-    mCurrentMovementAction = MAX_MOVEMENT_ACTION;
-    mCurrentActionPoint = MAX_ACTION_POINTS;
+    mCurrentMovementAction = FigurineStats::maxMovementAction;
+    mCurrentActionPoint = FigurineStats::maxActionPoints;
 }
 
 void Figurines::MoveTo(Tile *targetTileP)
@@ -164,6 +169,11 @@ void Figurines::MoveTo(Tile *targetTileP)
     Vector3 targetPositionP;
 
     mPath.clear();
+
+    // OVERKILL ??
+    // int expectedPathSize = static_cast<int>(mCurrentMovementAction / tileSize);
+    // mPath.reserve(expectedPathSize);  // Reserve based on an estimated size
+
     mPathfinding->RetracePath(mGameEngine.GetGrid().GetTile(GetPosition()), targetTileP);
     mPath = mPathfinding->GetTurnPath();
 
@@ -189,7 +199,7 @@ void Figurines::MoveTo(Tile *targetTileP)
 
 void Figurines::Attack(Figurines *targetP)
 {
-    targetP->GetHit(1);
+    targetP->GetHit(FigurineStats::attackDamage);
     mCurrentActionPoint--;
 }
 
@@ -205,7 +215,6 @@ void Figurines::GetHit(int damageAmountP)
         mGameEngine.GetSceneManager()->destroySceneNode(mNode);
 
         mGameEngine.RemoveActor(this);
-        std::cout << "IS DEAD";
     }
 }
 

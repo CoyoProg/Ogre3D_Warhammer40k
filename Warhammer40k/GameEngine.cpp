@@ -133,15 +133,18 @@ void GameEngine::EndTurn()
 
 	for (auto actors : mActors)
 	{
-		if (!actors->GetSceneNode())
+		SceneNode *actorNode = actors->GetSceneNode();
+		
+		if (!actorNode)
 			continue;
+		
 		actors->OnEndTurnEvent();
-
-		SceneNode *currentParent = actors->GetSceneNode()->getParentSceneNode();
-		if (currentParent)
-			currentParent->removeChild(actors->GetSceneNode());
-
-		mCenterOfWorldNode->addChild(actors->GetSceneNode());
+		
+		SceneNode *parentNode = actorNode->getParentSceneNode();
+		if (parentNode)
+			parentNode->removeChild(actorNode);
+		
+		mCenterOfWorldNode->addChild(actorNode);
 	}
 }
 
@@ -289,7 +292,7 @@ void GameEngine::FlipTableTop(float deltaTimeP)
 				if(actors->GetObject()->getQueryFlags() == QueryFlags::OBSTACLE_MASK)
 				{
 					Obstacles* temporary = dynamic_cast<Obstacles*>(actors);
-					temporary->FlipCollisions(*mGrid);
+					temporary->FlipCollisions();
 
 					std::cout << "Update Collisions" << std::endl;
 				}

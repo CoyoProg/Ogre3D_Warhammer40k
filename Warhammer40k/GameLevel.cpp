@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "Ogre.h"
+#include <OgreOverlayManager.h>
 
 #include "GameEngine.h"
 #include "Actors.h"
@@ -25,7 +26,8 @@ void GameLevel::LoadLevel(GameEngine &gameEngineP)
 
 	/* Player need to be initialize first for the main camera */
 	// ===== Player ==== 
-	Player *player = new Player(gameEngineP);
+	OverlayManager* overlayManager = OverlayManager::getSingletonPtr();
+	Player *player = new Player(gameEngineP, *overlayManager);
 
 	TableTop *tabletop = new TableTop(gameEngineP);
 	gameEngineP.AddActor(tabletop);

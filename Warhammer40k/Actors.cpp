@@ -3,7 +3,7 @@
 
 void Actors::Update(float deltaTimeP)
 {
-	for (auto& components : myComponents)
+	for (auto& components : mComponents)
 	{
 		components->Update(deltaTimeP);
 	}
