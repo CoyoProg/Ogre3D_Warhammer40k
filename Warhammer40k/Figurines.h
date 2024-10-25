@@ -56,6 +56,16 @@ public:
 private:
 	void LookAt(const Ogre::Vector3& targetPositionP, float deltaTimeP);
 
+	struct SelectedAnimationProperties
+	{
+		float timer = 0;
+		static constexpr float scaleSpeed = 2.f;
+		static constexpr float scaleFactor = 0.002f;
+		static constexpr float flattenSpeed = 1.f;
+		static constexpr float flattenFactor = 0.001f;
+	};
+
+	SelectedAnimationProperties mSelectionAnimationProps;
 	GameEngine &mGameEngine;
 
 	bool mIsSelected = false;
@@ -69,20 +79,14 @@ private:
 	float mCurrentMovementAction;
 	int mCurrentActionPoint;
 
-	float mSelectedAnim_Time = 0;
-	static constexpr float ANIM_SCALE_SPEED = 2.f;
-	static constexpr float ANIM_SCALE_FACTOR = 0.002f;
-	static constexpr float ANIM_FLATTEN_SPEED = 1.f;
-	static constexpr float ANIM_FLATTEN_FACTOR = 0.001f;
-	static constexpr float ANIM_MOVEMENT_SPEED = 10.f;
-
 	PathFindingComponent* mPathfinding = nullptr;
 	std::vector<TurnThreshold*> mPath;
 	Vector3 mStraightTargetPosition;
 	int mIndexPosition = 1;
 	bool mIsMoving = false;
 	bool mShouldMoveStraight = false;
-	int mTurnSpeed = 4;
+	static constexpr int mTurnSpeed = 4;
+	static constexpr float movementSpeed = 10.f;
 
 	/* On Death */
 	bool mIsDead = false;

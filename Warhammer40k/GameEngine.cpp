@@ -1,3 +1,5 @@
+#include <windows.h>
+
 #include "GameEngine.h"
 #include "OgreRTShaderSystem.h"
 #include "OgreText.h"
@@ -14,6 +16,7 @@
 
 #include <iostream>
 
+
 using namespace Ogre;
 
 GameEngine::GameEngine()
@@ -22,32 +25,38 @@ GameEngine::GameEngine()
 
 void GameEngine::setup()
 {
-	// do not forget to call the base first
-	ApplicationContext::setup();
+	InitializeRenderer();
+	InitializeGame();
+}
+
+void GameEngine::InitializeRenderer()
+{
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+	int screenWidth = desktop.right;
+	int screenHeight = desktop.bottom;
+
+	mRoot->initialise(false);
+	createWindow("Warhammer 40k TableTop", screenWidth, screenHeight);
+
+	locateResources();
+	initialiseRTShaderSystem();
+	loadResources();
+
+	mRoot->addFrameListener(this);
+	mRenderWindow = ApplicationContext::getRenderWindow();
+
+	mSceneManager = mRoot->createSceneManager();
+
 	addInputListener(this);
 
-	// get a pointer to the already created root
-	Root *root = getRoot();
-	mSceneManager = root->createSceneManager();
-
-	Ogre::OverlaySystem *pOverlaySystem = getOverlaySystem();
+	Ogre::OverlaySystem* pOverlaySystem = getOverlaySystem();
 	mSceneManager->addRenderQueueListener(pOverlaySystem);
 
-	// Create an empty SceneNode
-	mCenterOfWorldNode = mSceneManager->getRootSceneNode()->createChildSceneNode("CenterOfWorldNode");
-
-	// Optionally, set the position, orientation, or scale of the empty SceneNode
-	mCenterOfWorldNode->setPosition(Vector3(0, 0, 0));
-	mCenterOfWorldNode->setOrientation(Ogre::Quaternion::IDENTITY);
-	mCenterOfWorldNode->setScale(Vector3(1, 1, 1));
-
-
 	// register our scene with the RTSS
-	RTShader::ShaderGenerator *shadergen = RTShader::ShaderGenerator::getSingletonPtr();
+	RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
 	shadergen->addSceneManager(mSceneManager);
-
-	/* Set ambient light for the Scene Manager */
-	mSceneManager->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 
 	/* Load mesh into ressources */
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
@@ -57,23 +66,37 @@ void GameEngine::setup()
 	);
 
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-		"..\\Assets/Meshes", 
-		"FileSystem", 
+		"..\\Assets/Meshes",
+		"FileSystem",
 		"AssetsGroup"
 	);
 
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-		"..\\Assets/Fonts", 
-		"FileSystem", 
+		"..\\Assets/Fonts",
+		"FileSystem",
 		"MyFontGroup"
 	);
 
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+}
+
+void GameEngine::InitializeGame()
+{
+	// Create an empty SceneNode
+	mCenterOfWorldNode = mSceneManager->getRootSceneNode()->createChildSceneNode("CenterOfWorldNode");
+
+	// Optionally, set the position, orientation, or scale of the empty SceneNode
+	mCenterOfWorldNode->setPosition(Vector3(0, 0, 0));
+	mCenterOfWorldNode->setOrientation(Ogre::Quaternion::IDENTITY);
+	mCenterOfWorldNode->setScale(Vector3(1, 1, 1));
+
+	/* Set ambient light for the Scene Manager */
+	mSceneManager->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 
 	/*Load Level */
 	GameLevel::LoadLevel(*this);
 
-	mOverlayWidgets = new OgreText;
+	mOverlayWidgets = new OgreText(*mRenderWindow);
 	mOverlayWidgets->GetPlayerTextElement()->setCaption("Player One");
 }
 

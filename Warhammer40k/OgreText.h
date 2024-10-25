@@ -1,10 +1,8 @@
 //-----------------------------------------------------------------------------
-// Lonewolff
+// Scrip taken from Lonewolff
 //
-// Filename:    OgreText.h
-// Description: Class for simple text in Ogre (Version 040507:18.30)
+// Description: Class for simple text in Ogre
 //-----------------------------------------------------------------------------
-
 #include <OgreOverlayManager.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayContainer.h>
@@ -21,10 +19,13 @@ using namespace Ogre;
 class OgreText
 {
 public:
-	OgreText()
+	OgreText(RenderWindow& rendererP)
 	{
 		OverlayContainer *Mainpanel;
 		mOverlayManager = OverlayManager::getSingletonPtr();
+
+		unsigned int screenWidth = rendererP.getWidth();
+		unsigned int screenHeight = rendererP.getHeight();
 
 		/* Create the Main Panel */
 		Mainpanel = static_cast<OverlayContainer*>(mOverlayManager->createOverlayElement("Panel", "MainPanel"));
@@ -44,13 +45,13 @@ public:
 		mPlayerTurnsText->setColour(Ogre::ColourValue(0.0f, 0.f, 0.7f, 1.f));
 		Mainpanel->addChild(mPlayerTurnsText);
 
-
 		float cardWidth = 250.f * 1.25f;
 		float cardHeight = 300.f * 1.25f;
+
 		/* Create the Left Card Element */
 		mLeftCard = static_cast<PanelOverlayElement*>(mOverlayManager->createOverlayElement("Panel", "LeftCard"));
-		mLeftCard->setMetricsMode(GMM_PIXELS);
-		mLeftCard->setPosition(50.f, 450.f);
+		mLeftCard->setMetricsMode(Ogre::GMM_PIXELS);
+		mLeftCard->setPosition(0, (screenHeight * 0.5f) - cardWidth / 2);
 		mLeftCard->setDimensions(cardWidth, cardHeight);
 		mLeftCard->setMaterialName("cardOverlay");
 		mLeftCard->hide();
@@ -58,7 +59,7 @@ public:
 
 		/* Create the Left Card TEXT element */
 		mLeftCardText = static_cast<TextAreaOverlayElement*>(mOverlayManager->createOverlayElement("TextArea", "LeftCardText"));
-		mLeftCardText->setCaption(std::string("Health Point: 5 \n\n") + "Movement Point : 10");
+		mLeftCardText->setCaption(std::string("Health Point: 5 \n") + "Action Point : 2\n" + "Movement Point : 10");
 		mLeftCardText->setMetricsMode(Ogre::GMM_PIXELS);
 		mLeftCardText->setPosition(50.f, cardHeight / 2 + 75);
 		mLeftCardText->setDimensions(100.f, 100.f);
@@ -82,7 +83,7 @@ public:
 		/* Create the Right Card Element */
 		mRightCard = static_cast<PanelOverlayElement*>(mOverlayManager->createOverlayElement("Panel", "RightCard"));
 		mRightCard->setMetricsMode(GMM_PIXELS);
-		mRightCard->setPosition(1180.f, 450.f);
+		mRightCard->setPosition(screenWidth - cardWidth, (screenHeight * 0.5f) - cardWidth / 2);
 		mRightCard->setDimensions(cardWidth, cardHeight);
 		mRightCard->setMaterialName("cardOverlay");
 		mRightCard->hide();
@@ -90,7 +91,7 @@ public:
 
 		/* Create the Right Card TEXT element */
 		mRightCardText = static_cast<TextAreaOverlayElement*>(mOverlayManager->createOverlayElement("TextArea", "RightCardText"));
-		mRightCardText->setCaption(std::string("Health Point: 5 \n\n") + "Movement Point : 10");
+		mRightCardText->setCaption(std::string("Health Point: 5 \n") + "Action Point : 2\n" + "Movement Point : 10");
 		mRightCardText->setMetricsMode(Ogre::GMM_PIXELS);
 		mRightCardText->setPosition(50.f, cardHeight / 2 + 75);
 		mRightCardText->setDimensions(100.f, 100.f);
@@ -146,9 +147,9 @@ private:
 	PanelOverlayElement *mRightCard;
 	TextAreaOverlayElement *mRightCardText;
 	TextAreaOverlayElement *mRightCardNameText;
-	TextAreaOverlayElement *mPlayerTurnsText;
 	TextAreaOverlayElement *mLeftCardText;
 	TextAreaOverlayElement *mLeftCardNameText;
+	TextAreaOverlayElement* mPlayerTurnsText;
 };
 
 #endif

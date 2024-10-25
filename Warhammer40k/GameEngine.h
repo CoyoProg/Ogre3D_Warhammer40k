@@ -18,6 +18,8 @@ public:
 	virtual ~GameEngine() {};
 
 	virtual void setup() override;                                           // OgreApplicationContextBase
+	void InitializeGame();
+	void InitializeRenderer();
 	virtual bool frameRenderingQueued(const FrameEvent &fe) override;        // OgreApplicationContextBase
 
 	/* Update Game Logic */
@@ -37,7 +39,7 @@ public:
 	Grid& GetGrid() { return *mGrid; }
 
 	/* Tabletop*/
-	TableTop* tabletop;
+	TableTop* tabletop = nullptr;
 
 	/* Managers */
 	SceneManager* GetSceneManager() { return mSceneManager; }
@@ -45,6 +47,7 @@ public:
 	bool isGameLoaded = false;
 
 private:
+	RenderWindow *mRenderWindow;
 	SceneManager *mSceneManager = nullptr;
 	SceneNode *mCenterOfWorldNode = nullptr;
 	Grid *mGrid = nullptr;

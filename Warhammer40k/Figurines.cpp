@@ -43,7 +43,7 @@ void Figurines::Update(float deltaTimeP)
     }
     else
     {
-        mSelectedAnim_Time = 0; // Reset the animation
+        mSelectionAnimationProps.timer = 0; // Reset the animation
     }
 
     if (mIsMoving)
@@ -54,10 +54,10 @@ void Figurines::Update(float deltaTimeP)
 
 void Figurines::UpdateSelectedAnimation(float deltaTimeP)
 {
-    mSelectedAnim_Time += deltaTimeP;
+    mSelectionAnimationProps.timer += deltaTimeP;
 
-    float verticalScale = mUniformScale + sin(mSelectedAnim_Time * ANIM_SCALE_SPEED) * ANIM_SCALE_FACTOR;
-    float horizontalScale = mUniformScale + cos(mSelectedAnim_Time * ANIM_FLATTEN_SPEED) * ANIM_FLATTEN_FACTOR;
+    float verticalScale = mUniformScale + sin(mSelectionAnimationProps.timer * mSelectionAnimationProps.scaleSpeed) * mSelectionAnimationProps.scaleFactor;
+    float horizontalScale = mUniformScale + cos(mSelectionAnimationProps.timer * mSelectionAnimationProps.flattenSpeed) * mSelectionAnimationProps.flattenFactor;
 
     Ogre::Vector3 newScale(horizontalScale, verticalScale, horizontalScale);
     mNode->setScale(newScale);
@@ -107,7 +107,7 @@ void Figurines::UpdatePositions(float deltaTimeP)
 
     /* Translate the entity forward in its local space */
     Vector3 forward = mNode->getOrientation() * Ogre::Vector3::UNIT_Z;
-    Vector3 translation = forward * deltaTimeP * ANIM_MOVEMENT_SPEED;
+    Vector3 translation = forward * deltaTimeP * movementSpeed;
     mNode->translate(translation);
 }
 
@@ -135,11 +135,11 @@ void Figurines::OnSelected(bool isSelectedP)
         /* Reset the scale of the figurine to its initial state */
         mNode->setScale(Vector3(mUniformScale, mUniformScale, mUniformScale));
         mPathfinding->HideMovementGrid(true);
-
-        return;
     }
-
-    mPathfinding->GetMovementGrid(GetPosition(), mCurrentMovementAction, TILE_MOVEMENT_SELECTED);
+    else
+    {
+        mPathfinding->GetMovementGrid(GetPosition(), mCurrentMovementAction, TILE_MOVEMENT_SELECTED);
+    }
 }
 
 void Figurines::OnMouseOver(bool isEnemyP)
