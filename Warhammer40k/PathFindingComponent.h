@@ -5,6 +5,9 @@
 class Grid;
 class Tile;
 
+/*
+ * @brief Uses Dijkstra's algorithm to determine reachable tiles and retraces paths to define movement and turn boundaries.
+ */
 class PathFindingComponent : public Components
 {
 public:
@@ -13,29 +16,29 @@ public:
 
 	virtual void Update(float deltaTimeP) override;
 
-	/* This function uses Dijkstra's algorithm to find all the tiles that are accessible. */
-	void GetMovementGrid(const Vector3& startPositionP, int movementPointP, int tileTypeP = 1);
+	void ShowMovementGrid(const Vector3& startPositionP, int movementPointP, int tileTypeP = 1);
 	void HideMovementGrid(bool isSelectedP = false);
-	void RetracePath(Tile *startTileP, Tile *targetTileP);
-	std::vector<TurnThreshold*> GetTurnPath();
+	void UpdateGrid(int tileTypeP = 1);
+
+	void RetracePath(const Tile &startTileP, Tile &targetTileP);
+	const std::vector<TurnThreshold*>& GetTurnPath();
 
 	std::vector<Vector3> lookPoints;
-	std::vector<TurnThreshold*> turnBoundaries;
-	int finishLineIndex = 0;
-	int turnDst = 5;
 	int totalPathCost = 0;
 
 	/* DEBUG */
-	void DrawLines();
+	void DrawLines(const std::vector<TurnThreshold*>& turnBoudariesP);
 
 private:
-	SceneManager& sceneManager;
+	int GetDistance(const Tile& tileAP, const Tile& tileBP);
+
+	SceneManager &sceneManager;
 	Grid &mGrid;
 
 	std::vector<Tile*> mMovementGrid;
-	std::map<Tile*, Tile*> mParentSet;
+	std::unordered_map<Tile*, Tile*> mParentSet;
 	std::vector<Vector3> mFinalPath;
-
-	int GetDistance(const Tile& tileAP, const Tile& tileBP);
+	int mTurnDistance = 5;
+	bool mIsGridVisisble = false;
 };
 

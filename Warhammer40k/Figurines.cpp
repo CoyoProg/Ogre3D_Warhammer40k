@@ -138,7 +138,7 @@ void Figurines::OnSelected(bool isSelectedP)
     }
     else
     {
-        mPathfinding->GetMovementGrid(GetPosition(), mCurrentMovementAction, TILE_MOVEMENT_SELECTED);
+        mPathfinding->ShowMovementGrid(GetPosition(), mCurrentMovementAction, TILE_MOVEMENT_SELECTED);
     }
 }
 
@@ -147,7 +147,7 @@ void Figurines::OnMouseOver(bool isEnemyP)
     int mTileType = isEnemyP ? TILE_MOVEMENT_ENEMY : TILE_MOVEMENT_MOUSEOVER;
 
     /* Show the corresponding movement action Grid */
-    mPathfinding->GetMovementGrid(GetPosition(), mCurrentMovementAction, mTileType);
+    mPathfinding->ShowMovementGrid(GetPosition(), mCurrentMovementAction, mTileType);
 }
 
 void Figurines::OnMouseOut()
@@ -176,15 +176,13 @@ void Figurines::OutEndTurn()
 
 void Figurines::MoveTo(Tile *targetTileP)
 {
-    Vector3 targetPositionP;
-
     mPath.clear();
 
-    // OVERKILL ??
+    // TODO: Reserve vector alocations
     // int expectedPathSize = static_cast<int>(mCurrentMovementAction / tileSize);
     // mPath.reserve(expectedPathSize);  // Reserve based on an estimated size
 
-    mPathfinding->RetracePath(mGameEngine.GetGrid().GetTile(GetPosition()), targetTileP);
+    mPathfinding->RetracePath(*mGameEngine.GetGrid().GetTile(GetPosition()), *targetTileP);
     mPath = mPathfinding->GetTurnPath();
 
     mCurrentMovementAction -= mPathfinding->totalPathCost;

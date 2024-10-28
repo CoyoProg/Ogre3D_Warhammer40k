@@ -249,6 +249,7 @@ void Player::HandleFigurineMovement(Ogre::RaySceneQueryResult::iterator& hitResu
     targetPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
 
     Tile* targetTile = mGameEngine.GetGrid().GetTile(targetPosition);
+    if (!targetTile) return;
 
     /* Check if the tile is on the Figurine Grid Movement */
     if (targetTile->GetType() == TILE_MOVEMENT_SELECTED)

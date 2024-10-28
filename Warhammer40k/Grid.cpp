@@ -67,9 +67,10 @@ Tile* Grid::GetTile(Vector3 positionP)
 	return mGrid[coordX][-coordZ];
 }
 
-std::vector<Tile*> Grid::GetNeighboursTiles(Tile *currentTileP)
+const std::vector<Tile*>& Grid::GetNeighboursTiles(const Tile &currentTileP)
 {
 	std::vector<Tile*> neighbours;
+
 	for (int x = -1; x <= 1; x++)
 	{
 		for (int z = -1; z <= 1; z++)
@@ -77,11 +78,11 @@ std::vector<Tile*> Grid::GetNeighboursTiles(Tile *currentTileP)
 			if (x == 0 && z == 0)
 				continue;
 
-			int checkX = currentTileP->gridCoordinates.x + x;
-			int checkZ = currentTileP->gridCoordinates.y + z;
+			int checkX = currentTileP.gridCoordinates.x + x;
+			int checkZ = currentTileP.gridCoordinates.y + z;
 
-			if (checkX >= 0 && checkX < GRID_SIZE_X &&
-				checkZ >= 0 && checkZ < GRID_SIZE_Z)
+			Tile* tile = mGrid[checkX][checkZ];
+			if (tile)
 			{
 				neighbours.emplace_back(mGrid[checkX][checkZ]);
 			}
