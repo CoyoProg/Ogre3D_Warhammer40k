@@ -6,7 +6,7 @@
 
 PathFindingComponent::PathFindingComponent(GameEngine& gameEngineP)  :
 	mGrid(gameEngineP.GetGrid()),
-	sceneManager(gameEngineP.GetSceneManager())
+	sceneManager(*gameEngineP.GetSceneManager())
 {
 }
 
@@ -18,7 +18,7 @@ void PathFindingComponent::Update(float deltaTimeP)
 {
 }
 
-void PathFindingComponent::GetMovementGrid(Vector3 startPositionP, int movementPointP, int tileTypeP)
+void PathFindingComponent::GetMovementGrid(const Vector3& startPositionP, int movementPointP, int tileTypeP)
 {
 	mMovementGrid.clear();
 	mParentSet.clear();
@@ -139,6 +139,14 @@ std::vector<TurnThreshold*> PathFindingComponent::GetTurnPath()
 	return turnBoundaries;
 }
 
+void PathFindingComponent::DrawLines()
+{
+	for (auto lines : turnBoundaries)
+	{
+		lines->DrawLine(&sceneManager);
+	}
+}
+
 int PathFindingComponent::GetDistance(const Tile& tileAP, const Tile& tileBP)
 {
 	int distanceX = abs(tileAP.gridCoordinates.x - tileBP.gridCoordinates.x);
@@ -153,25 +161,25 @@ int PathFindingComponent::GetDistance(const Tile& tileAP, const Tile& tileBP)
 void PathFindingComponent::RetracePath(Tile *startTileP, Tile *targetTileP)
 {
 	mFinalPath.clear();
-	totalCost = 0;
+	totalPathCost = 0;
 
 	Tile *currentTile = targetTileP;
 	Vector3 currentTilePosition;
 
-	mStartPosition = mGrid.GetWorldPosition(startTileP->gridCoordinates);
-	mTargetPosition = mGrid.GetWorldPosition(targetTileP->gridCoordinates);
+	Vector3 startPosition = mGrid.GetWorldPosition(startTileP->gridCoordinates);
+	Vector3 targetPosition = mGrid.GetWorldPosition(targetTileP->gridCoordinates);
 
 	while (currentTile != startTileP)
 	{
-		totalCost += GetDistance(*currentTile, *mParentSet[currentTile]);
+		totalPathCost += GetDistance(*currentTile, *mParentSet[currentTile]);
 
 		currentTilePosition = mGrid.GetWorldPosition(currentTile->gridCoordinates);
 		mFinalPath.insert(mFinalPath.begin(), currentTilePosition);
 		currentTile = mParentSet[currentTile];
 	}
-	mStartPosition.y = 0.0f;
-	mTargetPosition.y = 0.0f;
+	startPosition.y = 0.0f;
+	targetPosition.y = 0.0f;
 
-	mFinalPath.insert(mFinalPath.begin(), mStartPosition);
-	mFinalPath.back() = mTargetPosition;
+	mFinalPath.insert(mFinalPath.begin(), startPosition);
+	mFinalPath.back() = targetPosition;
 }

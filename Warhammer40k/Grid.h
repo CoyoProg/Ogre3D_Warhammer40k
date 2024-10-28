@@ -41,7 +41,8 @@ public:
 			mTileType = 1;
 			break;
 		case 2:
-			mTileEntity->setMaterialName("Tile_Obstacle");
+			//mTileEntity->setMaterialName("Tile_Obstacle");
+			mTileEntity->setMaterialName("Tile_Empty");
 			mTileType = 2;
 			break;
 		case 3:

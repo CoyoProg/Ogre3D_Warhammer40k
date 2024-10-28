@@ -21,8 +21,9 @@ public:
 	~Player();
 
 	virtual void Update(float deltaTimeP) override;
-	void SwapPlayer() { mCurrentPlayerID = (mCurrentPlayerID == 1) ? 2 : 1; }
 	int GetCurrentPlayer() const { return mCurrentPlayerID; }
+
+	virtual void OnEndTurn() override;
 
 private:
 	void MouseRayTo3D(int mouseXP, int mouseYP);
@@ -44,6 +45,8 @@ private:
 	void SetCardTextValues(float movementPointP, int healthPointP, bool isRightCardP = false);
 	void UpdateCardText(const Figurines& figurineP, bool isRightCardP);
 	void HideCards();
+
+	void SwapPlayer() { mCurrentPlayerID = (mCurrentPlayerID == 1) ? 2 : 1; }
 
 	virtual bool mouseMoved(const MouseMotionEvent& evt) override;
 	virtual bool mousePressed(const MouseButtonEvent& evt) override;

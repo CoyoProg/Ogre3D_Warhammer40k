@@ -47,6 +47,13 @@ void Player::Update(float deltaTimeP)
 	Actors::Update(deltaTimeP);
 }
 
+void Player::OnEndTurn()
+{
+    SwapPlayer();
+    UnselectFigurine();
+    ResetMouseOver();
+}
+
 void Player::MouseRayTo3D(int mouseXP, int mouseYP)
 {
     /* Cast Ray */

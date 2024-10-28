@@ -140,7 +140,7 @@ void GameEngine::EndTurn()
 	mLastFlipTimer = 0;
 
 	mIsFlipping = true;
-	mPlayer->SwapPlayer();
+	mPlayer->OnEndTurn();
 	int playerTurns = mPlayer->GetCurrentPlayer();
 
 	if (playerTurns == 1)
@@ -161,7 +161,7 @@ void GameEngine::EndTurn()
 		if (!actorNode)
 			continue;
 		
-		actors->OnEndTurnEvent();
+		actors->OnEndTurn();
 		
 		SceneNode *parentNode = actorNode->getParentSceneNode();
 		if (parentNode)
@@ -309,6 +309,8 @@ void GameEngine::FlipTableTop(float deltaTimeP)
 
 			for (auto actors : mActors)
 			{
+				actors->OutEndTurn();
+
 				if (!actors->GetObject())
 					continue;
 
@@ -316,8 +318,6 @@ void GameEngine::FlipTableTop(float deltaTimeP)
 				{
 					Obstacles* temporary = dynamic_cast<Obstacles*>(actors);
 					temporary->FlipCollisions();
-
-					std::cout << "Update Collisions" << std::endl;
 				}
 			}
 		}

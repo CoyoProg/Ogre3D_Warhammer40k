@@ -18,7 +18,8 @@ public:
 	const Ogre::ManualObject* GetObject() const { return mManualObject; }
 
 	void SetMaterial(const std::string& materialNameP) { mEntity->setMaterialName(materialNameP); }
-	virtual void OnEndTurnEvent() {};
+	virtual void OnEndTurn() {};
+	virtual void OutEndTurn() {};
 
 protected:
 	void AddComponent(Components* componentP) { mComponents.emplace_back(componentP); }

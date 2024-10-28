@@ -46,7 +46,7 @@ void Figurines::Update(float deltaTimeP)
         mSelectionAnimationProps.timer = 0; // Reset the animation
     }
 
-    if (mIsMoving)
+    if (mFigurineState == FigurineState::MOVING)
     {
         UpdatePositions(deltaTimeP);
     }
@@ -71,7 +71,7 @@ void Figurines::UpdatePositions(float deltaTimeP)
         if (mIndexPosition >= mPathfinding->lookPoints.size())
         {
             mIndexPosition = 1;
-            mIsMoving = false;
+            mFigurineState = FigurineState::SLEEPING;
 
             /* 
              * If the figurine is still selected after it's movement, we trigger the OnSelected function,
@@ -101,7 +101,7 @@ void Figurines::UpdatePositions(float deltaTimeP)
         if (GetPosition().distance(mStraightTargetPosition) <= POSITION_SNAP_THRESHOLD)
         {
             SetPosition(mStraightTargetPosition);
-            mIsMoving = false;
+            mFigurineState = FigurineState::SLEEPING;
         }
     }
 
@@ -158,8 +158,18 @@ void Figurines::OnMouseOut()
     }
 }
 
-void Figurines::OnEndTurnEvent()
+void Figurines::OnEndTurn()
 {
+    mFigurineState = FigurineState::BUSY;
+
+    mCurrentMovementAction = FigurineStats::maxMovementAction;
+    mCurrentActionPoint = FigurineStats::maxActionPoints;
+}
+
+void Figurines::OutEndTurn()
+{
+    mFigurineState = FigurineState::SLEEPING;
+
     mCurrentMovementAction = FigurineStats::maxMovementAction;
     mCurrentActionPoint = FigurineStats::maxActionPoints;
 }
@@ -177,7 +187,7 @@ void Figurines::MoveTo(Tile *targetTileP)
     mPathfinding->RetracePath(mGameEngine.GetGrid().GetTile(GetPosition()), targetTileP);
     mPath = mPathfinding->GetTurnPath();
 
-    mCurrentMovementAction -= mPathfinding->totalCost;
+    mCurrentMovementAction -= mPathfinding->totalPathCost;
     mPathfinding->HideMovementGrid(true);
 
     /* Orient the figurine to the first point on the path */
@@ -194,7 +204,7 @@ void Figurines::MoveTo(Tile *targetTileP)
 
     mNode->_setDerivedOrientation(targetRotationYawOnly);
     mShouldMoveStraight = false;
-    mIsMoving = true;
+    mFigurineState = FigurineState::MOVING;
 }
 
 void Figurines::Attack(Figurines *targetP)
@@ -209,7 +219,7 @@ void Figurines::GetHit(int damageAmountP)
 
     if (mCurrentHealthPoint <= 0)
     {
-        mIsDead = true;
+        mFigurineState = FigurineState::DEAD;
 
         mGameEngine.GetSceneManager()->destroyEntity(mEntity);
         mGameEngine.GetSceneManager()->destroySceneNode(mNode);

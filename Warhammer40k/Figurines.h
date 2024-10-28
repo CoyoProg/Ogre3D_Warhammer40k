@@ -15,6 +15,15 @@ struct FigurineStats
 	static constexpr float attackRange = 50.f;
 };
 
+enum class FigurineState
+{
+	SLEEPING,			// Waiting for interaction
+	BUSY,				// Can't be interacted with
+	MOVING,				// Moving to a new position
+
+	DEAD,				// Will be deleted next frame
+};
+
 /*
  * @brief The figurines can be moved by the current player,
  * they all have the same stats and can move and shoot at an enemy
@@ -34,14 +43,14 @@ public:
 	Vector3 GetPosition() const { return mNode->_getDerivedPosition(); }
 	void SetPosition(Vector3 positionP);
 	void SetYawRotation(const Degree& rotationP);
-	bool IsSleeping() const { return !mIsMoving; }
+	bool IsSleeping() const { return mFigurineState == FigurineState::SLEEPING; }
+	FigurineState GetState() const { return mFigurineState; }
 
 	float GetMovementAction() const { return mCurrentMovementAction; }
 	int GetActionPoints() const { return mCurrentActionPoint; }
 	int GetHealthPoints() const { return mCurrentHealthPoint; }
 	float GetAttackRange() const { return FigurineStats::attackRange; }
 	int GetOwner() const { return mOwnerID; }
-	bool IsDead() const { return mIsDead; }
 
 	void MoveTo(Tile* targetTileP);
 	void Attack(Figurines* targetP);
@@ -51,7 +60,8 @@ public:
 	void OnMouseOver(bool isEnemy = false);
 	void OnMouseOut();
 
-	virtual void OnEndTurnEvent() override;
+	virtual void OnEndTurn() override;
+	virtual void OutEndTurn() override;
 
 private:
 	void LookAt(const Ogre::Vector3& targetPositionP, float deltaTimeP);
@@ -83,12 +93,11 @@ private:
 	std::vector<TurnThreshold*> mPath;
 	Vector3 mStraightTargetPosition;
 	int mIndexPosition = 1;
-	bool mIsMoving = false;
 	bool mShouldMoveStraight = false;
 	static constexpr int mTurnSpeed = 4;
 	static constexpr float movementSpeed = 10.f;
 
 	/* On Death */
-	bool mIsDead = false;
+	FigurineState mFigurineState = FigurineState::SLEEPING;
 };
 
