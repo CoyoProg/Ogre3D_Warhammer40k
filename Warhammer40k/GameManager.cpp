@@ -107,11 +107,15 @@ void GameManager::Update(float deltaTimeP)
 		actors->Update(deltaTimeP);
 	}
 
-	if(mPlayer)
+	if (mPlayer)
+	{
 		mPlayer->Update(deltaTimeP);
+	}
 
-	if (mLastFlipTimer < mTimeBetweenFlips)
-		mLastFlipTimer += deltaTimeP;
+	if (mFlipAnimation.flipTimer < mFlipAnimation.flipsCooldown)
+	{
+		mFlipAnimation.flipTimer += deltaTimeP;
+	}
 
 	FlipTableTop(deltaTimeP);
 }
@@ -134,12 +138,12 @@ void GameManager::EndTurn()
 {
 	// NEEDS TO CHECK IF ALL THE ACTORS AREN'T MOVING
 
-	if (mLastFlipTimer < mTimeBetweenFlips)
+	if (mFlipAnimation.flipTimer < mFlipAnimation.flipsCooldown)
 		return;
 
-	mLastFlipTimer = 0;
+	mFlipAnimation.flipTimer = 0;
 
-	mIsFlipping = true;
+	mFlipAnimation.isFlipping = true;
 	mPlayer->OnEndTurn();
 	int playerTurns = mPlayer->GetCurrentPlayer();
 
@@ -228,32 +232,31 @@ bool GameManager::keyPressed(const KeyboardEvent& evt)
 
 void GameManager::FlipTableTop(float deltaTimeP)
 {
-	if (mIsFlipping)
+	if (mFlipAnimation.isFlipping)
 	{
-		if (mFlipProgress > -0.28f && !mChangeDirection)
+		if (mFlipAnimation.animationProgress > -0.28f && !mFlipAnimation.shouldChangeDir)
 		{
-			mFlipProgress -= deltaTimeP;
+			mFlipAnimation.animationProgress -= deltaTimeP;
 
-			if (mAnimationSpeed < 1.f)
-				mAnimationSpeed += deltaTimeP;
+			if (mFlipAnimation.animationSpeed < 1.f)
+				mFlipAnimation.animationSpeed += deltaTimeP;
 			else
-				mAnimationSpeed = 1.f;
+				mFlipAnimation.animationSpeed = 1.f;
 
 		}
 		else
 		{
-			mChangeDirection = true;
-			mFlipProgress += deltaTimeP;
+			mFlipAnimation.shouldChangeDir = true;
+			mFlipAnimation.animationProgress += deltaTimeP;
 
-			if (mAnimationSpeed < 5.f)
-				mAnimationSpeed += deltaTimeP * 6;
+			if (mFlipAnimation.animationSpeed < 5.f)
+				mFlipAnimation.animationSpeed += deltaTimeP * 6;
 			else
-				mAnimationSpeed = 5.f;
+				mFlipAnimation.animationSpeed = 5.f;
 		}
 
 		/* Bump Height */
-		//mFlipProgress += deltaTimeP;
-		float translationY = sin(mFlipProgress * mAnimationSpeed) * mBumpHeight;
+		float translationY = sin(mFlipAnimation.animationProgress * mFlipAnimation.animationSpeed) * mFlipAnimation.bumpHeight;
 		Vector3 newPos = tabletop->GetSceneNode()->getPosition();
 		newPos.y = translationY;
 		tabletop->GetSceneNode()->setPosition(newPos);
@@ -264,36 +267,36 @@ void GameManager::FlipTableTop(float deltaTimeP)
 
 
 		/* Rotation Angle */
-		mRotationAngle = sin(mFlipProgress * mAnimationSpeed / 2) * 180;
+		mFlipAnimation.rotationAngle = sin(mFlipAnimation.animationProgress * mFlipAnimation.animationSpeed / 2) * 180;
 		Quaternion orientation = Ogre::Quaternion::IDENTITY;
-		orientation.FromAngleAxis(Degree(mRotationAngle + 90 * mFlipFlop), Ogre::Vector3::UNIT_Y);
+		orientation.FromAngleAxis(Degree(mFlipAnimation.rotationAngle + 90 * mFlipAnimation.flipFlop), Ogre::Vector3::UNIT_Y);
 		tabletop->GetSceneNode()->setOrientation(orientation);
 
-		if (mFlipFlop == -1)
-			orientation.FromAngleAxis(Degree(mRotationAngle + 180), Ogre::Vector3::UNIT_Y);
+		if (mFlipAnimation.flipFlop == -1)
+			orientation.FromAngleAxis(Degree(mFlipAnimation.rotationAngle + 180), Ogre::Vector3::UNIT_Y);
 		else
-			orientation.FromAngleAxis(Degree(mRotationAngle), Ogre::Vector3::UNIT_Y);
+			orientation.FromAngleAxis(Degree(mFlipAnimation.rotationAngle), Ogre::Vector3::UNIT_Y);
 		mCenterOfWorldNode->setOrientation(orientation);
 
 
 		Quaternion currentOrientation = Ogre::Quaternion::IDENTITY;
 		currentOrientation = tabletop->GetSceneNode()->getOrientation();
 		// Check if the flip is complete
-		if (mRotationAngle > 179)
+		if (mFlipAnimation.rotationAngle > 179)
 		{
-			mFlipFlop = -mFlipFlop;
-			mFlipProgress = 0.0f;
+			mFlipAnimation.flipFlop = -mFlipAnimation.flipFlop;
+			mFlipAnimation.animationProgress = 0.0f;
 
 			/* Reset Table orientation & position */
 			Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
-			orientation.FromAngleAxis(Degree(90 * mFlipFlop), Ogre::Vector3::UNIT_Y);
+			orientation.FromAngleAxis(Degree(90 * mFlipAnimation.flipFlop), Ogre::Vector3::UNIT_Y);
 			tabletop->GetSceneNode()->setOrientation(orientation);
 
 			Vector3 finalPos = tabletop->GetSceneNode()->getPosition();
 			tabletop->GetSceneNode()->setPosition(Vector3(finalPos.x, 0, finalPos.z));
 
 			/* Reset Actors orientation & position */
-			if (mFlipFlop == -1)
+			if (mFlipAnimation.flipFlop == -1)
 				orientation.FromAngleAxis(Degree(180), Ogre::Vector3::UNIT_Y);
 			else
 				orientation.FromAngleAxis(Degree(0), Ogre::Vector3::UNIT_Y);
@@ -301,9 +304,9 @@ void GameManager::FlipTableTop(float deltaTimeP)
 			mCenterOfWorldNode->setPosition(Vector3(0, 0, 0));
 
 
-			mIsFlipping = false;
-			mChangeDirection = false;
-			mAnimationSpeed = 0.f;
+			mFlipAnimation.isFlipping = false;
+			mFlipAnimation.shouldChangeDir = false;
+			mFlipAnimation.animationSpeed = 0.f;
 
 			mGrid->OnFlip();
 

@@ -103,7 +103,7 @@ void Player::HandleMouseOver(Figurines* mouseOverTargetP)
 
 void Player::ResetMouseOver()
 {
-    if (mCurrentMouseOver)
+    if (mCurrentMouseOver && mCurrentMouseOver->GetState() != FigurineState::DEAD)
     {
         mCurrentMouseOver->OnMouseOut();
     }
