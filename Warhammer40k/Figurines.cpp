@@ -9,21 +9,21 @@
 
 constexpr float POSITION_SNAP_THRESHOLD = 0.5f;
 
-Figurines::Figurines(GameEngine &gameEngineP, const std::string& entityNameP, const std::string& nodeNameP, int ownerP) :
-    mGameEngine(gameEngineP),
+Figurines::Figurines(GameManager &gameManagerP, const std::string& entityNameP, const std::string& nodeNameP, int ownerP) :
+    mGameManager(gameManagerP),
     mCurrentHealthPoint(FigurineStats::maxHealthPoints),
     mCurrentMovementAction(FigurineStats::maxMovementAction),
     mCurrentActionPoint(FigurineStats::maxActionPoints)
 {
-    mEntity = mGameEngine.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
+    mEntity = mGameManager.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
     mEntity->setCastShadows(true);
     mEntity->setQueryFlags(QueryFlags::FIGURINE_MASK);
 
-    mNode = mGameEngine.GetSceneManager()->getRootSceneNode()->createChildSceneNode(nodeNameP);
+    mNode = mGameManager.GetSceneManager()->getRootSceneNode()->createChildSceneNode(nodeNameP);
     mNode->attachObject(mEntity);
     mNode->setScale(mUniformScale, mUniformScale, mUniformScale);
 
-    mPathfinding = new PathFindingComponent(mGameEngine);
+    mPathfinding = new PathFindingComponent(mGameManager);
     AddComponent(mPathfinding);
 
     mOwnerID = ownerP;
@@ -144,6 +144,8 @@ void Figurines::OnSelected(bool isSelectedP)
 
 void Figurines::OnMouseOver(bool isEnemyP)
 {
+    mIsMouseHovered = true;
+
     int mTileType = isEnemyP ? TILE_MOVEMENT_ENEMY : TILE_MOVEMENT_MOUSEOVER;
 
     /* Show the corresponding movement action Grid */
@@ -152,6 +154,8 @@ void Figurines::OnMouseOver(bool isEnemyP)
 
 void Figurines::OnMouseOut()
 {
+    mIsMouseHovered = false;
+
     if (!mIsSelected)
     {
         mPathfinding->HideMovementGrid(false);
@@ -182,7 +186,7 @@ void Figurines::MoveTo(Tile *targetTileP)
     // int expectedPathSize = static_cast<int>(mCurrentMovementAction / tileSize);
     // mPath.reserve(expectedPathSize);  // Reserve based on an estimated size
 
-    mPathfinding->RetracePath(*mGameEngine.GetGrid().GetTile(GetPosition()), *targetTileP);
+    mPathfinding->RetracePath(*mGameManager.GetGrid().GetTile(GetPosition()), *targetTileP);
     mPath = mPathfinding->GetTurnPath();
 
     mCurrentMovementAction -= mPathfinding->totalPathCost;
@@ -217,13 +221,23 @@ void Figurines::GetHit(int damageAmountP)
 
     if (mCurrentHealthPoint <= 0)
     {
-        mFigurineState = FigurineState::DEAD;
-
-        mGameEngine.GetSceneManager()->destroyEntity(mEntity);
-        mGameEngine.GetSceneManager()->destroySceneNode(mNode);
-
-        mGameEngine.RemoveActor(this);
+        Death();
     }
+}
+
+void Figurines::Death()
+{
+    mFigurineState = FigurineState::DEAD;
+
+    if (mIsMouseHovered)
+    {
+        OnMouseOut();
+    }
+
+    mGameManager.GetSceneManager()->destroyEntity(mEntity);
+    mGameManager.GetSceneManager()->destroySceneNode(mNode);
+
+    mGameManager.RemoveActor(this);
 }
 
 void Figurines::LookAt(const Ogre::Vector3 &targetPositionP, float deltaTimeP)

@@ -11,18 +11,18 @@ class TableTop;
 class Player;
 class OgreText;
 
-class GameEngine : public ApplicationContext, public InputListener
+class GameManager : public ApplicationContext, public InputListener
 {
 public:
-	GameEngine();
-	virtual ~GameEngine() {};
+	GameManager();
+	virtual ~GameManager() {};
 
 	virtual void setup() override;                                           // OgreApplicationContextBase
+	virtual bool frameRenderingQueued(const FrameEvent &fe) override;        // OgreApplicationContextBase
 	void InitializeGame();
 	void InitializeRenderer();
-	virtual bool frameRenderingQueued(const FrameEvent &fe) override;        // OgreApplicationContextBase
 
-	/* Update Game Logic */
+	/* Update the game logic */
 	void Update(float deltaTimeP);
 
 	/* Actors */

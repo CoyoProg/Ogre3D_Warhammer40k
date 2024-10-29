@@ -17,8 +17,8 @@ namespace Ogre
 class Player : public Actors, public InputListener
 {
 public:
-	Player(GameEngine &gameEngineP, Ogre::OverlayManager& overlayManagerP);
-	~Player();
+	Player(GameManager &gameManagerP, Ogre::OverlayManager& overlayManagerP);
+	virtual ~Player() override;
 
 	virtual void Update(float deltaTimeP) override;
 	int GetCurrentPlayer() const { return mCurrentPlayerID; }
@@ -53,7 +53,7 @@ private:
 	virtual bool mouseReleased(const MouseButtonEvent& evt) override;
 
 	Ogre::OverlayManager &m_OverlayManager;
-	GameEngine &mGameEngine;
+	GameManager &mGameManager;
 
 	Camera *mCamera = nullptr;
 	RaySceneQuery *mRayScnQuery = nullptr;
@@ -69,5 +69,7 @@ private:
 
 	bool mIsLMBDown = false;
 	bool mIsRMBDown = false;
+
+	SceneNode* mLastHit = nullptr;
 };
 

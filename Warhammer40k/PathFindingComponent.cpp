@@ -5,9 +5,9 @@
 #include <unordered_set>
 #include <map>
 
-PathFindingComponent::PathFindingComponent(GameEngine& gameEngineP)  :
-	mGrid(gameEngineP.GetGrid()),
-	sceneManager(*gameEngineP.GetSceneManager())
+PathFindingComponent::PathFindingComponent(GameManager &gameManagerP)  :
+	mGrid(gameManagerP.GetGrid()),
+	sceneManager(*gameManagerP.GetSceneManager())
 {
 }
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "GameEngine.h"
+#include "GameManager.h"
 
 constexpr int GRID_MULTIPLICATEUR = 2;
 	  
@@ -76,7 +76,7 @@ private:
 class Grid
 {
 public:
-	Grid(GameEngine &gameEngineP);
+	Grid(GameManager &gameEngineP);
 	~Grid();
 
 	void SetTileCollision(int coordXP, int coordZP, int enumTypeP);
@@ -93,7 +93,7 @@ public:
 	void OnFlip();
 
 private:
-	GameEngine &mGameEngine;
+	GameManager &mGameManager;
 
 	/*Grid properties */
 	float mPadding = 1.f;

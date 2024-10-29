@@ -11,7 +11,7 @@ class Tile;
 class PathFindingComponent : public Components
 {
 public:
-	PathFindingComponent(GameEngine &gameEngineP);
+	PathFindingComponent(GameManager &gameManagerP);
 	~PathFindingComponent();
 
 	virtual void Update(float deltaTimeP) override;

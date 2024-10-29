@@ -1,16 +1,15 @@
 #include "Obstacles.h"
 #include "QueryFlags.h"
 
-#include "GameEngine.h"
 #include "Grid.h"
 
 constexpr float GRID_OFFSET_CENTER = GRID_CELL_SIZE / 2.0f;
 
-Obstacles::Obstacles(GameEngine &gameEngineP, const Vector2 &gridCoordsP, const Vector3 &scaleP, const std::string &ID):
+Obstacles::Obstacles(GameManager &gameManagerP, const Vector2 &gridCoordsP, const Vector3 &scaleP, const std::string &ID):
 	mGridCoords(gridCoordsP),
 	mScale(scaleP),
-	mGrid(gameEngineP.GetGrid()),
-	mSceneManager(*gameEngineP.GetSceneManager())
+	mGrid(gameManagerP.GetGrid()),
+	mSceneManager(*gameManagerP.GetSceneManager())
 {
 	CreateCube(ID);
 

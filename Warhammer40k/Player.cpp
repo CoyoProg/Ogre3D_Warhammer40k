@@ -9,29 +9,29 @@
 
 #include <iostream>
 
-Player::Player(GameEngine &gameEngineP, OverlayManager &overlayManagerP) :
-	mGameEngine (gameEngineP),
+Player::Player(GameManager &gameManagerP, OverlayManager &overlayManagerP) :
+	mGameManager (gameManagerP),
     m_OverlayManager(overlayManagerP)
 {
     /*  Add Components */
-	CameraComponent *camera = new CameraComponent(gameEngineP);
+	CameraComponent *camera = new CameraComponent(gameManagerP);
     AddComponent(camera);
 
     mCamera = &camera->getCamera();
-    gameEngineP.getRenderWindow()->addViewport(mCamera);
+    gameManagerP.getRenderWindow()->addViewport(mCamera);
 
     /* Create the Ray */
-    mRayScnQuery = gameEngineP.GetSceneManager()->createRayQuery(Ogre::Ray());
+    mRayScnQuery = gameManagerP.GetSceneManager()->createRayQuery(Ogre::Ray());
     mRayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
 
     /* Add listener */
-    gameEngineP.addInputListener(this);
-    gameEngineP.SetPlayer(this);
+    gameManagerP.addInputListener(this);
+    gameManagerP.SetPlayer(this);
 
     /* Create the Dice */
-    //mDice = mGameEngine.GetSceneManager()->createEntity("Dice", "Dice.mesh");
+    //mDice = mGameManager.GetSceneManager()->createEntity("Dice", "Dice.mesh");
     //mDice->setMaterialName("Dice");
-    //SceneNode* diceNode = mGameEngine.GetSceneManager()->getRootSceneNode()->createChildSceneNode("DiceNode");
+    //SceneNode* diceNode = mGameManager.GetSceneManager()->getRootSceneNode()->createChildSceneNode("DiceNode");
     //diceNode->attachObject(mDice);
     //diceNode->setPosition(Vector3(0, 10, 0));
     //diceNode->setScale(Vector3(.05f, .05f, .05f));
@@ -39,7 +39,7 @@ Player::Player(GameEngine &gameEngineP, OverlayManager &overlayManagerP) :
 
 Player::~Player()
 {
-    mGameEngine.GetSceneManager()->destroyQuery(mRayScnQuery);
+    mGameManager.GetSceneManager()->destroyQuery(mRayScnQuery);
 }
 
 void Player::Update(float deltaTimeP)
@@ -57,8 +57,8 @@ void Player::OnEndTurn()
 void Player::MouseRayTo3D(int mouseXP, int mouseYP)
 {
     /* Cast Ray */
-    float width = mouseXP / (float)mGameEngine.getRenderWindow()->getWidth();
-    float height = mouseYP / (float)mGameEngine.getRenderWindow()->getHeight();
+    float width = mouseXP / (float)mGameManager.getRenderWindow()->getWidth();
+    float height = mouseYP / (float)mGameManager.getRenderWindow()->getHeight();
     
     mMouseRay = mCamera->getCameraToViewportRay(width, height);
     
@@ -73,33 +73,27 @@ void Player::CheckMouseOverCollisions()
 {
     RaySceneQueryResult& result = mRayScnQuery->execute();
     RaySceneQueryResult::iterator it = result.begin();
+    
+    SceneNode* sceneNodeHit = it->movable->getParentSceneNode();
+    if (sceneNodeHit == mLastHit) return;
 
-    if (it == result.end() || !it->movable || it->movable->getQueryFlags() != FIGURINE_MASK)
-    {
-        ResetMouseOver();
-        return;
-    }
+    mLastHit = sceneNodeHit;
+    ResetMouseOver();
+
+    /* Return if the hit result isn't a figurine */
+    if (it == result.end() || it->movable->getQueryFlags() != FIGURINE_MASK) return;
 
     /* Try to get the entity's actor class and cast it to figurines */
-    SceneNode* sceneNodeHit = it->movable->getParentSceneNode();
-    Actors* getActor = mGameEngine.GetSceneActor(sceneNodeHit);
-    if (auto* newTarget = dynamic_cast<Figurines*>(getActor))
+    Actors* getActor = mGameManager.GetSceneActor(sceneNodeHit);
+
+    if (auto newTarget = dynamic_cast<Figurines*>(getActor))
     {
-        if (newTarget != mCurrentMouseOver)
-        {
-            HandleMouseOver(newTarget);
-        }
-    }
-    else
-    {
-        ResetMouseOver();
+        HandleMouseOver(newTarget);
     }
 }
 
 void Player::HandleMouseOver(Figurines* mouseOverTargetP)
 {
-    ResetMouseOver();
-
     if (!mouseOverTargetP->IsSleeping()) return;
     mCurrentMouseOver = mouseOverTargetP;
 
@@ -216,7 +210,7 @@ void Player::HandleFigurineTargeting(Ogre::RaySceneQueryResult::iterator& hitRes
 
     /* Try to get the entity's actor class and cast it to figurines */
     SceneNode* sceneNodeHit = hitResult->movable->getParentSceneNode();
-    Actors* getActor = mGameEngine.GetSceneActor(sceneNodeHit);
+    Actors* getActor = mGameManager.GetSceneActor(sceneNodeHit);
     if (auto* newTarget = dynamic_cast<Figurines*>(getActor))
     {
         /* Check if targeting an ally */
@@ -248,7 +242,7 @@ void Player::HandleFigurineMovement(Ogre::RaySceneQueryResult::iterator& hitResu
     targetPosition.y = rayOrigin.y + hitResult->distance * rayDirection.y;
     targetPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
 
-    Tile* targetTile = mGameEngine.GetGrid().GetTile(targetPosition);
+    Tile* targetTile = mGameManager.GetGrid().GetTile(targetPosition);
     if (!targetTile) return;
 
     /* Check if the tile is on the Figurine Grid Movement */
@@ -344,7 +338,7 @@ void Player::HideCards()
 
 bool Player::mouseMoved(const MouseMotionEvent& evt)
 {
-    if (mGameEngine.isGameLoaded)
+    if (mGameManager.isGameLoaded)
     {
         MouseRayTo3D(evt.x, evt.y);
     }

@@ -1,8 +1,8 @@
 #include "Grid.h"
 #include <iostream>
 
-Grid::Grid(GameEngine& gameEngineP) :
-	mGameEngine(gameEngineP)
+Grid::Grid(GameManager& gameEngineP) :
+	mGameManager(gameEngineP)
 {
 	gameEngineP.SetGrid(this);
 	CreateGrid();
@@ -15,7 +15,7 @@ Grid::~Grid()
 
 void Grid::CreateGrid()
 {
-	SceneManager &sceneManager = *mGameEngine.GetSceneManager();
+	SceneManager &sceneManager = *mGameManager.GetSceneManager();
 
 	int count = 0;
 	for (int x = 0; x < GRID_SIZE_X; x++)

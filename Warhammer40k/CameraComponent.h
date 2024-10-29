@@ -11,7 +11,7 @@ class Figurines;
 class CameraComponent : public Components, public InputListener
 {
 public:
-	CameraComponent(GameEngine& gameEngineP);
+	CameraComponent(GameManager& gameManagerP);
 	~CameraComponent();
 
 	virtual void Update(float deltaTimeP) override;

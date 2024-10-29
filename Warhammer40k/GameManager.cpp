@@ -1,6 +1,6 @@
 #include <windows.h>
 
-#include "GameEngine.h"
+#include "GameManager.h"
 #include "OgreRTShaderSystem.h"
 #include "OgreText.h"
 #include <OgreFontManager.h>
@@ -19,17 +19,17 @@
 
 using namespace Ogre;
 
-GameEngine::GameEngine()
+GameManager::GameManager()
 {
 }
 
-void GameEngine::setup()
+void GameManager::setup()
 {
 	InitializeRenderer();
 	InitializeGame();
 }
 
-void GameEngine::InitializeRenderer()
+void GameManager::InitializeRenderer()
 {
 	RECT desktop;
 	const HWND hDesktop = GetDesktopWindow();
@@ -80,7 +80,7 @@ void GameEngine::InitializeRenderer()
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
-void GameEngine::InitializeGame()
+void GameManager::InitializeGame()
 {
 	// Create an empty SceneNode
 	mCenterOfWorldNode = mSceneManager->getRootSceneNode()->createChildSceneNode("CenterOfWorldNode");
@@ -100,7 +100,7 @@ void GameEngine::InitializeGame()
 	mOverlayWidgets->GetPlayerTextElement()->setCaption("Player One");
 }
 
-void GameEngine::Update(float deltaTimeP)
+void GameManager::Update(float deltaTimeP)
 {
 	for (auto& actors : mActors)
 	{
@@ -116,7 +116,7 @@ void GameEngine::Update(float deltaTimeP)
 	FlipTableTop(deltaTimeP);
 }
 
-void GameEngine::RemoveActor(Actors *actorP)
+void GameManager::RemoveActor(Actors *actorP)
 {
 	// Find the iterator pointing to the element
 	auto iter = std::find(mActors.begin(), mActors.end(), actorP);
@@ -130,7 +130,7 @@ void GameEngine::RemoveActor(Actors *actorP)
 	delete actorP;
 }
 
-void GameEngine::EndTurn()
+void GameManager::EndTurn()
 {
 	// NEEDS TO CHECK IF ALL THE ACTORS AREN'T MOVING
 
@@ -171,7 +171,7 @@ void GameEngine::EndTurn()
 	}
 }
 
-Actors* GameEngine::GetSceneActor(const SceneNode *sceneNodeP)
+Actors* GameManager::GetSceneActor(const SceneNode *sceneNodeP)
 {
 	for (auto actors : mActors)
 	{
@@ -184,7 +184,7 @@ Actors* GameEngine::GetSceneActor(const SceneNode *sceneNodeP)
 	return nullptr;
 }
 
-bool GameEngine::frameRenderingQueued(const Ogre::FrameEvent& fe)
+bool GameManager::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
 	if (!isGameLoaded)
 		isGameLoaded = true;
@@ -204,12 +204,12 @@ bool GameEngine::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	return ret;
 }
 
-bool GameEngine::ProcessUnbufferedInput(const Ogre::FrameEvent& fe)
+bool GameManager::ProcessUnbufferedInput(const Ogre::FrameEvent& fe)
 {
 	return true;
 }
 
-bool GameEngine::keyPressed(const KeyboardEvent& evt)
+bool GameManager::keyPressed(const KeyboardEvent& evt)
 {
 	Keycode key = evt.keysym.sym;
 
@@ -226,7 +226,7 @@ bool GameEngine::keyPressed(const KeyboardEvent& evt)
 	return true;
 }
 
-void GameEngine::FlipTableTop(float deltaTimeP)
+void GameManager::FlipTableTop(float deltaTimeP)
 {
 	if (mIsFlipping)
 	{

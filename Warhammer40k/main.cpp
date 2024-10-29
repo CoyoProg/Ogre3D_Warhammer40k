@@ -1,4 +1,4 @@
-#include "GameEngine.h"
+#include "GameManager.h"
 
 #include <iostream>
 
@@ -6,7 +6,7 @@ int main(int argc, char** argv)
 {
     try
     {
-        GameEngine app;
+        GameManager app;
         app.initApp();
         app.getRoot()->startRendering();
 

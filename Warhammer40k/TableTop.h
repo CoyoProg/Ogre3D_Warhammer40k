@@ -7,8 +7,7 @@
 class TableTop : public Actors
 {
 public:
-	TableTop(GameEngine &gameEngineP);
-	~TableTop() {};
+	TableTop(GameManager &gameManagerP);
 
 	SceneNode* GetSceneNode() { return mTabletopNode; }
 

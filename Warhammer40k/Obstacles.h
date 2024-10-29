@@ -1,7 +1,6 @@
 #pragma once
 #include "Actors.h"
 
-class GameEngine;
 class Grid;
 
 /*
@@ -12,8 +11,8 @@ class Obstacles : public Actors
 {
 public:
 	/* The scale always needs to be positive. */
-	Obstacles(GameEngine &gameEngineP, const Vector2 &gridCoordsP, const Vector3& scaleP, const std::string &ID);
-	~Obstacles();
+	Obstacles(GameManager &gameManagerP, const Vector2 &gridCoordsP, const Vector3& scaleP, const std::string &ID);
+	virtual ~Obstacles() override;
 
 	void UpdateTilesCollision(int coordXP, int coordYP, bool isFlippedP);
 

@@ -1,8 +1,8 @@
 #include "TableTop.h"
 
-TableTop::TableTop(GameEngine &gameEngineP)
+TableTop::TableTop(GameManager &gameManagerP)
 {
-    SceneManager &sceneManager = *gameEngineP.GetSceneManager();
+    SceneManager &sceneManager = *gameManagerP.GetSceneManager();
 
     /* Import Custom mesh */
     Entity *tabletopEntity = sceneManager.createEntity("TableTopEntity", "Plateau.mesh");

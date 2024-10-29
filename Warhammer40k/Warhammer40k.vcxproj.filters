@@ -51,7 +51,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Fichiers sources\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="GameEngine.cpp">
+    <ClCompile Include="GameManager.cpp">
       <Filter>Fichiers sources\GameManager</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
@@ -89,7 +89,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameEngine.h">
+    <ClInclude Include="GameManager.h">
       <Filter>Fichiers d%27en-tête\GameManager</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">

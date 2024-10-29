@@ -5,15 +5,15 @@ namespace Ogre
     class SceneManager;
 }
 
-class GameEngine;
+class GameManager;
 class Grid;
 
 class GameLevel
 {
 public:
-	static void LoadLevel(GameEngine &gameEngineP);
+	static void LoadLevel(GameManager &gameEngineP);
 
 private:
-	static void LoadEnvironment(Ogre::SceneManager &sceneManager, GameEngine &gameEngine, Grid *mGrid);
+	static void LoadEnvironment(Ogre::SceneManager &sceneManager, GameManager &gameEngine, Grid *mGrid);
 };
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "GameEngine.h"
+#include "GameManager.h"
 #include <memory>
 
 class Components;
@@ -11,6 +11,7 @@ class Components;
 class Actors
 {
 public:
+	virtual ~Actors();
 	virtual void Update(float deltaTimeP);
 
 	SceneNode* GetSceneNode() { return mNode; }

@@ -31,8 +31,8 @@ enum class FigurineState
 class Figurines : public Actors
 {
 public:
-	Figurines(GameEngine &gameEngineP, const std::string &entityNameP, const std::string &nodeNameP, int ownerP);
-	~Figurines();
+	Figurines(GameManager &gameManagerP, const std::string &entityNameP, const std::string &nodeNameP, int ownerP);
+	virtual ~Figurines() override;
 
 	void Update(float deltaTimeP) override;
 
@@ -56,6 +56,8 @@ public:
 	void Attack(Figurines* targetP);
 	void GetHit(int damageAmountP);
 
+	void Death();
+
 	void OnSelected(bool isSelected);
 	void OnMouseOver(bool isEnemy = false);
 	void OnMouseOut();
@@ -76,7 +78,7 @@ private:
 	};
 
 	SelectedAnimationProperties mSelectionAnimationProps;
-	GameEngine &mGameEngine;
+	GameManager &mGameManager;
 
 	bool mIsSelected = false;
 	const float mUniformScale = 0.02f;
@@ -96,6 +98,8 @@ private:
 	bool mShouldMoveStraight = false;
 	static constexpr int mTurnSpeed = 4;
 	static constexpr float movementSpeed = 10.f;
+
+	bool mIsMouseHovered = false;
 
 	/* On Death */
 	FigurineState mFigurineState = FigurineState::SLEEPING;

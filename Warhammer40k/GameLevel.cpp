@@ -4,7 +4,7 @@
 #include "Ogre.h"
 #include <OgreOverlayManager.h>
 
-#include "GameEngine.h"
+#include "GameManager.h"
 #include "Actors.h"
 #include "Player.h"
 #include "TableTop.h"
@@ -14,7 +14,7 @@
 
 using namespace Ogre;
 
-void GameLevel::LoadLevel(GameEngine &gameEngineP)
+void GameLevel::LoadLevel(GameManager &gameEngineP)
 {
 	SceneManager &sceneManager = *gameEngineP.GetSceneManager();
 	sceneManager.setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
@@ -113,7 +113,7 @@ void GameLevel::LoadLevel(GameEngine &gameEngineP)
 	LoadEnvironment(sceneManager, gameEngineP, grid);
 }
 
-void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameEngine &gameEngineP, Grid *gridP)
+void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &gameEngineP, Grid *gridP)
 {
 	// ===== LIGHT ==== 
 	/* Create the light */

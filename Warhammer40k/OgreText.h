@@ -12,6 +12,7 @@
 #include "OgreStringConverter.h"
 
 using namespace Ogre;
+
 #include <iostream>
 #ifndef __OgreText_H__
 #define __OgreText_H__
