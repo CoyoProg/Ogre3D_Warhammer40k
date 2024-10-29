@@ -223,9 +223,6 @@ void PathFindingComponent::RetracePath(const Tile& startTileP, Tile &targetTileP
 
 	Tile *currentTile = &targetTileP;
 
-	Vector3 startPosition = mGrid.GetWorldPosition(startTileP.gridCoordinates);
-	Vector3 targetPosition = mGrid.GetWorldPosition(targetTileP.gridCoordinates);
-
 	/* Traverse back from target to start, accumulating path cost and storing each point */
 	while (currentTile != &startTileP)
 	{
@@ -234,9 +231,7 @@ void PathFindingComponent::RetracePath(const Tile& startTileP, Tile &targetTileP
 		mFinalPath.insert(mFinalPath.begin(), mGrid.GetWorldPosition(currentTile->gridCoordinates));
 		currentTile = mParentSet[currentTile];
 	}
-	startPosition.y = 0.0f;
-	targetPosition.y = 0.0f;
 
 	/* Add the start position at the beginning of the path */
-	mFinalPath.insert(mFinalPath.begin(), startPosition);
+	mFinalPath.insert(mFinalPath.begin(), mGrid.GetWorldPosition(startTileP.gridCoordinates));
 }
