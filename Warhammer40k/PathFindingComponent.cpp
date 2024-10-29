@@ -83,19 +83,17 @@ void PathFindingComponent::ShowMovementGrid(const Vector3& startPositionP, int m
 			/* Skip obstacles and visited tiles */
 			if (neighbour->GetType() == TILE_OBSTACLE || closedSet.find(neighbour) != closedSet.end()) continue;
 
-			/* We Update the costs for each neighbour */
+			/* We Update the costs of the neighbour tile if we found a lower cost */
 			int newMovementCost = currentTile->gCost + GetDistance(*currentTile, *neighbour);
-			if (newMovementCost < neighbour->gCost)
+			if (newMovementCost >= neighbour->gCost) continue;
+
+			neighbour->gCost = newMovementCost;
+			mParentSet[neighbour] = currentTile;
+
+			/* Check if the neighbour tile is not in open set */
+			if (std::find(openSet.begin(), openSet.end(), neighbour) == openSet.end())
 			{
-				neighbour->gCost = newMovementCost;
-
-				mParentSet[neighbour] = currentTile;
-
-				/* Check if the neighbour is already in the open set */
-				if (std::find(openSet.begin(), openSet.end(), neighbour) == openSet.end())
-				{
-					openSet.emplace_back(neighbour);
-				}
+				openSet.emplace_back(neighbour);
 			}
 		}
 	}
@@ -149,9 +147,8 @@ void PathFindingComponent::UpdateGrid(int tileTypeP)
 
 const std::vector<TurnThreshold*>& PathFindingComponent::GetTurnPath()
 {
-	int expectedSize = mFinalPath.size();
-
 	lookPoints.clear();
+	int expectedSize = mFinalPath.size();
 
 	std::vector<TurnThreshold*> turnBoundaries;
 	turnBoundaries.reserve(expectedSize);
