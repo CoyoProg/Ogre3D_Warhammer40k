@@ -26,6 +26,9 @@ struct FlipTableAnimation
 	int flipFlop = 1;
 };
 
+/*
+ *
+ */
 class GameManager : public ApplicationContext, public InputListener
 {
 public:
@@ -50,8 +53,8 @@ public:
 	void SetPlayer(Player *playerP) { mPlayer = playerP; }
 	void EndTurn();
 
-	SceneManager* GetSceneManager() { return mSceneManager; }
-	Actors* GetSceneActor(const SceneNode* sceneNodeP);
+	SceneManager& GetSceneManager() { return *mSceneManager; }
+	Actors* GetSceneActor(const SceneNode& sceneNodeP);
 
 	TableTop* tabletop = nullptr;
 	bool isGameLoaded = false;
@@ -62,7 +65,7 @@ private:
 
 	void FlipTableTop(float deltaTimeP);
 
-	RenderWindow *mRenderWindow;
+	RenderWindow *mRenderWindow = nullptr;
 	SceneManager *mSceneManager = nullptr;
 	SceneNode *mCenterOfWorldNode = nullptr;
 	Grid *mGrid = nullptr;

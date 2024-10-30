@@ -2,7 +2,7 @@
 
 TableTop::TableTop(GameManager &gameManagerP)
 {
-    SceneManager &sceneManager = *gameManagerP.GetSceneManager();
+    SceneManager &sceneManager = gameManagerP.GetSceneManager();
 
     /* Import Custom mesh */
     Entity *tabletopEntity = sceneManager.createEntity("TableTopEntity", "Plateau.mesh");

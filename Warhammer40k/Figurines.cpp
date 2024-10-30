@@ -15,11 +15,11 @@ Figurines::Figurines(GameManager &gameManagerP, const std::string& entityNameP, 
     mCurrentMovementAction(FigurineStats::maxMovementAction),
     mCurrentActionPoint(FigurineStats::maxActionPoints)
 {
-    mEntity = mGameManager.GetSceneManager()->createEntity(entityNameP, "LowPolyMarine.mesh");
+    mEntity = mGameManager.GetSceneManager().createEntity(entityNameP, "LowPolyMarine.mesh");
     mEntity->setCastShadows(true);
     mEntity->setQueryFlags(QueryFlags::FIGURINE_MASK);
 
-    mNode = mGameManager.GetSceneManager()->getRootSceneNode()->createChildSceneNode(nodeNameP);
+    mNode = mGameManager.GetSceneManager().getRootSceneNode()->createChildSceneNode(nodeNameP);
     mNode->attachObject(mEntity);
     mNode->setScale(mUniformScale, mUniformScale, mUniformScale);
 
@@ -234,8 +234,8 @@ void Figurines::Death()
         OnMouseOut();
     }
 
-    mGameManager.GetSceneManager()->destroyEntity(mEntity);
-    mGameManager.GetSceneManager()->destroySceneNode(mNode);
+    mGameManager.GetSceneManager().destroyEntity(mEntity);
+    mGameManager.GetSceneManager().destroySceneNode(mNode);
 
     mGameManager.RemoveActor(this);
 }

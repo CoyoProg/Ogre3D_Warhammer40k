@@ -175,13 +175,13 @@ void GameManager::EndTurn()
 	}
 }
 
-Actors* GameManager::GetSceneActor(const SceneNode *sceneNodeP)
+Actors* GameManager::GetSceneActor(const SceneNode &sceneNodeP)
 {
-	for (auto actors : mActors)
+	for (auto actor : mActors)
 	{
-		if (actors->GetSceneNode() == sceneNodeP)
+		if (actor->GetSceneNode() == &sceneNodeP)
 		{
-			return actors;
+			return actor;
 		}
 	}
 

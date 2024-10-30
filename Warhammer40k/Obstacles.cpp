@@ -9,7 +9,7 @@ Obstacles::Obstacles(GameManager &gameManagerP, const Vector2 &gridCoordsP, cons
 	mGridCoords(gridCoordsP),
 	mScale(scaleP),
 	mGrid(gameManagerP.GetGrid()),
-	mSceneManager(*gameManagerP.GetSceneManager())
+	mSceneManager(gameManagerP.GetSceneManager())
 {
 	CreateCube(ID);
 

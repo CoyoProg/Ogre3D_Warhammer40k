@@ -16,7 +16,7 @@ using namespace Ogre;
 
 void GameLevel::LoadLevel(GameManager &gameEngineP)
 {
-	SceneManager &sceneManager = *gameEngineP.GetSceneManager();
+	SceneManager &sceneManager = gameEngineP.GetSceneManager();
 	sceneManager.setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
 	sceneManager.setShadowFarDistance(50);
 
@@ -138,26 +138,13 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &
 	mainViewport->setBackgroundColour(fadeColour);
 	sceneManagerP.setFog(Ogre::FOG_LINEAR, fadeColour, 0, 2000, 10000);
 
+
 	/* Buildings */
+	// TODO: Refactor 
 	Obstacles *obstacle = new Obstacles(
 		gameEngineP, 
-		Vector2(20, 25), 
-		Vector3(7,5,14), 
+		Vector2(20, 20), 
+		Vector3(4,10,24), 
 		"01");
 	gameEngineP.AddActor(obstacle);
-
-	Obstacles *obstacle2 = new Obstacles(
-		gameEngineP,
-		Vector2(30, 35),
-		Vector3(14, 4, 3),
-		"02");
-	gameEngineP.AddActor(obstacle2);
-	
-	
-	Obstacles *obstacle3 = new Obstacles(
-		gameEngineP,
-		Vector2(5, 20),
-		Vector3(5, 5, 5),
-		"03");
-	gameEngineP.AddActor(obstacle3);
 }

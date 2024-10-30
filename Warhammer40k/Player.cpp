@@ -21,7 +21,7 @@ Player::Player(GameManager &gameManagerP, OverlayManager &overlayManagerP) :
     gameManagerP.getRenderWindow()->addViewport(mCamera);
 
     /* Create the Ray */
-    mRayScnQuery = gameManagerP.GetSceneManager()->createRayQuery(Ogre::Ray());
+    mRayScnQuery = gameManagerP.GetSceneManager().createRayQuery(Ogre::Ray());
     mRayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
 
     /* Add listener */
@@ -39,7 +39,7 @@ Player::Player(GameManager &gameManagerP, OverlayManager &overlayManagerP) :
 
 Player::~Player()
 {
-    mGameManager.GetSceneManager()->destroyQuery(mRayScnQuery);
+    mGameManager.GetSceneManager().destroyQuery(mRayScnQuery);
 }
 
 void Player::Update(float deltaTimeP)
@@ -84,7 +84,7 @@ void Player::CheckMouseOverCollisions()
     if (it == result.end() || it->movable->getQueryFlags() != FIGURINE_MASK) return;
 
     /* Try to get the entity's actor class and cast it to figurines */
-    Actors* getActor = mGameManager.GetSceneActor(sceneNodeHit);
+    Actors* getActor = mGameManager.GetSceneActor(*sceneNodeHit);
 
     if (auto newTarget = dynamic_cast<Figurines*>(getActor))
     {
@@ -210,7 +210,7 @@ void Player::HandleFigurineTargeting(Ogre::RaySceneQueryResult::iterator& hitRes
 
     /* Try to get the entity's actor class and cast it to figurines */
     SceneNode* sceneNodeHit = hitResult->movable->getParentSceneNode();
-    Actors* getActor = mGameManager.GetSceneActor(sceneNodeHit);
+    Actors* getActor = mGameManager.GetSceneActor(*sceneNodeHit);
     if (auto* newTarget = dynamic_cast<Figurines*>(getActor))
     {
         /* Check if targeting an ally */

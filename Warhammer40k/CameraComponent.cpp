@@ -6,12 +6,12 @@ CameraComponent::CameraComponent(GameManager &gameManagerP)
 {
     // ===== CAMERA ==== 
     /* Create the Camera */
-    mCamera = gameManagerP.GetSceneManager()->createCamera("mainCamera");
+    mCamera = gameManagerP.GetSceneManager().createCamera("mainCamera");
     mCamera->setNearClipDistance(5); // specific to this sample
     mCamera->setAutoAspectRatio(true); 
 
     /* Create a scene node for the camera */
-    mCamNode = gameManagerP.GetSceneManager()->getRootSceneNode()->createChildSceneNode();
+    mCamNode = gameManagerP.GetSceneManager().getRootSceneNode()->createChildSceneNode();
     mCamNode->attachObject(mCamera);
 	mCamNode->setPosition(0, 100, 222);
 	mCamNode->pitch(Degree(-45));

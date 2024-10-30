@@ -7,7 +7,7 @@
 
 PathFindingComponent::PathFindingComponent(GameManager &gameManagerP)  :
 	mGrid(gameManagerP.GetGrid()),
-	sceneManager(*gameManagerP.GetSceneManager())
+	sceneManager(gameManagerP.GetSceneManager())
 {
 }
 

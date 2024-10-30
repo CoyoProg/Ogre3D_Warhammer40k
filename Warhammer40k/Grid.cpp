@@ -15,7 +15,7 @@ Grid::~Grid()
 
 void Grid::CreateGrid()
 {
-	SceneManager &sceneManager = *mGameManager.GetSceneManager();
+	SceneManager &sceneManager = mGameManager.GetSceneManager();
 
 	int count = 0;
 	for (int x = 0; x < GRID_SIZE_X; x++)
