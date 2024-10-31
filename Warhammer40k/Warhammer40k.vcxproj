@@ -156,7 +156,6 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameLevel.h" />
     <ClInclude Include="Grid.h" />
-    <ClInclude Include="IListenerInputs.h" />
     <ClInclude Include="Obstacles.h" />
     <ClInclude Include="OgreText.h" />
     <ClInclude Include="PathFindingComponent.h" />

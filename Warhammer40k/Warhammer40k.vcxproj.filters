@@ -31,9 +31,6 @@
     <Filter Include="Fichiers sources\Components">
       <UniqueIdentifier>{3f75516f-9cc7-4051-a027-06f131146deb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Interfaces">
-      <UniqueIdentifier>{2abdeff5-4a8d-4beb-947f-c479ee2ea353}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers d%27en-tête\Components">
       <UniqueIdentifier>{0ed99b40-3873-4e43-8616-34a3ef792c41}</UniqueIdentifier>
     </Filter>
@@ -106,9 +103,6 @@
     </ClInclude>
     <ClInclude Include="GameLevel.h">
       <Filter>Fichiers d%27en-tête\GameManager</Filter>
-    </ClInclude>
-    <ClInclude Include="IListenerInputs.h">
-      <Filter>Fichiers sources\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Figurines.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>

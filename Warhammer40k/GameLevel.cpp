@@ -132,8 +132,8 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &
 
 	/* Fog */
 	Ogre::Viewport *mainViewport = sceneManagerP.getCamera("mainCamera")->getViewport();
-
-	// Set the background color for the main viewport
+	
+	/* Set the background color for the main viewport */
 	Ogre::ColourValue fadeColour(0.9, 0.9, 0.9);
 	mainViewport->setBackgroundColour(fadeColour);
 	sceneManagerP.setFog(Ogre::FOG_LINEAR, fadeColour, 0, 2000, 10000);

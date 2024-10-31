@@ -73,10 +73,8 @@ void Figurines::UpdatePositions(float deltaTimeP)
             mIndexPosition = 1;
             mFigurineState = FigurineState::SLEEPING;
 
-            /* 
-             * If the figurine is still selected after it's movement, we trigger the OnSelected function,
-             * It will show and update its GridMovement
-             */
+            /* If the figurine is still selected after it's movement, we trigger the OnSelected function,
+            It will show and update its GridMovement */
             if (mIsSelected)
             {
                 OnSelected(true);
@@ -247,7 +245,7 @@ void Figurines::LookAt(const Ogre::Vector3 &targetPositionP, float deltaTimeP)
 
     Quaternion targetRotationYaw = Ogre::Vector3::UNIT_Z.getRotationTo(direction);
 
-    // Extract the yaw angle from the full rotation
+    /* Extract the yaw angle from the full rotation */
     Radian yaw = targetRotationYaw.getYaw();
     Quaternion targetRotationYawOnly(yaw, Vector3::UNIT_Y);
 

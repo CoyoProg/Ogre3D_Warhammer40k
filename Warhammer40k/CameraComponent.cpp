@@ -98,7 +98,7 @@ void CameraComponent::UpdateCameraPosition(float deltaTimeP)
         && newTranslation.z > mClampMinZ 
         && newTranslation.z < mClampMaxZ)
     {
-        // Apply the accumulated translation
+        /* Apply the accumulated translation */
         mCamNode->translate(mMoveX * deltaTimeP, 0, mMoveZ * deltaTimeP);
     }
 
@@ -107,7 +107,7 @@ void CameraComponent::UpdateCameraPosition(float deltaTimeP)
 
 void CameraComponent::Zoom(float deltaTimeP)
 {
-    // Calculate the camera's forward vector based on its rotation
+    /* Calculate the camera's forward vector based on its rotation */
     Quaternion cameraOrientation = mCamNode->getOrientation();
     Vector3 cameraDirection = cameraOrientation * Ogre::Vector3::UNIT_Z * (mMouseWheelY * deltaTimeP * 500);
 

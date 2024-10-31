@@ -74,6 +74,7 @@ void Player::CheckMouseOverCollisions()
     RaySceneQueryResult& result = mRayScnQuery->execute();
     RaySceneQueryResult::iterator it = result.begin();
     
+    /* Return if the MouseOver target didn't changed */
     SceneNode* sceneNodeHit = it->movable->getParentSceneNode();
     if (sceneNodeHit == mLastHit) return;
 
@@ -113,7 +114,7 @@ void Player::ResetMouseOver()
 
 void Player::OnLBMouseDown(int mouseXP, int mouseYP)
 {
-    /* Unselect current selection if nothing is Moused Over */
+    /* Unselect current selection if nothing is MouseOver */
     if (!mCurrentMouseOver)
     {
         UnselectFigurine();
@@ -215,7 +216,7 @@ void Player::HandleFigurineTargeting(Ogre::RaySceneQueryResult::iterator& hitRes
     {
         /* Check if targeting an ally */
         if (newTarget->GetOwner() == mCurrentPlayerFigurine->GetOwner()) return;
-        // mCurrentPlayerFigurine->HealOrBuff(newTarget)                                         // TODO 
+        // mCurrentPlayerFigurine->HealOrBuff(newTarget)                                   // TODO 
 
         /* Check if the enemy is On Shooting Sight */
         float distanceFromSelected = 0.f;                                                  // TODO: IMPLEMENT DISTANCE CALCULATION

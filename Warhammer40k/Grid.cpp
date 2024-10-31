@@ -75,8 +75,7 @@ const std::vector<Tile*>& Grid::GetNeighboursTiles(const Tile &currentTileP)
 	{
 		for (int z = -1; z <= 1; z++)
 		{
-			if (x == 0 && z == 0)
-				continue;
+			if (x == 0 && z == 0) continue;
 
 			int checkX = currentTileP.gridCoordinates.x + x;
 			int checkZ = currentTileP.gridCoordinates.y + z;

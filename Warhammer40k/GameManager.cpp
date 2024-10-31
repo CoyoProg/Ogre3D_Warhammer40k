@@ -1,4 +1,6 @@
+#ifdef _WIN32 
 #include <windows.h>
+#endif
 
 #include "GameManager.h"
 #include "OgreRTShaderSystem.h"
@@ -31,11 +33,13 @@ void GameManager::setup()
 
 void GameManager::InitializeRenderer()
 {
+#ifdef _WIN32 
 	RECT desktop;
 	const HWND hDesktop = GetDesktopWindow();
 	GetWindowRect(hDesktop, &desktop);
 	int screenWidth = desktop.right;
 	int screenHeight = desktop.bottom;
+#endif
 
 	mRoot->initialise(false);
 	createWindow("Warhammer 40k TableTop", screenWidth, screenHeight);
@@ -54,7 +58,7 @@ void GameManager::InitializeRenderer()
 	Ogre::OverlaySystem* pOverlaySystem = getOverlaySystem();
 	mSceneManager->addRenderQueueListener(pOverlaySystem);
 
-	// register our scene with the RTSS
+	/* register our scene with the RTSS */
 	RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
 	shadergen->addSceneManager(mSceneManager);
 
@@ -82,10 +86,9 @@ void GameManager::InitializeRenderer()
 
 void GameManager::InitializeGame()
 {
-	// Create an empty SceneNode
+	/* Create the center of the Game Node */
 	mCenterOfWorldNode = mSceneManager->getRootSceneNode()->createChildSceneNode("CenterOfWorldNode");
 
-	// Optionally, set the position, orientation, or scale of the empty SceneNode
 	mCenterOfWorldNode->setPosition(Vector3(0, 0, 0));
 	mCenterOfWorldNode->setOrientation(Ogre::Quaternion::IDENTITY);
 	mCenterOfWorldNode->setScale(Vector3(1, 1, 1));
@@ -122,10 +125,9 @@ void GameManager::Update(float deltaTimeP)
 
 void GameManager::RemoveActor(Actors *actorP)
 {
-	// Find the iterator pointing to the element
+	/* Find the iterator pointing to the actor */
 	auto iter = std::find(mActors.begin(), mActors.end(), actorP);
 
-	// Check if the element was found before erasing
 	if (iter != mActors.end())
 	{
 		mActors.erase(iter);
@@ -193,10 +195,10 @@ bool GameManager::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	if (!isGameLoaded)
 		isGameLoaded = true;
 
-	// Calculate the delta time (time since the last frame)
+	/* Calculate the delta time (time since the last frame) */
 	float deltaTime = fe.timeSinceLastFrame;
 
-	// Handle game logic and update here
+	/* Handle game logic and update here */
 	Update(deltaTime);
 
 	bool ret = ApplicationContext::frameRenderingQueued(fe);
@@ -281,7 +283,7 @@ void GameManager::FlipTableTop(float deltaTimeP)
 
 		Quaternion currentOrientation = Ogre::Quaternion::IDENTITY;
 		currentOrientation = tabletop->GetSceneNode()->getOrientation();
-		// Check if the flip is complete
+		/* Check if the flip is complete */
 		if (mFlipAnimation.rotationAngle > 179)
 		{
 			mFlipAnimation.flipFlop = -mFlipAnimation.flipFlop;
