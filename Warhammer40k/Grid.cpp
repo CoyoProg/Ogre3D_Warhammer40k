@@ -80,7 +80,11 @@ const std::vector<Tile*>& Grid::GetNeighboursTiles(const Tile &currentTileP)
 			int checkX = currentTileP.gridCoordinates.x + x;
 			int checkZ = currentTileP.gridCoordinates.y + z;
 
+			if (checkX < 0 || checkX >= GRID_SIZE_X ||
+				checkZ < 0 || checkZ >= GRID_SIZE_Z) continue;
+
 			Tile* tile = mGrid[checkX][checkZ];
+
 			if (tile)
 			{
 				neighbours.emplace_back(mGrid[checkX][checkZ]);

@@ -1,4 +1,5 @@
 #include "TableTop.h"
+#include "QueryFlags.h"
 
 TableTop::TableTop(GameManager &gameManagerP)
 {
@@ -18,6 +19,8 @@ TableTop::TableTop(GameManager &gameManagerP)
     /* Blue carpet */
     Entity *planeEntity = sceneManager.createEntity("Plane", SceneManager::PT_PLANE);
     planeEntity->setMaterialName("Plateau.tapis");
+    planeEntity->setQueryFlags((QueryFlags::OBSTACLE_MASK));
+
     SceneNode *planeNode = sceneManager.getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
     planeNode->setPosition(Vector3(0, -12, -100));
