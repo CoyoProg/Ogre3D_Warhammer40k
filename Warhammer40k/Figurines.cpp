@@ -180,11 +180,10 @@ void Figurines::MoveTo(Tile &targetTileP)
 {
     mPath.clear();
 
-    // TODO: Reserve vector alocations
-    // int expectedPathSize = static_cast<int>(mCurrentMovementAction / tileSize);
-    // mPath.reserve(expectedPathSize);  // Reserve based on an estimated size
+    int expectedPathSize = (mCurrentMovementAction / 10);
+    mPath.reserve(expectedPathSize);
 
-    mPathfinding->RetracePath(*mGameManager.GetGrid().GetTile(GetPosition()), targetTileP);
+    mPathfinding->RetracePath(mGameManager.GetGrid().GetTile(GetPosition()), targetTileP);
     mPath = mPathfinding->GetTurnPath();
 
     mCurrentMovementAction -= mPathfinding->totalPathCost;

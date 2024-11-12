@@ -21,6 +21,8 @@
 
 using namespace Ogre;
 
+// TODO: CLEANUP / REFACTOR
+
 GameManager::GameManager()
 {
 }
@@ -266,7 +268,6 @@ void GameManager::FlipTableTop(float deltaTimeP)
 		newPos = mCenterOfWorldNode->getPosition();
 		newPos.y = translationY;
 		mCenterOfWorldNode->setPosition(newPos);
-
 
 		/* Rotation Angle */
 		mFlipAnimation.rotationAngle = sin(mFlipAnimation.animationProgress * mFlipAnimation.animationSpeed / 2) * 180;

@@ -26,15 +26,6 @@ Player::Player(GameManager &gameManagerP, OverlayManager &overlayManagerP) :
 
     /* Add listener */
     gameManagerP.addInputListener(this);
-    gameManagerP.SetPlayer(this);
-
-    /* Create the Dice */
-    //mDice = mGameManager.GetSceneManager()->createEntity("Dice", "Dice.mesh");
-    //mDice->setMaterialName("Dice");
-    //SceneNode* diceNode = mGameManager.GetSceneManager()->getRootSceneNode()->createChildSceneNode("DiceNode");
-    //diceNode->attachObject(mDice);
-    //diceNode->setPosition(Vector3(0, 10, 0));
-    //diceNode->setScale(Vector3(.05f, .05f, .05f));
 }
 
 Player::~Player()
@@ -242,17 +233,24 @@ void Player::HandleFigurineMovement(Ogre::RaySceneQueryResult::iterator& hitResu
     targetPosition.x = rayOrigin.x + hitResult->distance * rayDirection.x;
     targetPosition.y = rayOrigin.y + hitResult->distance * rayDirection.y;
     targetPosition.z = rayOrigin.z + hitResult->distance * rayDirection.z;
+    
+    /* Check if out of the grid */
+    Vector2 tileCoords = mGameManager.GetGrid().GetGridCoords(targetPosition);
+    int coordX = tileCoords.x;
+    int coordZ = -tileCoords.y;
 
-    Tile* targetTile = mGameManager.GetGrid().GetTile(targetPosition);
-    if (!targetTile) return;
+    if (coordX < 0 || coordX >= GRID_SIZE_X ||
+        coordZ < 0 || coordZ >= GRID_SIZE_Z) return;
+
+    Tile& targetTile = mGameManager.GetGrid().GetTile(tileCoords);
 
     /* Check if the tile is on the Figurine Grid Movement */
-    if (targetTile->GetType() == TILE_MOVEMENT_SELECTED)
+    if (targetTile.GetType() == TILE_MOVEMENT_SELECTED)
     {
         targetPosition.y = 2.f;
 
         /* Move to the target position */
-        mCurrentPlayerFigurine->MoveTo(*targetTile);
+        mCurrentPlayerFigurine->MoveTo(targetTile);
         UpdateCardText(*mCurrentPlayerFigurine, false);
     }
 }

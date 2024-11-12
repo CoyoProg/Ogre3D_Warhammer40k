@@ -31,6 +31,7 @@ void GameLevel::LoadLevel(GameManager &gameEngineP)
 	// ===== Player ==== 
 	OverlayManager* overlayManager = OverlayManager::getSingletonPtr();
 	Player *player = new Player(gameEngineP, *overlayManager);
+	gameEngineP.SetPlayer(player);
 
 	TableTop *tabletop = new TableTop(gameEngineP);
 	gameEngineP.AddActor(tabletop);
@@ -40,10 +41,10 @@ void GameLevel::LoadLevel(GameManager &gameEngineP)
 	Ogre::MeshPtr mMesh = MeshManager::getSingleton().load("LowPolyMarine.mesh", "AssetsGroup");
 	mMesh->buildEdgeList();
 
-	LoadEnvironment(sceneManager, gameEngineP, grid);
+	LoadEnvironment(sceneManager, gameEngineP, *grid);
 }
 
-void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &gameEngineP, Grid *gridP)
+void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &gameEngineP, Grid &gridP)
 {
 	// ===== LIGHT ==== 
 	/* Create the light */
@@ -69,12 +70,13 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &
 	sceneManagerP.setFog(Ogre::FOG_LINEAR, fadeColour, 0, 2000, 10000);
 
 
-	// Create a random number generator
+	/* Create a random number generator */
 	std::random_device rd;							// Obtain a random seed
 	std::mt19937 gen(rd());							// Initialize the Mersenne Twister generator
-	std::uniform_int_distribution<> dis2(0, 40);	// Create a distribution to generate numbers between 0 and 40
-	std::uniform_int_distribution<> dis3(1, 3);		// Create a distribution to generate numbers between 1 and 3
+	std::uniform_int_distribution<> random40(0, 40);	// Generate numbers between 0 and 40
+	std::uniform_int_distribution<> random3(1, 3);		// Generate numbers between 1 and 3
 
+	// WIP
 	// TODO: REFACTOR BUIDLINGS + ADD MESH WITH TEXTURES
 	int count = 0;
 	for (int i = 1; i < 115; i++)
@@ -99,7 +101,7 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &
 					Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
 					gameEngineP.AddActor(figurines);
 
-					Vector3 newPosition = gridP->GetWorldPosition(Vector2(j, i));
+					Vector3 newPosition = gridP.GetWorldPosition(Vector2(j, i));
 					figurines->SetPosition(newPosition);
 					figurines->SetYawRotation(Degree(180));
 					figurines->SetMaterial("LowPolyMarine.blue");
@@ -125,7 +127,7 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &
 					Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
 					gameEngineP.AddActor(figurines);
 
-					Vector3 newPosition = gridP->GetWorldPosition(Vector2(j, i));
+					Vector3 newPosition = gridP.GetWorldPosition(Vector2(j, i));
 					figurines->SetPosition(newPosition);
 					figurines->SetYawRotation(Degree(0));
 				}
@@ -141,11 +143,11 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &
 			if (j > 20)
 			{
 				/* BUILDINGS */
-				int random_number = dis2(gen);
+				int random_number = random40(gen);
 
 				if (random_number != 1) continue;
 
-				random_number = dis3(gen);
+				random_number = random3(gen);
 
 				const std::string& uniqueID = "ID_" + std::to_string(i) + "_" + std::to_string(j);
 				Obstacles* obstacle = new Obstacles(

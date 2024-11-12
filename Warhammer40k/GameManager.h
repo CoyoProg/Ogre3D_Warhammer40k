@@ -26,9 +26,8 @@ struct FlipTableAnimation
 	int flipFlop = 1;
 };
 
-/*
- *
- */
+// TODO: Needs cleanup and refactor in the .cpp
+
 class GameManager : public ApplicationContext, public InputListener
 {
 public:
@@ -47,7 +46,7 @@ public:
 	void RemoveActor(Actors *actorP);
 	std::vector<Actors*> GetActors() { return mActors; }
 
-	void SetGrid(Grid* gridP) { mGrid = gridP; }
+	void SetGrid(Grid *gridP) { mGrid = gridP; }
 	Grid& GetGrid() { return *mGrid; }
 
 	void SetPlayer(Player *playerP) { mPlayer = playerP; }
@@ -65,6 +64,7 @@ private:
 
 	void FlipTableTop(float deltaTimeP);
 
+	// TODO: REPLACE THOSE WITH UNIQUE PTR
 	RenderWindow *mRenderWindow = nullptr;
 	SceneManager *mSceneManager = nullptr;
 	SceneNode *mCenterOfWorldNode = nullptr;

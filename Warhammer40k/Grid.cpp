@@ -15,26 +15,15 @@ Grid::~Grid()
 
 void Grid::CreateGrid()
 {
-	SceneManager &sceneManager = mGameManager.GetSceneManager();
-
 	int count = 0;
 	for (int x = 0; x < GRID_SIZE_X; x++)
 	{
 		for (int z = 0; z < GRID_SIZE_Z; z++)
 		{
 			count++;
-			CreateTiles(sceneManager, count, x, z);
+			CreateTiles(mGameManager.GetSceneManager(), count, x, z);
 		}
 	}
-
-	mGrid[0][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
-	mGrid[GRID_SIZE_X-1][GRID_SIZE_Z-1]->SetTile(TILE_MOVEMENT_SELECTED);
-
-	mGrid[0][0]->SetTile(TILE_MOVEMENT_SELECTED);
-	mGrid[GRID_SIZE_X-1][0]->SetTile(TILE_MOVEMENT_SELECTED);
-
-	mGrid[39][0]->SetTile(TILE_MOVEMENT_SELECTED);
-	mGrid[40][0]->SetTile(TILE_MOVEMENT_SELECTED);
 }
 
 void Grid::CreateTiles(Ogre::SceneManager &sceneManagerP, int countP, int coordXP, int coordZP)
@@ -58,13 +47,21 @@ void Grid::SetTileCollision(int coordXP, int coordZP, int enumTypeP)
 	mGrid[coordXP][-coordZP]->SetTile(enumTypeP);
 }
 
-Tile* Grid::GetTile(Vector3 positionP)
+Tile& Grid::GetTile(Vector3 positionP)
 {
 	Vector2 tileCoords = GetGridCoords(positionP);
 	int coordX = tileCoords.x;
 	int coordZ = tileCoords.y;
 
-	return mGrid[coordX][-coordZ];
+	return *mGrid[coordX][-coordZ];
+}
+
+Tile& Grid::GetTile(Vector2 tileCoords)
+{
+	int coordX = tileCoords.x;
+	int coordZ = tileCoords.y;
+
+	return *mGrid[coordX][-coordZ];
 }
 
 const std::vector<Tile*>& Grid::GetNeighboursTiles(const Tile &currentTileP)

@@ -50,7 +50,7 @@ void PathFindingComponent::ShowMovementGrid(const Vector3& startPositionP, int m
 	closedSet.reserve(movementGridReserve);
 	openSet.reserve(openSetReserve);
 
-	Tile &startTile = *mGrid.GetTile(startPositionP);
+	Tile &startTile = mGrid.GetTile(startPositionP);
 	startTile.gCost = 0;
 
 	openSet.emplace_back(&startTile);

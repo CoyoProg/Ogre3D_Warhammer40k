@@ -14,6 +14,6 @@ public:
 	static void LoadLevel(GameManager &gameEngineP);
 
 private:
-	static void LoadEnvironment(Ogre::SceneManager &sceneManager, GameManager &gameEngine, Grid *mGrid);
+	static void LoadEnvironment(Ogre::SceneManager &sceneManager, GameManager &gameEngine, Grid &mGrid);
 };
 

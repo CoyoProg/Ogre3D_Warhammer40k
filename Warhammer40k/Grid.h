@@ -83,7 +83,8 @@ public:
 
 	/* PathFinding */
 	int GetTileType(int coordXP, int coordZP) { return mGrid[coordXP][-coordZP]->GetType(); }
-	Tile* GetTile(Vector3 positionP);
+	Tile& GetTile(Vector3 positionP);
+	Tile& GetTile(Vector2 tileCoords);
 	const std::vector<Tile*>& GetNeighboursTiles(const Tile &currentTileP);
 
 	Vector2 GetGridCoords(Vector3 positionP);
