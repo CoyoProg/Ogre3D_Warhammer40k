@@ -12,6 +12,9 @@
 #include "Grid.h"
 #include "Obstacles.h"
 
+#include <array>
+#include <random>
+
 using namespace Ogre;
 
 void GameLevel::LoadLevel(GameManager &gameEngineP)
@@ -36,79 +39,6 @@ void GameLevel::LoadLevel(GameManager &gameEngineP)
 	/* Import Custom mesh */
 	Ogre::MeshPtr mMesh = MeshManager::getSingleton().load("LowPolyMarine.mesh", "AssetsGroup");
 	mMesh->buildEdgeList();
-
-	/* Player One */
-	int count = 0;
-	for (int i = 0; i < 4; i++)
-	{
-	    for (int j = 0; j < 3; j++)
-	    {
-	        count++;
-	        std::string entityName = "Space Marine " + std::to_string(count);
-	        std::string nodeName = "Node " + std::to_string(count);
-	
-	        Figurines *figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
-	        gameEngineP.AddActor(figurines);
-
-			Vector3 newPosition = grid->GetWorldPosition(Vector2(i * (2 * GRID_MULTIPLICATEUR), j * (2 * GRID_MULTIPLICATEUR))) + Vector3(45, 0, -125);
-	        figurines->SetPosition(newPosition ); // -25
-			figurines->SetYawRotation(Degree(180));
-			figurines->SetMaterial("LowPolyMarine.blue");
-	    }
-	}
-	
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			count++;
-			std::string entityName = "Space Marine " + std::to_string(count);
-			std::string nodeName = "Node " + std::to_string(count);
-	
-			Figurines *figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
-			gameEngineP.AddActor(figurines);
-
-			Vector3 newPosition = grid->GetWorldPosition(Vector2(i* (2 * GRID_MULTIPLICATEUR), j * (2 * GRID_MULTIPLICATEUR))) + Vector3(135 - 3 * 10, 0, -125); // -25
-			figurines->SetPosition(newPosition);
-			figurines->SetYawRotation(Degree(180));
-			figurines->SetMaterial("LowPolyMarine.blue");
-		}
-	}
-
-	/* Player 2 */
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			count++;
-			std::string entityName = "Space Marine " + std::to_string(count);
-			std::string nodeName = "Node" + std::to_string(count);
-
-			Figurines *figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
-			gameEngineP.AddActor(figurines);
-
-			Vector3 newPosition = grid->GetWorldPosition(Vector2(i * (2 * GRID_MULTIPLICATEUR), GRID_SIZE_Z - j * (2 * GRID_MULTIPLICATEUR)));
-			figurines->SetPosition(newPosition + Vector3(45, 0, 120)); // 25
-			figurines->SetYawRotation(Degree(0));
-		}
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			count++;
-			std::string entityName = "Space Marine " + std::to_string(count);
-			std::string nodeName = "Node" + std::to_string(count);
-
-			Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
-			gameEngineP.AddActor(figurines);
-
-			Vector3 newPosition = grid->GetWorldPosition(Vector2(i * (2 * GRID_MULTIPLICATEUR), GRID_SIZE_Z - j * (2 * GRID_MULTIPLICATEUR)));
-			figurines->SetPosition(newPosition + Vector3(135 - 3 * 10, 0, 120)); // 25
-			figurines->SetYawRotation(Degree(0));
-		}
-	}
 
 	LoadEnvironment(sceneManager, gameEngineP, grid);
 }
@@ -139,12 +69,92 @@ void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &
 	sceneManagerP.setFog(Ogre::FOG_LINEAR, fadeColour, 0, 2000, 10000);
 
 
-	/* Buildings */
-	// TODO: Refactor 
-	Obstacles *obstacle = new Obstacles(
-		gameEngineP, 
-		Vector2(20, 20), 
-		Vector3(4,10,24), 
-		"01");
-	gameEngineP.AddActor(obstacle);
+	// Create a random number generator
+	std::random_device rd;							// Obtain a random seed
+	std::mt19937 gen(rd());							// Initialize the Mersenne Twister generator
+	std::uniform_int_distribution<> dis2(0, 40);	// Create a distribution to generate numbers between 0 and 40
+	std::uniform_int_distribution<> dis3(1, 3);		// Create a distribution to generate numbers between 1 and 3
+
+	// TODO: REFACTOR BUIDLINGS + ADD MESH WITH TEXTURES
+	int count = 0;
+	for (int i = 1; i < 115; i++)
+	{
+		for (int j = 1; j < 75; j++)
+		{
+			/* PLAYER ONE */
+			if (j > 25 && j < 55 &&
+				i > 10 && i < 30)
+			{
+				if (j > 30 && j < 50 &&
+					i > 15 && i < 25)
+				{
+					if (i % 4 != 0 || j % 4 != 0) continue;
+
+					count++;
+
+					const std::string& uniqueID = std::to_string(count);
+					std::string entityName = "Space Marine " + uniqueID;
+					std::string nodeName = "Node " + uniqueID;
+
+					Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 1);
+					gameEngineP.AddActor(figurines);
+
+					Vector3 newPosition = gridP->GetWorldPosition(Vector2(j, i));
+					figurines->SetPosition(newPosition);
+					figurines->SetYawRotation(Degree(180));
+					figurines->SetMaterial("LowPolyMarine.blue");
+				}
+
+				continue;
+			}
+
+			/* PLAYER TWO */
+			if (j > 25 && j < 55 &&
+				i > 90 && i < 110)
+			{
+				if (j > 30 && j < 50 &&
+					i > 95 && i < 105)
+				{
+					if (i % 4 != 0 || j % 4 != 0) continue;
+
+					count++;
+					const std::string& uniqueID = std::to_string(count);
+					std::string entityName = "Space Marine " + uniqueID;
+					std::string nodeName = "Node " + uniqueID;
+
+					Figurines* figurines = new Figurines(gameEngineP, entityName, nodeName, 2);
+					gameEngineP.AddActor(figurines);
+
+					Vector3 newPosition = gridP->GetWorldPosition(Vector2(j, i));
+					figurines->SetPosition(newPosition);
+					figurines->SetYawRotation(Degree(0));
+				}
+
+				continue;
+			}
+
+			/* NOTHING IN THE CENTER AREA */
+			if (j > 25 && j < 55 &&
+				i > 45 && i < 75) continue;
+
+			/* NOTHING IN THE LEFT AREA */
+			if (j > 20)
+			{
+				/* BUILDINGS */
+				int random_number = dis2(gen);
+
+				if (random_number != 1) continue;
+
+				random_number = dis3(gen);
+
+				const std::string& uniqueID = "ID_" + std::to_string(i) + "_" + std::to_string(j);
+				Obstacles* obstacle = new Obstacles(
+					gameEngineP,
+					Vector2(j, i),
+					Vector3(1 + random_number, 5, 1 + random_number),
+					uniqueID);
+				gameEngineP.AddActor(obstacle);
+			}
+		}
+	}
 }

@@ -28,7 +28,7 @@ public:
 private:
 	void MouseRayTo3D(int mouseXP, int mouseYP);
 	void CheckMouseOverCollisions();
-	void HandleMouseOver(Figurines* mouseOverTargetP);
+	void HandleMouseOver(Figurines& mouseOverTargetP);
 	void ResetMouseOver();
 
 	void OnLBMouseDown(int mouseXP, int mouseYP);

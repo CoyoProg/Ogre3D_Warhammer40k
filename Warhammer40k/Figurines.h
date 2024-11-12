@@ -21,7 +21,7 @@ enum class FigurineState
 	BUSY,				// Can't be interacted with
 	MOVING,				// Moving to a new position
 
-	DEAD,				// Will be deleted next frame
+	DEAD,				// Will be deleted next frame (TODO)
 };
 
 /*
@@ -52,8 +52,8 @@ public:
 	float GetAttackRange() const { return FigurineStats::attackRange; }
 	int GetOwner() const { return mOwnerID; }
 
-	void MoveTo(Tile* targetTileP);
-	void Attack(Figurines* targetP);
+	void MoveTo(Tile &targetTileP);
+	void Attack(Figurines &targetP);
 	void GetHit(int damageAmountP);
 
 	void Death();
@@ -77,7 +77,7 @@ private:
 		static constexpr float flattenFactor = 0.001f;
 	};
 
-	SelectedAnimationProperties mSelectionAnimationProps;
+	SelectedAnimationProperties mSelectionAnimProperties;
 	GameManager &mGameManager;
 
 	bool mIsSelected = false;

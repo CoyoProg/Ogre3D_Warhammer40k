@@ -43,7 +43,7 @@ void Figurines::Update(float deltaTimeP)
     }
     else
     {
-        mSelectionAnimationProps.timer = 0; // Reset the animation
+        mSelectionAnimProperties.timer = 0; // Reset the animation
     }
 
     if (mFigurineState == FigurineState::MOVING)
@@ -54,10 +54,10 @@ void Figurines::Update(float deltaTimeP)
 
 void Figurines::UpdateSelectedAnimation(float deltaTimeP)
 {
-    mSelectionAnimationProps.timer += deltaTimeP;
+    mSelectionAnimProperties.timer += deltaTimeP;
 
-    float verticalScale = mUniformScale + sin(mSelectionAnimationProps.timer * mSelectionAnimationProps.scaleSpeed) * mSelectionAnimationProps.scaleFactor;
-    float horizontalScale = mUniformScale + cos(mSelectionAnimationProps.timer * mSelectionAnimationProps.flattenSpeed) * mSelectionAnimationProps.flattenFactor;
+    float verticalScale = mUniformScale + sin(mSelectionAnimProperties.timer * mSelectionAnimProperties.scaleSpeed) * mSelectionAnimProperties.scaleFactor;
+    float horizontalScale = mUniformScale + cos(mSelectionAnimProperties.timer * mSelectionAnimProperties.flattenSpeed) * mSelectionAnimProperties.flattenFactor;
 
     Ogre::Vector3 newScale(horizontalScale, verticalScale, horizontalScale);
     mNode->setScale(newScale);
@@ -176,7 +176,7 @@ void Figurines::OutEndTurn()
     mCurrentActionPoint = FigurineStats::maxActionPoints;
 }
 
-void Figurines::MoveTo(Tile *targetTileP)
+void Figurines::MoveTo(Tile &targetTileP)
 {
     mPath.clear();
 
@@ -184,7 +184,7 @@ void Figurines::MoveTo(Tile *targetTileP)
     // int expectedPathSize = static_cast<int>(mCurrentMovementAction / tileSize);
     // mPath.reserve(expectedPathSize);  // Reserve based on an estimated size
 
-    mPathfinding->RetracePath(*mGameManager.GetGrid().GetTile(GetPosition()), *targetTileP);
+    mPathfinding->RetracePath(*mGameManager.GetGrid().GetTile(GetPosition()), targetTileP);
     mPath = mPathfinding->GetTurnPath();
 
     mCurrentMovementAction -= mPathfinding->totalPathCost;
@@ -207,9 +207,9 @@ void Figurines::MoveTo(Tile *targetTileP)
     mFigurineState = FigurineState::MOVING;
 }
 
-void Figurines::Attack(Figurines *targetP)
+void Figurines::Attack(Figurines &targetP)
 {
-    targetP->GetHit(FigurineStats::attackDamage);
+    targetP.GetHit(FigurineStats::attackDamage);
     mCurrentActionPoint--;
 }
 

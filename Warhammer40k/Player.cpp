@@ -89,14 +89,14 @@ void Player::CheckMouseOverCollisions()
 
     if (auto newTarget = dynamic_cast<Figurines*>(getActor))
     {
-        HandleMouseOver(newTarget);
+        HandleMouseOver(*newTarget);
     }
 }
 
-void Player::HandleMouseOver(Figurines* mouseOverTargetP)
+void Player::HandleMouseOver(Figurines& mouseOverTargetP)
 {
-    if (!mouseOverTargetP->IsSleeping()) return;
-    mCurrentMouseOver = mouseOverTargetP;
+    if (!mouseOverTargetP.IsSleeping()) return;
+    mCurrentMouseOver = &mouseOverTargetP;
 
     bool isEnemy = mCurrentMouseOver->GetOwner() != mCurrentPlayerID;
     mCurrentMouseOver->OnMouseOver(isEnemy);
@@ -221,7 +221,7 @@ void Player::HandleFigurineTargeting(Ogre::RaySceneQueryResult::iterator& hitRes
         /* Check if the enemy is On Shooting Sight */
         float distanceFromSelected = 0.f;                                                  // TODO: IMPLEMENT DISTANCE CALCULATION
         if (distanceFromSelected > mCurrentPlayerFigurine->GetAttackRange()) return;
-        mCurrentPlayerFigurine->Attack(newTarget);
+        mCurrentPlayerFigurine->Attack(*newTarget);
 
         UpdateCardText(*mCurrentPlayerFigurine, false);
 
@@ -252,7 +252,7 @@ void Player::HandleFigurineMovement(Ogre::RaySceneQueryResult::iterator& hitResu
         targetPosition.y = 2.f;
 
         /* Move to the target position */
-        mCurrentPlayerFigurine->MoveTo(targetTile);
+        mCurrentPlayerFigurine->MoveTo(*targetTile);
         UpdateCardText(*mCurrentPlayerFigurine, false);
     }
 }
