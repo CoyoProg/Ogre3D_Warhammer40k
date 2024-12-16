@@ -4,7 +4,7 @@
 
 #include "PathFindingComponent.h"
 #include "Grid.h"
-
+#include "TableTop.h"
 #include <iostream>
 
 constexpr float POSITION_SNAP_THRESHOLD = 0.5f;
@@ -19,7 +19,7 @@ Figurines::Figurines(GameManager &gameManagerP, const std::string& entityNameP, 
     mEntity->setCastShadows(true);
     mEntity->setQueryFlags(QueryFlags::FIGURINE_MASK);
 
-    mNode = mGameManager.GetSceneManager().getRootSceneNode()->createChildSceneNode(nodeNameP);
+    mNode = mGameManager.GetTableTop().GetSceneNode()->createChildSceneNode(nodeNameP);
     mNode->attachObject(mEntity);
     mNode->setScale(mUniformScale, mUniformScale, mUniformScale);
 

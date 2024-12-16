@@ -4,7 +4,6 @@
 Grid::Grid(GameManager& gameEngineP) :
 	mGameManager(gameEngineP)
 {
-	gameEngineP.SetGrid(this);
 	CreateGrid();
 }
 

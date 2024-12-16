@@ -11,9 +11,10 @@ class Grid;
 class GameLevel
 {
 public:
-	static void LoadLevel(GameManager &gameEngineP);
-
-private:
 	static void LoadEnvironment(Ogre::SceneManager &sceneManager, GameManager &gameEngine, Grid &mGrid);
+	static void SetupBackgroundViewport(Ogre::SceneManager& sceneManagerP);
+	static void SetupLights(Ogre::SceneManager& sceneManagerP);
+
+	static void SpawnActors(GameManager& gameEngineP, Grid& gridP);
 };
 

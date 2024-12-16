@@ -2,6 +2,7 @@
 #include "QueryFlags.h"
 
 #include "Grid.h"
+#include "TableTop.h"
 
 constexpr float GRID_OFFSET_CENTER = GRID_CELL_SIZE / 2.0f;
 
@@ -13,7 +14,7 @@ Obstacles::Obstacles(GameManager &gameManagerP, const Vector2 &gridCoordsP, cons
 {
 	CreateCube(ID);
 
-	mNode = mSceneManager.getRootSceneNode()->createChildSceneNode("ObstacleNode" + ID);
+	mNode = gameManagerP.GetTableTop().GetSceneNode()->createChildSceneNode("ObstacleNode" + ID);
 	mNode->setScale(mScale * GRID_CELL_SIZE);
 	mNode->attachObject(mManualObject);
 	mManualObject->setQueryFlags((QueryFlags::OBSTACLE_MASK));

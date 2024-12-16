@@ -138,6 +138,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Components.cpp" />
     <ClCompile Include="Figurines.cpp" />
+    <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameLevel.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Figurines.h" />
+    <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameLevel.h" />
     <ClInclude Include="Grid.h" />

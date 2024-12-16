@@ -18,14 +18,14 @@ Player::Player(GameManager &gameManagerP, OverlayManager &overlayManagerP) :
     AddComponent(camera);
 
     mCamera = &camera->getCamera();
-    gameManagerP.getRenderWindow()->addViewport(mCamera);
+    gameManagerP.GetRenderWindow().addViewport(mCamera);
 
     /* Create the Ray */
     mRayScnQuery = gameManagerP.GetSceneManager().createRayQuery(Ogre::Ray());
     mRayScnQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
 
     /* Add listener */
-    gameManagerP.addInputListener(this);
+    gameManagerP.AddInputListener(this);
 }
 
 Player::~Player()
@@ -48,8 +48,8 @@ void Player::OnEndTurn()
 void Player::MouseRayTo3D(int mouseXP, int mouseYP)
 {
     /* Cast Ray */
-    float width = mouseXP / (float)mGameManager.getRenderWindow()->getWidth();
-    float height = mouseYP / (float)mGameManager.getRenderWindow()->getHeight();
+    float width = mouseXP / (float)mGameManager.GetRenderWindow().getWidth();
+    float height = mouseYP / (float)mGameManager.GetRenderWindow().getHeight();
     
     mMouseRay = mCamera->getCameraToViewportRay(width, height);
     

@@ -16,7 +16,7 @@ CameraComponent::CameraComponent(GameManager &gameManagerP)
 	mCamNode->setPosition(0, 100, 222);
 	mCamNode->pitch(Degree(-45));
 
-    gameManagerP.addInputListener(this);
+    gameManagerP.AddInputListener(this);
 }
 
 CameraComponent::~CameraComponent()

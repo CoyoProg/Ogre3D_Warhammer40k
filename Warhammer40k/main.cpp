@@ -1,4 +1,5 @@
-#include "GameManager.h"
+//#include "GameManager.h"
+#include "GameEngine.h"
 
 #include <iostream>
 
@@ -6,11 +7,11 @@ int main(int argc, char** argv)
 {
     try
     {
-        GameManager app;
-        app.initApp();
-        app.getRoot()->startRendering();
+        GameEngine engine;
+        engine.initApp();
+        engine.getRoot()->startRendering();
 
-        app.closeApp();
+        engine.closeApp();
     }
     catch (const std::exception& e)
     {
@@ -20,4 +21,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-//! [fullsource]

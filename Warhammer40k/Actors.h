@@ -11,6 +11,7 @@ class Components;
 class Actors
 {
 public:
+	Actors() = default;
 	virtual ~Actors();
 	virtual void Update(float deltaTimeP);
 

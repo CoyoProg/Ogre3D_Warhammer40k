@@ -1,6 +1,6 @@
 #pragma once
-#include "OgreApplicationContext.h"
 #include "Ogre.h"
+#include "OgreInput.h"
 
 using namespace Ogre;
 using namespace OgreBites;
@@ -11,70 +11,52 @@ class TableTop;
 class Player;
 class OgreText;
 
-struct FlipTableAnimation
-{
-	static constexpr float bumpHeight = 10.0f; // Height of the bump in units
-	static constexpr float flipsCooldown = 5;
+class GameEngine;
 
-	float animationProgress = 0.0f; // Progress of the flip animation
-	float animationSpeed = 0.f;
-	float rotationAngle = 0;
-
-	float flipTimer = 0;
-	bool isFlipping = false;
-	bool shouldChangeDir = false;
-	int flipFlop = 1;
-};
-
-// TODO: Needs cleanup and refactor in the .cpp
-
-class GameManager : public ApplicationContext, public InputListener
+class GameManager : public InputListener 
 {
 public:
-	GameManager();
-	virtual ~GameManager() {};
-
 	/* Update the game logic */
 	void Update(float deltaTimeP);
 
-	virtual void setup() override;                                           // OgreApplicationContextBase
-	virtual bool frameRenderingQueued(const FrameEvent &fe) override;        // OgreApplicationContextBase
+	void SetupGameManager(RenderWindow& renderWindowP, SceneManager& sceneManagerP, GameEngine& engineP);
+	void LoadResources();
 	void InitializeGame();
-	void InitializeRenderer();
+
+	void AddInputListener(InputListener* listenerP);
 
 	void AddActor(Actors *actorP) { mActors.emplace_back(actorP); }
 	void RemoveActor(Actors *actorP);
+
 	std::vector<Actors*> GetActors() { return mActors; }
-
-	void SetGrid(Grid *gridP) { mGrid = gridP; }
 	Grid& GetGrid() { return *mGrid; }
+	TableTop& GetTableTop() { return *mTableTop; }
 
-	void SetPlayer(Player *playerP) { mPlayer = playerP; }
 	void EndTurn();
+	void OnNewTurn();
 
 	SceneManager& GetSceneManager() { return *mSceneManager; }
 	Actors* GetSceneActor(const SceneNode& sceneNodeP);
+	RenderWindow& GetRenderWindow() { return *mRenderWindow; }
 
-	TableTop* tabletop = nullptr;
 	bool isGameLoaded = false;
 
 private:
-	bool ProcessUnbufferedInput(const FrameEvent& fe);
 	virtual bool keyPressed(const KeyboardEvent& evt) override;
 
-	void FlipTableTop(float deltaTimeP);
-
-	// TODO: REPLACE THOSE WITH UNIQUE PTR
 	RenderWindow *mRenderWindow = nullptr;
 	SceneManager *mSceneManager = nullptr;
-	SceneNode *mCenterOfWorldNode = nullptr;
+	GameEngine* mGameEngine = nullptr;
+
 	Grid *mGrid = nullptr;
 	OgreText *mOverlayWidgets = nullptr;
-	Player* mPlayer = nullptr;
+	TableTop* mTableTop = nullptr;
+	Player *mPlayer = nullptr;
 
 	std::set<Keycode> mKeysPressed;
 	std::vector<Actors*> mActors;
-	
-	FlipTableAnimation mFlipAnimation;
+
+	const float EndTurnCooldown = 5.0f;
+	float EndTurnTimer = 0.0f;
 };
 

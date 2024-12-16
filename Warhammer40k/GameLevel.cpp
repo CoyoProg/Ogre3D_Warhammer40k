@@ -14,61 +14,61 @@
 
 #include <array>
 #include <random>
+#include "QueryFlags.h"
 
 using namespace Ogre;
 
-void GameLevel::LoadLevel(GameManager &gameEngineP)
-{
-	SceneManager &sceneManager = gameEngineP.GetSceneManager();
-	sceneManager.setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
-	sceneManager.setShadowFarDistance(50);
-
-	/* Create the Grid */
-	Grid *grid = new Grid(gameEngineP);
-	gameEngineP.SetGrid(grid);
-
-	/* Player need to be initialize first for the main camera */
-	// ===== Player ==== 
-	OverlayManager* overlayManager = OverlayManager::getSingletonPtr();
-	Player *player = new Player(gameEngineP, *overlayManager);
-	gameEngineP.SetPlayer(player);
-
-	TableTop *tabletop = new TableTop(gameEngineP);
-	gameEngineP.AddActor(tabletop);
-	gameEngineP.tabletop = tabletop;
-
-	/* Import Custom mesh */
-	Ogre::MeshPtr mMesh = MeshManager::getSingleton().load("LowPolyMarine.mesh", "AssetsGroup");
-	mMesh->buildEdgeList();
-
-	LoadEnvironment(sceneManager, gameEngineP, *grid);
-}
-
 void GameLevel::LoadEnvironment(Ogre::SceneManager &sceneManagerP, GameManager &gameEngineP, Grid &gridP)
 {
+	SetupLights(sceneManagerP);
+	SetupBackgroundViewport(sceneManagerP);
+}
+
+void GameLevel::SetupBackgroundViewport(Ogre::SceneManager& sceneManagerP)
+{
+	Ogre::Viewport* mainViewport = sceneManagerP.getCamera("mainCamera")->getViewport();
+
+	/* Set the background color for the main viewport */
+	Ogre::ColourValue fadeColour(0.9, 0.9, 0.9);
+	mainViewport->setBackgroundColour(fadeColour);
+	sceneManagerP.setFog(Ogre::FOG_LINEAR, fadeColour, 0, 2000, 10000);
+}
+
+void GameLevel::SetupLights(Ogre::SceneManager& sceneManagerP)
+{
 	// ===== LIGHT ==== 
+	/* Set ambient light for the Scene Manager */
+	sceneManagerP.setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+	sceneManagerP.setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+	sceneManagerP.setShadowFarDistance(50);
+
 	/* Create the light */
-	Light *light = sceneManagerP.createLight("MainLight");
+	Light* light = sceneManagerP.createLight("MainLight");
 	light->setType(Light::LightTypes::LT_DIRECTIONAL);
 	light->setDiffuseColour(1, 1, 1);
 	light->setSpecularColour(1, 1, 1);
 
 	/* Create a SceneNode for the light, and attach the new light */
-	SceneNode *lightNode = sceneManagerP.getRootSceneNode()->createChildSceneNode();
+	SceneNode* lightNode = sceneManagerP.getRootSceneNode()->createChildSceneNode();
 	lightNode->attachObject(light);
 	lightNode->setDirection(1, -2, -1);
 
 	/* SkyBox */
-	sceneManagerP.setSkyBox(true, "Examples/CloudyNoonSkyBox");                        // SkyBox
+	sceneManagerP.setSkyBox(true, "Examples/CloudyNoonSkyBox");
+}
 
-	/* Fog */
-	Ogre::Viewport *mainViewport = sceneManagerP.getCamera("mainCamera")->getViewport();
-	
-	/* Set the background color for the main viewport */
-	Ogre::ColourValue fadeColour(0.9, 0.9, 0.9);
-	mainViewport->setBackgroundColour(fadeColour);
-	sceneManagerP.setFog(Ogre::FOG_LINEAR, fadeColour, 0, 2000, 10000);
+void GameLevel::SpawnActors(GameManager& gameEngineP, Grid& gridP)
+{
+	/* Blue carpet */
+	Entity* planeEntity = gameEngineP.GetSceneManager().createEntity("Plane", SceneManager::PT_PLANE);
+	planeEntity->setMaterialName("Plateau.tapis");
+	planeEntity->setQueryFlags((QueryFlags::OBSTACLE_MASK));
 
+	SceneNode* planeNode = gameEngineP.GetSceneManager().getRootSceneNode()->createChildSceneNode();
+	planeNode->attachObject(planeEntity);
+	planeNode->setPosition(Vector3(0, -12, -100));
+	planeNode->pitch(Degree(-90));
+	planeNode->setScale(Vector3(6, 4, 1));
 
 	/* Create a random number generator */
 	std::random_device rd;							// Obtain a random seed
