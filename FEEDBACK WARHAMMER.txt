@@ -1,0 +1,7 @@
+FEEDBACK WARHAMMER:
+Ajouter un GameEngine pour separer avec le GameManager
+
+Bouger le flipTableTop dans le tabletop directement
+
+Avoir plus de composant (Health / Selectable /etc...)
+Separer les fonctions dans LoadEnvironment
